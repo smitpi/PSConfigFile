@@ -48,37 +48,36 @@ Add a startup location to the config file
 
 #>
 
-Param()
 
 
 #.ExternalHelp PSConfigFile-help.xml
 Function Add-LocationToPSConfigFile {
-	[Cmdletbinding()]
-	PARAM(
-		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-		[System.IO.FileInfo]$ConfigFile,
-		[ValidateScript( { ( Test-Path $_) })]
-		[System.IO.DirectoryInfo]$Path
-	)
-	try {
-		$confile = Get-Item $ConfigFile
-		Test-Path -Path $confile.FullName
-	} catch { throw 'Incorect file' }
+    [Cmdletbinding()]
+    PARAM(
+        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
+        [System.IO.FileInfo]$ConfigFile,
+        [ValidateScript( { ( Test-Path $_) })]
+        [System.IO.DirectoryInfo]$Path
+    )
+    try {
+        $confile = Get-Item $ConfigFile
+        Test-Path -Path $confile.FullName
+    } catch { throw 'Incorect file' }
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
-	$Update = @()
+    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $Update = @()
 
-	$SetLocation = @{}
-	$SetLocation += @{
-		WorkerDir = $((Get-Item $path).FullName)
-	}
-	$Update = [psobject]@{
-		Userdata    = $Json.Userdata
-		PSDrive     = $Json.PSDrive
-		SetLocation = $SetLocation
-		SetVariable = $Json.SetVariable
-		Execute     = $Json.Execute
-	}
-	$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    $SetLocation = @{}
+    $SetLocation += @{
+        WorkerDir = $((Get-Item $path).FullName)
+    }
+    $Update = [psobject]@{
+        Userdata    = $Json.Userdata
+        PSDrive     = $Json.PSDrive
+        SetLocation = $SetLocation
+        SetVariable = $Json.SetVariable
+        Execute     = $Json.Execute
+    }
+    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
 
 } #end Function

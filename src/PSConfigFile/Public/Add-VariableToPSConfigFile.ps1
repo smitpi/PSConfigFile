@@ -48,53 +48,52 @@ Add a varible to the config file
 
 #>
 
-Param()
 #.ExternalHelp PSConfigFile-help.xml
 Function Add-VariableToPSConfigFile {
-	[Cmdletbinding()]
-	PARAM(
-		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-		[System.IO.FileInfo]$ConfigFile,
-		[ValidateScript( { ( Get-Variable $_) })]
-		[string[]]$VariableNames
-	)
-	try {
-		$confile = Get-Item $ConfigFile
-		Test-Path -Path $confile.FullName
-	} catch { throw 'Incorect file' }
+    [Cmdletbinding()]
+    PARAM(
+        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
+        [System.IO.FileInfo]$ConfigFile,
+        [ValidateScript( { ( Get-Variable $_) })]
+        [string[]]$VariableNames
+    )
+    try {
+        $confile = Get-Item $ConfigFile
+        Test-Path -Path $confile.FullName
+    } catch { throw 'Incorect file' }
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 
-	foreach ($VariableName in $VariableNames) {
-		$Update = @()
-		$SetVariable = @{}
-		$InputVar = Get-Variable -Name $VariableName
+    foreach ($VariableName in $VariableNames) {
+        $Update = @()
+        $SetVariable = @{}
+        $InputVar = Get-Variable -Name $VariableName
         $inputtype = $InputVar.Value.GetType()
-        if ($inputtype.Name -like "PSCredential" -or $inputtype.Name -like "SecureString") {Write-Error "PSCredential or SecureString not allowed"; break}
+        if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
-		if ($Json.SetVariable.Default -eq 'Default') {
-			$SetVariable = @{
-				$InputVar.Name = $InputVar.Value
-			}
-		} else {
-			$members = $Json.SetVariable | Get-Member -MemberType NoteProperty
-			foreach ($mem in $members) {
-				$SetVariable += @{
-					$mem.Name = $json.SetVariable.$($mem.Name)
-				}
-			}
-			$SetVariable += @{
-				$InputVar.Name = $InputVar.Value
-			}
-		}
+        if ($Json.SetVariable.Default -eq 'Default') {
+            $SetVariable = @{
+                $InputVar.Name = $InputVar.Value
+            }
+        } else {
+            $members = $Json.SetVariable | Get-Member -MemberType NoteProperty
+            foreach ($mem in $members) {
+                $SetVariable += @{
+                    $mem.Name = $json.SetVariable.$($mem.Name)
+                }
+            }
+            $SetVariable += @{
+                $InputVar.Name = $InputVar.Value
+            }
+        }
 
-		$Update = [psobject]@{
-			Userdata    = $Json.Userdata
-			PSDrive     = $Json.PSDrive
-			SetLocation = $Json.SetLocation
-			SetVariable = $SetVariable
-			Execute     = $Json.Execute
-		}
-		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
-	}
+        $Update = [psobject]@{
+            Userdata    = $Json.Userdata
+            PSDrive     = $Json.PSDrive
+            SetLocation = $Json.SetLocation
+            SetVariable = $SetVariable
+            Execute     = $Json.Execute
+        }
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    }
 } #end Function

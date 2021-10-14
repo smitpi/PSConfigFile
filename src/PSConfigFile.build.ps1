@@ -207,10 +207,10 @@ Add-BuildTask AnalyzeTests -After Analyze {
 Add-BuildTask FormattingCheck {
 
     $scriptAnalyzerParams = @{
-        Setting     = 'CodeFormattingStroustrup'
+        Setting     = 'CodeFormattingOTBS'
         ExcludeRule = 'PSUseConsistentWhitespace'
         Recurse     = $true
-        Verbose     = $false
+        Verbose     = $true
     }
 
 

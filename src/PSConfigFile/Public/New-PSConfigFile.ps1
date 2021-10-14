@@ -48,80 +48,78 @@ To store your settings
 
 #>
 
-Param()
-
 #.ExternalHelp PSConfigFile-help.xml
 Function New-PSConfigFile {
-	[Cmdletbinding(SupportsShouldProcess = $true)]
-	param (
-		[parameter(Mandatory)]
-		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]
-		[System.IO.DirectoryInfo]$ConfigDir
-	)
+    [Cmdletbinding(SupportsShouldProcess = $true)]
+    param (
+        [parameter(Mandatory)]
+        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]
+        [System.IO.DirectoryInfo]$ConfigDir
+    )
 
-	# TODO Add logging
-	# TODO Add rotation of the logs
-	# TODO Add PSDrives
-	function DafaultSettings {
-		$Userdata = @()
-		$SetLocation = @()
-		$SetVariable = @()
-		$Execute = @()
+    # TODO Add logging
+    # TODO Add rotation of the logs
+    # TODO Add PSDrives
+    function DafaultSettings {
+        $Userdata = @()
+        $SetLocation = @()
+        $SetVariable = @()
+        $Execute = @()
 
-		$OSDetails = Get-ComputerInfo
-		$Userdata = New-Object PSObject -Property @{
-			Computer                       = $env:COMPUTERNAME
-			WindowsProductName             = $OSDetails.WindowsProductName
-			WindowsEditionId               = $OSDetails.WindowsEditionId
-			WindowsInstallationType        = $OSDetails.WindowsInstallationType
-			WindowsInstallDateFromRegistry = $OSDetails.WindowsInstallDateFromRegistry
-			OsArchitecture                 = $OSDetails.OsArchitecture
-			OsProductType                  = $OSDetails.OsProductType
-			OsStatus                       = $OSDetails.OsStatus
-			DomainName                     = $env:USERDNSDOMAIN
-			Userid                         = $env:USERNAME
-			CreatedOn                      = [DateTimeOffset]::Now
-		}
-		$SetLocation = New-Object PSObject -Property @{}
-		$SetVariable = New-Object PSObject -Property @{
-			Default = 'Default'
-		}
-		$Execute = New-Object PSObject -Property @{
-			Default = 'Default'
-		}
-		$PSDrive = New-Object PSObject -Property @{
-			Default = 'Default'
-		}
-		#main
-		New-Object PSObject -Property @{
-			Userdata    = $Userdata
-			PSDrive     = $PSDrive
-			SetLocation = $SetLocation
-			SetVariable = $SetVariable
-			Execute     = $Execute
-		}
+        $OSDetails = Get-ComputerInfo
+        $Userdata = New-Object PSObject -Property @{
+            Computer                       = $env:COMPUTERNAME
+            WindowsProductName             = $OSDetails.WindowsProductName
+            WindowsEditionId               = $OSDetails.WindowsEditionId
+            WindowsInstallationType        = $OSDetails.WindowsInstallationType
+            WindowsInstallDateFromRegistry = $OSDetails.WindowsInstallDateFromRegistry
+            OsArchitecture                 = $OSDetails.OsArchitecture
+            OsProductType                  = $OSDetails.OsProductType
+            OsStatus                       = $OSDetails.OsStatus
+            DomainName                     = $env:USERDNSDOMAIN
+            Userid                         = $env:USERNAME
+            CreatedOn                      = [DateTimeOffset]::Now
+        }
+        $SetLocation = New-Object PSObject -Property @{}
+        $SetVariable = New-Object PSObject -Property @{
+            Default = 'Default'
+        }
+        $Execute = New-Object PSObject -Property @{
+            Default = 'Default'
+        }
+        $PSDrive = New-Object PSObject -Property @{
+            Default = 'Default'
+        }
+        #main
+        New-Object PSObject -Property @{
+            Userdata    = $Userdata
+            PSDrive     = $PSDrive
+            SetLocation = $SetLocation
+            SetVariable = $SetVariable
+            Execute     = $Execute
+        }
 
-	}
-
-
-	$Fullpath = Get-Item $ConfigDir
- if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
-		$check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -ErrorAction SilentlyContinue
-		if (-not($check)) {
-			Write-Output 'Config File does not exit, creating default settings.'
-
-			$data = DafaultSettings
-			$data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
-		} else {
-
-			Write-Warning 'File exists, renaming file now'
-			Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
-
-			$data = DafaultSettings
-			$data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
+    }
 
 
-		}
-	}
-Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json)
+    $Fullpath = Get-Item $ConfigDir
+    if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
+        $check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -ErrorAction SilentlyContinue
+        if (-not($check)) {
+            Write-Output 'Config File does not exit, creating default settings.'
+
+            $data = DafaultSettings
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
+        } else {
+
+            Write-Warning 'File exists, renaming file now'
+            Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
+
+            $data = DafaultSettings
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
+
+
+        }
+    }
+    Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json)
 }
