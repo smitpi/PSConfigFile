@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.3
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,7 @@ Updated [14/10/2021_19:31] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -43,7 +43,7 @@ Updated [14/10/2021_19:31] Added PSDrive Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add a command to the config file
 
 #>
@@ -58,7 +58,7 @@ Function Add-CommandToPSConfigFile {
 				[System.IO.FileInfo]$ConfigFile,
                 [ValidateNotNullOrEmpty()]
                 [string]$ScriptBlockName,
-                [ValidateNotNullOrEmpty()]	
+                [ValidateNotNullOrEmpty()]
                 [string]$ScriptBlock
 				)
 

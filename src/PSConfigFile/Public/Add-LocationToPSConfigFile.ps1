@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.3
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -43,7 +43,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add a startup location to the config file
 
 #>
