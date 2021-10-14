@@ -12,7 +12,7 @@
 RootModule = 'PSConfigFile.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.8.11'
+ModuleVersion = '0.1.15'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@ CompanyName = 'iOCO Tech'
 Copyright = '(c) 2021 Pierre Smit. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Script'
+Description = 'Creates a Config file with Commands,Variables,PSDrives and locations, that can be imported into a session, and the objects are recreated \ executed'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -51,7 +51,7 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+ RequiredModules = "PSWriteColor"
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -97,19 +97,19 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'citrix','powershell'
+        Tags = 'powershell'
 
         # A URL to the license for this module.
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+         ProjectUri = 'https://github.com/smitpi/PSConfigFile'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Updated [14/10/2021_19:33] Added'
+        ReleaseNotes = 'Updated [14/10/2021_19:33] Added to PSG'
 
         # Prerelease string of this module
         # Prerelease = ''
