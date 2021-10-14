@@ -1,8 +1,8 @@
 ---
 Module Name: PSConfigFile
-Module Guid: 00000000-0000-0000-0000-000000000000
+Module Guid: d1fff6c2-e0c4-49ba-8632-e0137d78151c
 Download Help Link: {{ Update Download Link }}
-Help Version: {{ Please enter version of help manually (X.X.X.X) format }}
+Help Version: {0.1.15}
 Locale: en-US
 ---
 
@@ -12,10 +12,10 @@ Creates a Config file with Commands,Variables,PSDrives and locations, that can b
 
 ## PSConfigFile Cmdlets
 ### [Add-CommandToPSConfigFile](Add-CommandToPSConfigFile.md)
-Adds a command or script block to the config file, to be executed every time the invoke function is called. 
+Adds a command or script block to the config file, to be executed every time the invoke function is called.
 
 ### [Add-LocationToPSConfigFile](Add-LocationToPSConfigFile.md)
-Adds default location to the config file. 
+Adds default location to the config file.
 
 ### [Add-PSDriveToPSConfigFile](Add-PSDriveToPSConfigFile.md)
 Add PSDrive to the config file

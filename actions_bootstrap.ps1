@@ -28,7 +28,7 @@ $null = $modulesToInstall.Add(([PSCustomObject]@{
 # older version used due to: https://github.com/PowerShell/platyPS/issues/457
 $null = $modulesToInstall.Add(([PSCustomObject]@{
             ModuleName    = 'platyPS'
-            ModuleVersion = '0.14.2'
+            ModuleVersion = '0.12.0'
         }))
 
 

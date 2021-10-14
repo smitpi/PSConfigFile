@@ -21,7 +21,7 @@
     GUID              = 'd1fff6c2-e0c4-49ba-8632-e0137d78151c'
 
     # Author of this module
-    Author            = 'PSDrive'
+    Author            = 'Pierre Smit'
 
     # Company or vendor of this module
     CompanyName       = 'iOCO Tech'
