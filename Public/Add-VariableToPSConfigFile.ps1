@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1.2
+.VERSION 1.1.3
 
 .GUID da6df4de-5b05-4796-bf82-345686b30e78
 
@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS powershell
+.TAGS powershell ps
 
 .LICENSEURI
 
@@ -29,6 +29,7 @@
 Created [04/10/2021_19:05] Initital Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
+Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
@@ -38,15 +39,17 @@ Updated [08/10/2021_20:51] Getting ready to upload
 
 
 
-<# 
+
+
+<#
 
 .DESCRIPTION 
 Add a varible to the config file
 
-#> 
+#>
 
 Param()
-
+#.ExternalHelp PSConfigFile-help.xml
 Function Add-VariableToPSConfigFile {
 	[Cmdletbinding()]
 	PARAM(
@@ -66,10 +69,12 @@ Function Add-VariableToPSConfigFile {
 		$Update = @()
 		$SetVariable = @{}
 		$InputVar = Get-Variable -Name $VariableName
+        $inputtype = $InputVar.Value.GetType()
+        if ($inputtype.Name -like "PSCredential" -or $inputtype.Name -like "SecureString") {Write-Error "PSCredential or SecureString not allowed"; break}
 
 		if ($Json.SetVariable.Default -eq 'Default') {
 			$SetVariable = @{
-				$InputVar.Name = $(Get-Variable -Name $VariableName -ValueOnly)
+				$InputVar.Name = $InputVar.Value
 			}
 		} else {
 			$members = $Json.SetVariable | Get-Member -MemberType NoteProperty
@@ -79,12 +84,13 @@ Function Add-VariableToPSConfigFile {
 				}
 			}
 			$SetVariable += @{
-				$InputVar.Name = $(Get-Variable -Name $VariableName -ValueOnly)
+				$InputVar.Name = $InputVar.Value
 			}
 		}
 
 		$Update = [psobject]@{
 			Userdata    = $Json.Userdata
+			PSDrive     = $Json.PSDrive
 			SetLocation = $Json.SetLocation
 			SetVariable = $SetVariable
 			Execute     = $Json.Execute

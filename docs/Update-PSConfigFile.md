@@ -8,32 +8,30 @@ schema: 2.0.0
 # Update-PSConfigFile
 
 ## SYNOPSIS
-{{ updates the config file to run with a module or ps profile }}
+Adds functionality to add the execution to your profile or a PowerShell module
 
 ## SYNTAX
 
 ```
-Update-PSConfigFile -ConfigFile <FileInfo> [-AddToProfile <String>] [-PSModuleFile <String>]
- [-PathToPSM1File <FileInfo>] [-ExecuteNow] [<CommonParameters>]
+Update-PSConfigFile [-ConfigFile] <FileInfo> [[-AddToProfile] <String>] [[-AddToModule] <String>]
+ [[-PathToPSM1File] <FileInfo>] [-ExecuteNow] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ updates the config file to run with a module or ps profile  }}
+Adds functionality to add the execution to your profile or a PowerShell module
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Update-PSConfigFile -ConfigFile ... -AddToProfile AddScript -PSModuleFile Ignore -PathToPSM1File ...}}
+PS C:\> Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 ```
 
-{{add script to profile and remove from module }}
+Adds execution to the your profile and a PowerShell module
 
 ## PARAMETERS
 
-### -AddToProfile
-{{ add to profile }}
-
+### -AddToModule
 ```yaml
 Type: String
 Parameter Sets: (All)
@@ -41,14 +39,28 @@ Aliases:
 Accepted values: AddScript, RemoveScript, Ignore
 
 Required: False
-Position: Named
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AddToProfile
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: AddScript, RemoveScript, Ignore
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ConfigFile
-{{ path to json }}
+Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 ```yaml
 Type: FileInfo
@@ -56,14 +68,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ExecuteNow
-{{ Fill ExecuteNow Description }}
+Execute the config file 
 
 ```yaml
 Type: SwitchParameter
@@ -77,14 +89,28 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PSModuleFile
-{{ Fill PSModuleFile Description }}
+### -PathToPSM1File
+Path to ps module
 
 ```yaml
-Type: String
+Type: FileInfo
 Parameter Sets: (All)
 Aliases:
-Accepted values: AddScript, RemoveScript, Ignore
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -93,13 +119,13 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PathToPSM1File
-{{ Fill PathToPSM1File Description }}
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
 
 ```yaml
-Type: FileInfo
+Type: SwitchParameter
 Parameter Sets: (All)
-Aliases:
+Aliases: wi
 
 Required: False
 Position: Named

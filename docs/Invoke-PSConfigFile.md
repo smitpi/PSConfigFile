@@ -8,7 +8,7 @@ schema: 2.0.0
 # Invoke-PSConfigFile
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Executes the config from the json file
 
 ## SYNTAX
 
@@ -17,21 +17,21 @@ Invoke-PSConfigFile [-ConfigFile] <FileInfo> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Executes the config from the json file
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 ```
 
-{{ Add example description here }}
+Executes the commands from C:\Temp\jdh\PSCustomConfig.json
 
 ## PARAMETERS
 
 ### -ConfigFile
-{{ Fill ConfigFile Description }}
+Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 ```yaml
 Type: FileInfo

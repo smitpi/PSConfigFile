@@ -5,31 +5,28 @@ online version:
 schema: 2.0.0
 ---
 
-# Add-CommandToPSConfigFile
+# Add-PSDriveToPSConfigFile
 
 ## SYNOPSIS
-Adds a command or script block to the config file, to be executed every time the invoke function is called. 
+Add PSDrive to the config file
 
 ## SYNTAX
 
 ```
-Add-CommandToPSConfigFile [[-ConfigFile] <FileInfo>] [[-ScriptBlockName] <String>] [[-ScriptBlock] <String>]
- [<CommonParameters>]
+Add-PSDriveToPSConfigFile [[-ConfigFile] <FileInfo>] [[-DriveName] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-Adds a command or script block to the config file, to be executed every time the invoke function is called. 
+Add PSDrive to the config file
 
 ## EXAMPLES
 
 ### Example 1
-
 ```powershell
-PS C:\> Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+PS C:\> Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
 ```
 
-Adds Get-Childitem to the config file
+Add TempDrive to the config file
 
 ## PARAMETERS
 
@@ -48,23 +45,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ScriptBlock
-The commands to be executed
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ScriptBlockName
-Name for the scriptblock
+### -DriveName
+Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
 
 ```yaml
 Type: String

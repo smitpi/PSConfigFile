@@ -1,9 +1,9 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.0.1
 
-.GUID 9f023856-311a-4463-a042-f57955ced2de
+.GUID 0fcfdc24-96af-490f-a636-3a8a6bfb4ece
 
 .AUTHOR Pierre Smit
 
@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS powershell ps
+.TAGS ps
 
 .LICENSEURI
 
@@ -26,9 +26,7 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [04/10/2021_19:06] Initital Script Creating
-Updated [05/10/2021_08:30] Spit into more functions
-Updated [08/10/2021_20:51] Getting ready to upload
+Created [14/10/2021_13:56] Initital Script Creating
 Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
@@ -37,28 +35,23 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 
 
-
-
-
-
 <#
 
 .DESCRIPTION 
-Add a startup location to the config file
+Add PSDrive to the config file
 
 #>
 
 Param()
 
-
 #.ExternalHelp PSConfigFile-help.xml
-Function Add-LocationToPSConfigFile {
+Function Add-PSDriveToPSConfigFile {
 	[Cmdletbinding()]
 	PARAM(
 		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
 		[System.IO.FileInfo]$ConfigFile,
-		[ValidateScript( { ( Test-Path $_) })]
-		[System.IO.DirectoryInfo]$Path
+		[ValidateScript( { ( Get-PSDrive $_) })]
+		[string]$DriveName
 	)
 	try {
 		$confile = Get-Item $ConfigFile
@@ -67,18 +60,31 @@ Function Add-LocationToPSConfigFile {
 
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 	$Update = @()
-
-	$SetLocation = @{}
-	$SetLocation += @{
-		WorkerDir = $((Get-Item $path).FullName)
+	$SetPSDrive = @{}
+	$InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name,Root
+	if ($null -eq $InputDrive) {Write-Error "Unknown psdrive";break}
+	if ($Json.PSDrive.Default -eq 'Default') {
+		$SetPSDrive = @{
+			$InputDrive.Name = $InputDrive
+		}
+	} else {
+		$members = $Json.PSDrive | Get-Member -MemberType NoteProperty
+		foreach ($mem in $members) {
+			$SetPSDrive += @{
+				$mem.Name = $json.PSDrive.$($mem.Name)
+			}
+		}
+		$SetPSDrive += @{
+			$InputDrive.Name = $InputDrive
+		}
 	}
+
 	$Update = [psobject]@{
 		Userdata    = $Json.Userdata
-		PSDrive     = $Json.PSDrive
-		SetLocation = $SetLocation
+		PSDrive     = $SetPSDrive
+		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable
 		Execute     = $Json.Execute
 	}
 	$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
-
 } #end Function

@@ -8,30 +8,32 @@ schema: 2.0.0
 # Add-LocationToPSConfigFile
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Adds default location to the config file. 
 
 ## SYNTAX
 
 ```
-Add-LocationToPSConfigFile [[-ConfigFile] <FileInfo>] [[-Path] <Directory>] [<CommonParameters>]
+Add-LocationToPSConfigFile [[-ConfigFile] <FileInfo>] [[-Path] <DirectoryInfo>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+Adds default location to the config file. 
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
 ```
 
-{{ Add example description here }}
+The starting folder will be c:\temp after execution.
 
 ## PARAMETERS
 
 ### -ConfigFile
-{{ Fill ConfigFile Description }}
+Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 ```yaml
 Type: FileInfo
@@ -46,10 +48,10 @@ Accept wildcard characters: False
 ```
 
 ### -Path
-{{ Fill Path Description }}
+Path to be set to.
 
 ```yaml
-Type: Directory
+Type: DirectoryInfo
 Parameter Sets: (All)
 Aliases:
 

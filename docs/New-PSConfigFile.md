@@ -8,30 +8,30 @@ schema: 2.0.0
 # New-PSConfigFile
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Creates a new config file
 
 ## SYNTAX
 
 ```
-New-PSConfigFile [-ConfigDir] <DirectoryInfo> [<CommonParameters>]
+New-PSConfigFile [-ConfigDir] <DirectoryInfo> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Creates a new config file. If a config file already exists in that folder, it will be renamed.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> New-PSConfigFile -ConfigDir C:\Temp\jdh
 ```
 
-{{ Add example description here }}
+Creates a new blank config file
 
 ## PARAMETERS
 
 ### -ConfigDir
-{{ Fill ConfigDir Description }}
+Directory to create config file
 
 ```yaml
 Type: DirectoryInfo
@@ -40,6 +40,36 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Add-VariableToPSConfigFile
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Adds variable to the config file
 
 ## SYNTAX
 
@@ -17,21 +17,29 @@ Add-VariableToPSConfigFile [[-ConfigFile] <FileInfo>] [[-VariableNames] <String[
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Adds variable to the config file. The Variable needs to exist already
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Add-VariableToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -VariableNames blah
 ```
 
-{{ Add example description here }}
+Adds the variable $blah to the config file
+
+### Example 2
+
+```powershell
+PS C:\> Add-VariableToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -VariableNames b*
+```
+
+Adds all variables starting with b to the config file
 
 ## PARAMETERS
 
 ### -ConfigFile
-{{ Fill ConfigFile Description }}
+Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 ```yaml
 Type: FileInfo
@@ -46,7 +54,7 @@ Accept wildcard characters: False
 ```
 
 ### -VariableNames
-{{ Fill VariableNames Description }}
+The name of the variable. (Needs to exist already)
 
 ```yaml
 Type: String[]

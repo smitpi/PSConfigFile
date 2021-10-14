@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1.2
+.VERSION 1.1.3
 
 .GUID 98459c57-e214-4a9f-b523-efa2329a0340
 
@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS powershell
+.TAGS powershell ps
 
 .LICENSEURI
 
@@ -29,6 +29,7 @@
 Created [04/10/2021_19:05] Initital Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
+Updated [14/10/2021_19:31] Added PSDrive Script
 
 .PRIVATEDATA
 
@@ -38,31 +39,34 @@ Updated [08/10/2021_20:51] Getting ready to upload
 
 
 
-<# 
+
+
+<#
 
 .DESCRIPTION 
 Add a command to the config file
 
-#> 
+#>
 
 Param()
 
-
+#.ExternalHelp PSConfigFile-help.xml
 Function Add-CommandToPSConfigFile {
 	[Cmdletbinding()]
                 PARAM(
                 [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
 				[System.IO.FileInfo]$ConfigFile,
+                [ValidateNotNullOrEmpty()]
                 [string]$ScriptBlockName,
-				[string]$ScriptBlock,
-				[int]$ExecutionOrder
+                [ValidateNotNullOrEmpty()]	
+                [string]$ScriptBlock
 				)
 
 	try {
 		$confile = Get-Item $ConfigFile
 		Test-Path -Path $confile.FullName
 	} catch { throw 'Incorect file' }
-	## TODO Force the execution order
+
 	## TODO Allow user to modify the order
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 		$Update = @()
@@ -87,8 +91,9 @@ Function Add-CommandToPSConfigFile {
 		}
 		$Update = [psobject]@{
 			Userdata    = $Json.Userdata
+			PSDrive     = $Json.PSDrive
 			SetLocation = $Json.SetLocation
-			SetVariable = $Json.SetVariable 
+			SetVariable = $Json.SetVariable
 			Execute     = $Execute
 		}
 		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
