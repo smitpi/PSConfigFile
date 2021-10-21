@@ -60,7 +60,7 @@ Adds functionality to add the execution to your profile or a PowerShell module
 Adds functionality to add the execution to your profile or a PowerShell module
 
 .PARAMETER AddToModule
-Enable or disable loading of config when a spesific module is loaded.
+Enable or disable loading of config when a specific module is loaded.
 
 .PARAMETER AddToProfile
 Enable or disable loading of config when your ps profile is loaded.

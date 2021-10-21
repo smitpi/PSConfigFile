@@ -58,6 +58,7 @@ Creates a new config file
 
 .DESCRIPTION
 Creates a new config file. If a config file already exists in that folder, it will be renamed.
+It will also create a log file in the same directory. Log file will be used on every execution.
 
 .PARAMETER ConfigDir
 Directory to create config file
