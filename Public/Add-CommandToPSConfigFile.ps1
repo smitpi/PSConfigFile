@@ -52,7 +52,7 @@ Param()
 
 #.ExternalHelp PSConfigFile-help.xml
 Function Add-CommandToPSConfigFile {
-<#
+	<#
 .SYNOPSIS
 Adds a command or script block to the config file, to be executed every time the invoke function is called. 
 
@@ -76,50 +76,52 @@ PS C:\> Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -S
 
 #>
 	[Cmdletbinding()]
-                PARAM(
-                [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-				[System.IO.FileInfo]$ConfigFile,
-                [ValidateNotNullOrEmpty()]
-                [string]$ScriptBlockName,
-                [ValidateNotNullOrEmpty()]	
-                [string]$ScriptBlock
-				)
+	PARAM(
+		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
+		[System.IO.FileInfo]$ConfigFile,
+		[ValidateNotNullOrEmpty()]
+		[string]$ScriptBlockName,
+		[ValidateNotNullOrEmpty()]	
+		[string]$ScriptBlock
+	)
 
 	try {
 		$confile = Get-Item $ConfigFile
 		Test-Path -Path $confile.FullName
-	} catch { throw 'Incorect file' }
+	}
+ catch { throw 'Incorect file' }
 
 	## TODO Allow user to modify the order
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
-		$Update = @()
-		$Execute = @{}
-		if ($Json.Execute.Default -eq 'Default') {
+	$Update = @()
+	$Execute = @{}
+	if ($Json.Execute.Default -eq 'Default') {
+		$Execute += @{
+			"[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
+		}
+	}
+ else {
+		$Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
+		[int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
+		$NewScriptBlockName = '[' + $($NewTaskIndex.ToString()) + ']-' + $ScriptBlockName
+		$members = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name
+		foreach ($mem in $members) {
 			$Execute += @{
-				"[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
-			}
-		} else {
-			$Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
-			[int]$NewTaskIndex = [int]($Index | ForEach-Object {$_.name.split("-")[0].replace("[","").replace("]","")}) +1
-			$NewScriptBlockName = "[" + $($NewTaskIndex.ToString()) + "]-" + $ScriptBlockName
-			$members = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name
-			foreach ($mem in $members) {
-				$Execute += @{
-					$mem.Name = $json.Execute.$($mem.Name)
-				}
-			}
-			$Execute += @{
-				$NewScriptBlockName = $($ScriptBlock.ToString())
+				$mem.Name = $json.Execute.$($mem.Name)
 			}
 		}
-		$Update = [psobject]@{
-			Userdata    = $Json.Userdata
-			PSDrive     = $Json.PSDrive
-			SetLocation = $Json.SetLocation
-			SetVariable = $Json.SetVariable
-			Execute     = $Execute
+		$Execute += @{
+			$NewScriptBlockName = $($ScriptBlock.ToString())
 		}
-		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+	}
+	$Update = [psobject]@{
+		Userdata    = $Json.Userdata
+		PSDrive     = $Json.PSDrive
+		SetLocation = $Json.SetLocation
+		SetVariable = $Json.SetVariable
+		Execute     = $Execute
+	}
+	$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
 
 
 
