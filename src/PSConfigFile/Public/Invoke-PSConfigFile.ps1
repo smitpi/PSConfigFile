@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.3
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 #Requires -Module PSWriteColor
 
@@ -43,12 +43,11 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Read and execute the config file
 
 #>
 
-Param()
 
 #.ExternalHelp PSConfigFile-help.xml
 Function Invoke-PSConfigFile {
@@ -63,9 +62,9 @@ Executes the config from the json file.
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 .EXAMPLE
-PS C:\> Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
+Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 
-#>	
+#>
 	[Cmdletbinding()]
 	param (
 		[parameter(Mandatory)]
@@ -90,15 +89,15 @@ PS C:\> Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 
 		Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
 		if ([bool]$JSONParameter.SetLocation.WorkerDir -like $true) {
-			Write-Color 'Setting Folder Location: ',$($JSONParameter.SetLocation.WorkerDir) -ShowTime -Color DarkCyan,DarkYellow -LinesAfter 1 -LinesBefore 1 -LogFile $logfile
+			Write-Color 'Setting Folder Location: ', $($JSONParameter.SetLocation.WorkerDir) -ShowTime -Color DarkCyan, DarkYellow -LinesAfter 1 -LinesBefore 1 -LogFile $logfile
 			Set-Location $JSONParameter.SetLocation.WorkerDir -ErrorAction SilentlyContinue
 		}
 
 		Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
 		Write-Color 'Setting Default Variables:' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
 		$JSONParameter.SetVariable.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile; New-Variable -Name $_.name -Value $_.value -Force -Scope global }
-		Write-Color 'PSConfigFilePath', ':', ($confile.Directory).FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile;New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
-		Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile ;New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+		Write-Color 'PSConfigFilePath', ':', ($confile.Directory).FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile; New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
+		Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile ; New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
 
 		Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
 		Write-Color 'Creating PSDrives:' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
@@ -112,7 +111,7 @@ PS C:\> Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 
 		Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
 		Write-Color 'Executing Custom Commands: ' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
-		$JSONParameter.execute.PSObject.Properties | Select-Object name,value | Sort-Object -Property Name | ForEach-Object {
+		$JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
 			$tmp = $null
 			Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile
 			Write-Color 'ScriptBlock Output:' -Color Yellow -ShowTime -LinesBefore 1 -LinesAfter 1 -LogFile $logfile

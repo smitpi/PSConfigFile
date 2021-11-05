@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.3
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -43,12 +43,11 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 To store your settings
 
 #>
 
-Param()
 
 #.ExternalHelp PSConfigFile-help.xml
 Function New-PSConfigFile {
@@ -64,7 +63,7 @@ It will also create a log file in the same directory. Log file will be used on e
 Directory to create config file
 
 .EXAMPLE
-PS C:\> New-PSConfigFile -ConfigDir C:\Temp\jdh
+ New-PSConfigFile -ConfigDir C:\Temp\jdh
 
 #>
 	[Cmdletbinding(SupportsShouldProcess = $true)]
@@ -125,7 +124,8 @@ PS C:\> New-PSConfigFile -ConfigDir C:\Temp\jdh
 
 			$data = DafaultSettings
 			$data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
-		} else {
+		}
+		else {
 
 			Write-Warning 'File exists, renaming file now'
 			Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
@@ -136,5 +136,5 @@ PS C:\> New-PSConfigFile -ConfigDir C:\Temp\jdh
 
 		}
 	}
-Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json)
+	ConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json)
 }

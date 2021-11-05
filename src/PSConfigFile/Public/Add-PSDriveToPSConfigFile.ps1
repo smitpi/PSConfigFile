@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.0.1
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -31,18 +31,17 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add PSDrive to the config file
 
 #>
 
-Param()
 
 #.ExternalHelp PSConfigFile-help.xml
 Function Add-PSDriveToPSConfigFile {
@@ -60,9 +59,9 @@ Path to the the config file ($PSConfigfile is a default variable created with th
 Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
 
 .EXAMPLE
-PS C:\> Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
+Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
 
-#>	
+#>
 	[Cmdletbinding()]
 	PARAM(
 		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
@@ -105,3 +104,4 @@ PS C:\> Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -D
 	}
 	$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
 } #end Function
+

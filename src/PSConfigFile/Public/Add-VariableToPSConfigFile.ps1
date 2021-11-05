@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.3
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -43,12 +43,11 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add a varible to the config file
 
 #>
 
-Param()
 #.ExternalHelp PSConfigFile-help.xml
 Function Add-VariableToPSConfigFile {
 <#
@@ -65,9 +64,9 @@ Path to the the config file ($PSConfigfile is a default variable created with th
 The name of the variable. (Needs to exist already)
 
 .EXAMPLE
-PS C:\> Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
+Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken
 
-#>	
+#>
 	[Cmdletbinding()]
 	PARAM(
 		[ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
@@ -78,7 +77,8 @@ PS C:\> Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -
 	try {
 		$confile = Get-Item $ConfigFile
 		Test-Path -Path $confile.FullName
-	} catch { throw 'Incorect file' }
+	}
+ catch { throw 'Incorect file' }
 
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 
@@ -86,14 +86,15 @@ PS C:\> Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -
 		$Update = @()
 		$SetVariable = @{}
 		$InputVar = Get-Variable -Name $VariableName
-        $inputtype = $InputVar.Value.GetType()
-        if ($inputtype.Name -like "PSCredential" -or $inputtype.Name -like "SecureString") {Write-Error "PSCredential or SecureString not allowed"; break}
+		$inputtype = $InputVar.Value.GetType()
+		if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
 		if ($Json.SetVariable.Default -eq 'Default') {
 			$SetVariable = @{
 				$InputVar.Name = $InputVar.Value
 			}
-		} else {
+		}
+		else {
 			$members = $Json.SetVariable | Get-Member -MemberType NoteProperty
 			foreach ($mem in $members) {
 				$SetVariable += @{
