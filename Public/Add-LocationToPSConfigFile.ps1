@@ -50,9 +50,7 @@ Add a startup location to the config file
 
 
 
-#.ExternalHelp PSConfigFile-help.xml
-Function Add-LocationToPSConfigFile {
-    <#
+<#
 .SYNOPSIS
 Adds default location to the config file.
 
@@ -69,6 +67,7 @@ Path to be set.
 Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
 
 #>
+Function Add-LocationToPSConfigFile {
     [Cmdletbinding()]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]

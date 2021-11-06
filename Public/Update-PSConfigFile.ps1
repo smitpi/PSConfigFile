@@ -49,9 +49,7 @@ updates the json file
 #>
 
 
-#.ExternalHelp PSConfigFile-help.xml
-Function Update-PSConfigFile {
-    <#
+<#
 .SYNOPSIS
 Adds functionality to add the execution to your profile or a PowerShell module
 
@@ -77,6 +75,8 @@ Execute the config file, to make sure everything runs as expected.
 Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 
 #>
+Function Update-PSConfigFile {
+
     [Cmdletbinding(SupportsShouldProcess = $true)]
     param (
         [parameter(Mandatory)]

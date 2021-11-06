@@ -49,9 +49,7 @@ Add a command to the config file
 #>
 
 
-#.ExternalHelp PSConfigFile-help.xml
-Function Add-CommandToPSConfigFile {
-    <#
+<#
 .SYNOPSIS
 Adds a command or script block to the config file, to be executed every time the invoke function is called.
 
@@ -68,9 +66,10 @@ Name for the scriptblock
 The commands to be executed
 
 .EXAMPLE
- Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
 
 #>
+Function Add-CommandToPSConfigFile {
     [Cmdletbinding()]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
