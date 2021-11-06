@@ -8,7 +8,21 @@ Creates a Config file with Commands,Variables,PSDrives and locations, that can b
 Creates a Config file with Commands,Variables,PSDrives and locations, that can be imported into a session, and the objects are recreated \ executed
 
 # EXAMPLES
-Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\" Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json New-PSConfigFile -ConfigDir C:\Temp\jdh Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+-------------------------- Add-CommandToPSConfigFile --------------------------
+Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+-------------------------- Add-LocationToPSConfigFile --------------------------
+Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
+-------------------------- Add-PSDriveToPSConfigFile --------------------------
+Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
+-------------------------- Add-VariableToPSConfigFile --------------------------
+Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken
+-------------------------- Invoke-PSConfigFile --------------------------
+Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
+-------------------------- New-PSConfigFile --------------------------
+New-PSConfigFile -ConfigDir C:\Temp\jdh
+-------------------------- Update-PSConfigFile --------------------------
+Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+
 
 # SEE ALSO
 https://github.com/smitpi/PSConfigFile
