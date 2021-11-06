@@ -1,7 +1,4 @@
 site_name: PSConfigFile
 repo_url: https://github.com/smitpi/PSConfigFile
 site_author: Pierre Smit
-edit_uri: edit/master/docs/
 theme: readthedocs
-nav:
-    - Home: about_PSConfigFile.md
