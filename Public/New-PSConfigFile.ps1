@@ -1,7 +1,7 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.1.4
 
 .GUID ec11b3b9-d13e-43c9-8a6d-d42a65016554
 
@@ -19,21 +19,24 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [25/09/2021_02:52] Initital Script Creating
+Created [25/09/2021_02:52] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 
 
@@ -43,7 +46,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION
+.DESCRIPTION 
 To store your settings
 
 #>
@@ -78,6 +81,7 @@ Function New-PSConfigFile {
         $SetLocation = @()
         $SetVariable = @()
         $Execute = @()
+        $PSAlias = @()
 
         $OSDetails = Get-ComputerInfo
         $Userdata = New-Object PSObject -Property @{
@@ -103,10 +107,14 @@ Function New-PSConfigFile {
         $PSDrive = New-Object PSObject -Property @{
             Default = 'Default'
         }
+        $PSAlias = New-Object PSObject -Property @{
+            Default = 'Default'
+        }
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
+            PSAlias     = $PSAlias
             SetLocation = $SetLocation
             SetVariable = $SetVariable
             Execute     = $Execute
@@ -135,5 +143,4 @@ Function New-PSConfigFile {
 
         }
     }
-    ConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json)
 }

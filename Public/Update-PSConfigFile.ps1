@@ -1,7 +1,7 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.1.4
 
 .GUID 41acb0b5-43ed-42b4-8f58-55509cf88189
 
@@ -19,21 +19,24 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [25/09/2021_13:12] Initital Script Creating
+Created [25/09/2021_13:12] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:52] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 
 
@@ -43,7 +46,7 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION
+.DESCRIPTION 
 updates the json file
 
 #>

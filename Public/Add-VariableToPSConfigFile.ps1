@@ -1,7 +1,7 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.1.4
 
 .GUID da6df4de-5b05-4796-bf82-345686b30e78
 
@@ -19,21 +19,24 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [04/10/2021_19:05] Initital Script Creating
+Created [04/10/2021_19:05] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 
 
@@ -43,8 +46,8 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 <#
 
-.DESCRIPTION
-Add a varible to the config file
+.DESCRIPTION 
+Add a variable to the config file
 
 #>
 
@@ -108,6 +111,7 @@ Function Add-VariableToPSConfigFile {
         $Update = [psobject]@{
             Userdata    = $Json.Userdata
             PSDrive     = $Json.PSDrive
+            PSAlias     = $Json.PSAlias
             SetLocation = $Json.SetLocation
             SetVariable = $SetVariable
             Execute     = $Json.Execute

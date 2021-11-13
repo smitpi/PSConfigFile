@@ -1,7 +1,7 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.1.4
 
 .GUID b282e3bd-08f5-41ba-9c63-8306ce5c45a6
 
@@ -19,21 +19,22 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [25/09/2021_08:15] Initital Script Creating
+Created [25/09/2021_08:15] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#>
+#> 
 
 #Requires -Module PSWriteColor
 
@@ -41,9 +42,10 @@ Updated [14/10/2021_19:32] Added PSDrive Script
 
 
 
+
 <#
 
-.DESCRIPTION
+.DESCRIPTION 
 Read and execute the config file
 
 #>
@@ -83,22 +85,26 @@ Function Invoke-PSConfigFile {
         if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
         Write-Color 'Using PSCustomConfig file: ', $($confile.fullname) -ShowTime -Color DarkCyan, DarkYellow -LogFile $logfile
 
+        # User Data
         Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
         Write-Color 'Details of Config File:' -ShowTime -Color DarkCyan -LinesAfter 1 -LinesBefore 1 -LogFile $logfile
         $JSONParameter.Userdata.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile -StartTab 2 }
 
+        # Set Location
         Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
         if ([bool]$JSONParameter.SetLocation.WorkerDir -like $true) {
             Write-Color 'Setting Folder Location: ', $($JSONParameter.SetLocation.WorkerDir) -ShowTime -Color DarkCyan, DarkYellow -LinesAfter 1 -LinesBefore 1 -LogFile $logfile
             Set-Location $JSONParameter.SetLocation.WorkerDir -ErrorAction SilentlyContinue
         }
 
+        #Set Variables
         Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
         Write-Color 'Setting Default Variables:' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
         $JSONParameter.SetVariable.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile; New-Variable -Name $_.name -Value $_.value -Force -Scope global }
         Write-Color 'PSConfigFilePath', ':', ($confile.Directory).FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile; New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
         Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile ; New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
 
+        # Set PsDrives
         Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
         Write-Color 'Creating PSDrives:' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
         $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value.root -Color Yellow, DarkCyan, Green -ShowTime -NoNewLine -LogFile $logfile
@@ -109,6 +115,18 @@ Function Invoke-PSConfigFile {
             else { Write-Color ' - Already exists' -Color Yellow -LogFile $logfile }
         }
 
+        # Set Alias
+        Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
+        Write-Color 'Creating Custom Aliases: ' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
+        $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+            $tmp = $null
+            Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile
+            $command = "function global:$($_.name) {$($_.value)}"
+            $tmp = [scriptblock]::Create($command)
+            $tmp.invoke() | Tee-Object -FilePath $logfile -Append
+        }
+
+        # Execute Commands
         Write-Output '#######################################################' | Out-File -FilePath $logfile -Append
         Write-Color 'Executing Custom Commands: ' -ShowTime -Color DarkCyan -LinesBefore 1 -LinesAfter 1 -LogFile $logfile
         $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {

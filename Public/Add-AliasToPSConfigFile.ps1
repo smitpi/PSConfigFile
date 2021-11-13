@@ -1,9 +1,9 @@
 
 <#PSScriptInfo
 
-.VERSION 1.0.2
+.VERSION 0.1.1
 
-.GUID 0fcfdc24-96af-490f-a636-3a8a6bfb4ece
+.GUID c3886845-ff95-4e7c-9284-5b297fcb102a
 
 .AUTHOR Pierre Smit
 
@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS ps
+.TAGS powershell ps
 
 .LICENSEURI
 
@@ -26,8 +26,7 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [14/10/2021_13:56] Initial Script Creating
-Updated [14/10/2021_19:32] Added PSDrive Script
+Created [13/11/2021_15:18] Initial Script Creating
 Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
@@ -36,41 +35,45 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 
 
-
-
-<#
+<# 
 
 .DESCRIPTION 
-Add PSDrive to the config file
+Add alias to the config file.
 
-#>
+#> 
 
 
 <#
 .SYNOPSIS
-Add PSDrive to the config file.
+Creates Shortcuts (Aliases) to commands or script blocks
 
 .DESCRIPTION
-Add PSDrive to the config file.
+Creates Shortcuts (Aliases) to commands or script blocks
 
 .PARAMETER ConfigFile
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
-.PARAMETER DriveName
-Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
+.PARAMETER AliasName
+Name to use for the command
+
+.PARAMETER CommandToRun
+Command to run in a string format
 
 .EXAMPLE
-Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
+Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
 
 #>
-Function Add-PSDriveToPSConfigFile {
+Function Add-AliasToPSConfigFile {
     [Cmdletbinding()]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
-        [ValidateScript( { ( Get-PSDrive $_) })]
-        [string]$DriveName
+        [ValidateNotNullOrEmpty()]
+        [string]$AliasName,
+        [ValidateNotNullOrEmpty()]
+        [string]$CommandToRun
     )
+
     try {
         $confile = Get-Item $ConfigFile
         Test-Path -Path $confile.FullName
@@ -78,35 +81,35 @@ Function Add-PSDriveToPSConfigFile {
     catch { throw 'Incorect file' }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+
     $Update = @()
-    $SetPSDrive = @{}
-    $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name,Root
-    if ($null -eq $InputDrive) {Write-Error "Unknown psdrive";break}
-    if ($Json.PSDrive.Default -eq 'Default') {
-        $SetPSDrive = @{
-            $InputDrive.Name = $InputDrive
+    $SetAlias = @{}
+
+    if ($Json.PSAlias.Default -eq 'Default') {
+        $SetAlias = @{
+            $AliasName = $CommandToRun
         }
     }
     else {
-        $members = $Json.PSDrive | Get-Member -MemberType NoteProperty
+        $members = $Json.SetAlias | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
-            $SetPSDrive += @{
-                $mem.Name = $json.PSDrive.$($mem.Name)
+            $SetAlias += @{
+                $mem.Name = $json.SetAlias.$($mem.Name)
             }
         }
-        $SetPSDrive += @{
-            $InputDrive.Name = $InputDrive
+        $SetAlias += @{
+            $AliasName = $CommandToRun
         }
     }
 
     $Update = [psobject]@{
         Userdata    = $Json.Userdata
-        PSDrive     = $SetPSDrive
-        PSAlias     = $Json.PSAlias
+        PSDrive     = $Json.PSDrive
+        PSAlias     = $SetAlias
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
     }
     $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    
 } #end Function
-

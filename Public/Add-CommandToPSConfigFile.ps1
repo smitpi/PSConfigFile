@@ -1,7 +1,7 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.3
+.VERSION 1.1.4
 
 .GUID 98459c57-e214-4a9f-b523-efa2329a0340
 
@@ -19,21 +19,24 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [04/10/2021_19:05] Initital Script Creating
+Created [04/10/2021_19:05] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:31] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 
 
@@ -43,7 +46,7 @@ Updated [14/10/2021_19:31] Added PSDrive Script
 
 <#
 
-.DESCRIPTION
+.DESCRIPTION 
 Add a command to the config file
 
 #>
@@ -60,7 +63,7 @@ Adds a command or script block to the config file, to be executed every time the
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 .PARAMETER ScriptBlockName
-Name for the scriptblock
+Name for the script block
 
 .PARAMETER ScriptBlock
 The commands to be executed
@@ -112,6 +115,7 @@ Function Add-CommandToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
+        PSAlias     = $Json.PSAlias
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Execute
