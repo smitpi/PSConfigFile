@@ -15,6 +15,7 @@ Add-PSDriveToPSConfigFile -- Add PSDrive to the config file.
 Add-VariableToPSConfigFile -- Adds variable to the config file.
 Invoke-PSConfigFile -- Executes the config from the json file.
 New-PSConfigFile -- Creates a new config file
+Show-PSConfigFile -- Display what's configured in the config file.
 Update-PSConfigFile -- Adds functionality to add the execution to your profile or a PowerShell module
 
 

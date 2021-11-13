@@ -2,7 +2,7 @@
 Module Name: PSConfigFile
 Module Guid: d1fff6c2-e0c4-49ba-8632-e0137d78151c
 Download Help Link:
-help Version: 0.1.18
+help Version: 0.1.19
 Locale: en-US
 ---
 
@@ -11,6 +11,9 @@ Locale: en-US
 Creates a Config file with Commands,Variables,PSDrives and locations, that can be imported into a session, and the objects are recreated \ executed
 
 ## PSConfigFile Cmdlets
+### [Add-AliasToPSConfigFile](Add-AliasToPSConfigFile.md)
+Creates Shortcuts (Aliases) to commands or script blocks
+
 ### [Add-CommandToPSConfigFile](Add-CommandToPSConfigFile.md)
 Adds a command or script block to the config file, to be executed every time the invoke function is called.
 

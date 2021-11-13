@@ -95,7 +95,7 @@ Function New-PSConfigFile {
             OsStatus                       = $OSDetails.OsStatus
             DomainName                     = $env:USERDNSDOMAIN
             Userid                         = $env:USERNAME
-            CreatedOn                      = [DateTimeOffset]::Now
+            CreatedOn                      = (Get-Date -Format yyyy/MM/dd_HH:MM)
         }
         $SetLocation = New-Object PSObject -Property @{}
         $SetVariable = New-Object PSObject -Property @{
