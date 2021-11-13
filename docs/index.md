@@ -6,7 +6,9 @@ Creates a Config file with Commands,Variables,PSDrives and locations, that can b
 # LONG DESCRIPTION
 Creates a Config file with Commands,Variables,PSDrives and locations, that can be imported into a session, and the objects are recreated \ executed
 
-# EXAMPLES
+# NOTES
+## Add-AliasToPSConfigFile
+Creates Shortcuts (Aliases) to commands or script blocks
 ## Add-CommandToPSConfigFile
 Adds a command or script block to the config file, to be executed every time the invoke function is called.
 ## Add-LocationToPSConfigFile

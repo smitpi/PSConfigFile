@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.1
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -31,16 +31,16 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
-<# 
+<#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add alias to the config file.
 
-#> 
+#>
 
 
 <#
@@ -111,5 +111,5 @@ Function Add-AliasToPSConfigFile {
         Execute     = $Json.Execute
     }
     $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
-    
+
 } #end Function

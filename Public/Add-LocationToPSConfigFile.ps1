@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.4
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -34,7 +34,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -46,7 +46,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add a startup location to the config file
 
 #>
@@ -86,7 +86,6 @@ Function Add-LocationToPSConfigFile {
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $Update = @()
-
     $SetLocation = @{}
     $SetLocation += @{
         WorkerDir = $((Get-Item $path).FullName)
@@ -99,6 +98,6 @@ Function Add-LocationToPSConfigFile {
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
     }
-    nvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
 
 } #end Function

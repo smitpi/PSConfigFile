@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.0.2
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -32,7 +32,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 
 
@@ -40,7 +40,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add PSDrive to the config file
 
 #>

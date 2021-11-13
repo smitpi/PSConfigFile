@@ -1,8 +1,8 @@
 ---
 Module Name: PSConfigFile
 Module Guid: d1fff6c2-e0c4-49ba-8632-e0137d78151c
-Download Help Link: 
-Help Version: 0.1.16
+Download Help Link:
+help Version: 0.1.18
 Locale: en-US
 ---
 

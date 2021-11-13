@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.4
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -34,7 +34,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 .PRIVATEDATA
 
-#> 
+#>
 
 #Requires -Module PSWriteColor
 
@@ -45,7 +45,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Read and execute the config file
 
 #>
