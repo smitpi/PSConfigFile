@@ -91,10 +91,10 @@ Function Add-AliasToPSConfigFile {
         }
     }
     else {
-        $members = $Json.SetAlias | Get-Member -MemberType NoteProperty
+        $members = $Json.PSAlias | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
             $SetAlias += @{
-                $mem.Name = $json.SetAlias.$($mem.Name)
+                $mem.Name = $json.PSAlias.$($mem.Name)
             }
         }
         $SetAlias += @{

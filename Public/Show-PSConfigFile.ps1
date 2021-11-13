@@ -84,7 +84,7 @@ Function Show-PSConfigFile {
 
 		#Set Variables
 		Write-Color 'Setting Default Variables:' -ShowTime -Color DarkCyan -LinesBefore 1 
-		$JSONParameter.SetVariable.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value -Color ime }
+		$JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime }
 		Write-Color 'PSConfigFilePath', ':', ($confile.Directory).FullName -Color Yellow, DarkCyan, Green -ShowTime
 		Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime
 
@@ -93,7 +93,7 @@ Function Show-PSConfigFile {
 		$JSONParameter.PSDrive.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value.root -Color Yellow, DarkCyan, Green -ShowTime }
 
 		# Set Alias
-		Write-Color 'Creating Custom Aliases: ' -ShowTimerkCyan -LinesBefore 1 
+		Write-Color 'Creating Custom Aliases: ' -ShowTime -Color DarkCyan -LinesBefore 1
 		$JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime }
 
 		# Execute Commands
