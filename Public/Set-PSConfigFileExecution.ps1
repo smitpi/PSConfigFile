@@ -1,55 +1,45 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 1.1.4
+.VERSION 0.1.1
 
-.GUID 41acb0b5-43ed-42b4-8f58-55509cf88189
+.GUID e01db8ba-089a-4bbf-a255-4db496569215
 
 .AUTHOR Pierre Smit
 
 .COMPANYNAME iOCO Tech
 
-.COPYRIGHT
+.COPYRIGHT 
 
 .TAGS ps
 
-.LICENSEURI
+.LICENSEURI 
 
-.PROJECTURI
+.PROJECTURI 
 
-.ICONURI
+.ICONURI 
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
-.REQUIREDSCRIPTS
+.REQUIREDSCRIPTS 
 
-.EXTERNALSCRIPTDEPENDENCIES
+.EXTERNALSCRIPTDEPENDENCIES 
 
 .RELEASENOTES
-Created [25/09/2021_13:12] Initial Script Creating
-Updated [05/10/2021_08:30] Spit into more functions
-Updated [08/10/2021_20:52] Getting ready to upload
-Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Alias Script
+Created [18/11/2021_08:26] Initial Script Creating
+Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
-.PRIVATEDATA
-
-#>
+#> 
 
 
 
 
+<# 
 
+.DESCRIPTION 
+Adds functionality to add the execution to your profile or a PowerShell module
 
-
-
-
-<#
-
-.DESCRIPTION
-updates the json file
-
-#>
+#> 
 
 
 <#
@@ -62,10 +52,10 @@ Adds functionality to add the execution to your profile or a PowerShell module
 .PARAMETER ConfigFile
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
-.PARAMETER AddToProfile
+.PARAMETER PSProfile
 Enable or disable loading of config when your ps profile is loaded.
 
-.PARAMETER AddToModule
+.PARAMETER PSModule
 Enable or disable loading of config when a specific module is loaded.
 
 .PARAMETER PathToPSM1File
@@ -75,20 +65,22 @@ Path to the .psm1 file
 Execute the config file, to make sure everything runs as expected.
 
 .EXAMPLE
-Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+Set-PSConfigFileExecution -ConfigFile C:\Temp\jdh\PSCustomConfig.json -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 
 #>
-Function Update-PSConfigFile {
-
-    [Cmdletbinding(SupportsShouldProcess = $true)]
+Function Set-PSConfigFileExecution {
+    [Cmdletbinding(SupportsShouldProcess = $true,DefaultParameterSetName='Profile')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
-        [validateSet('AddScript', 'RemoveScript', 'Ignore')]
-        [string]$AddToProfile = $false,
-        [validateSet('AddScript', 'RemoveScript', 'Ignore')]
-        [string]$AddToModule = 'Ignore',
+        [Parameter(ParameterSetName = 'Profile')]
+        [validateSet('AddScript', 'RemoveScript')]
+        [string]$PSProfile = 'Ignore',
+        [Parameter(ParameterSetName = 'Module')]
+        [validateSet('AddScript', 'RemoveScript')]
+        [string]$PSModule = 'Ignore',
+        [Parameter(ParameterSetName = 'Module')]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.psm1') })]
         [System.IO.FileInfo]$PathToPSM1File,
         [switch]$ExecuteNow = $false
@@ -100,21 +92,29 @@ Function Update-PSConfigFile {
     }
     catch { throw 'Incorect file' }
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
-        $resolve = Join-Path (Get-Module PSConfigFile).ModuleBase '\PSConfigFile.psm1' -Resolve
-        $string = @("import-module $resolve -force ") #PSConfigFile")
-        $string += @("Invoke-PSConfigFile -ConfigFile $($confile.FullName)")
 
-        if ($AddToModule -like 'AddScript') {
+        $module = Get-Module PSConfigFile
+        if (![bool]$module) { $module = Get-Module PSConfigFile -ListAvailable }
 
-            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*PSConfigFile*' }
+        $string = @"
+
+#PSConfigFile
+`$PSConfigFileModule = get-item `"$((Join-Path $module.ModuleBase \PSConfigFile.psm1 -Resolve))`" #PSConfigFile
+Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
+Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
+"@
+
+        if ($PSModule -like 'AddScript') {
+
+            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*#PSConfigFile*' }
             Set-Content -Value ($ori + $string) -Path $PathToPSM1File -Verbose
 
         }
-        if ($AddToModule -like 'RemoveScript') {
-            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*PSConfigFile*' }
+        if ($PSModule -like 'RemoveScript') {
+            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*#PSConfigFile*' }
             Set-Content -Value ($ori) -Path $PathToPSM1File -Verbose
         }
-        if ($AddToProfile -like 'AddScript') {
+        if ($PSProfile -like 'AddScript') {
 
             if ((Test-Path (Get-Item $profile).DirectoryName) -eq $false ) {
                 Write-Warning 'Profile does not exist, creating file.'
@@ -127,20 +127,20 @@ Function Update-PSConfigFile {
             $vs = Join-Path $psfolder \Microsoft.VSCode_profile.ps1
 
             if (Test-Path $ps) {
-                $ori = Get-Content $ps | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori + $string) -Path $ps -Verbose
             }
             if (Test-Path $ise) {
-                $ori = Get-Content $ise | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori + $string) -Path $ise -Verbose
             }
             if (Test-Path $vs) {
-                $ori = Get-Content $vs | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori + $string) -Path $vs -Verbose
             }
 
         }
-        if ($AddToProfile -like 'RemoveScript') {
+        if ($PSProfile -like 'RemoveScript') {
             if ((Test-Path (Get-Item $profile).DirectoryName) -eq $false ) {
                 Write-Warning 'Profile does not exist, creating file.'
                 New-Item -ItemType File -Path $Profile -Force
@@ -152,15 +152,15 @@ Function Update-PSConfigFile {
             $vs = Join-Path $psfolder \Microsoft.VSCode_profile.ps1
 
             if (Test-Path $ps) {
-                $ori = Get-Content $ps | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori) -Path $ps -Verbose
             }
             if (Test-Path $ise) {
-                $ori = Get-Content $ise | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori) -Path $ise -Verbose
             }
             if (Test-Path $vs) {
-                $ori = Get-Content $vs | Where-Object { $_ -notlike '*PSConfigFile*' }
+                $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
                 Set-Content -Value ($ori) -Path $vs -Verbose
             }
 
@@ -175,3 +175,4 @@ Function Update-PSConfigFile {
 
 
 } #end Function
+
