@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.2
@@ -9,28 +9,28 @@
 
 .COMPANYNAME iOCO Tech
 
-.COPYRIGHT 
+.COPYRIGHT
 
 .TAGS PowerShell ps
 
-.LICENSEURI 
+.LICENSEURI
 
-.PROJECTURI 
+.PROJECTURI
 
-.ICONURI 
+.ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
-.REQUIREDSCRIPTS 
+.REQUIREDSCRIPTS
 
-.EXTERNALSCRIPTDEPENDENCIES 
+.EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
 Created [13/11/2021_15:18] Initial Script Creating
 Updated [13/11/2021_16:30] Added Alias Script
 Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
-#> 
+#>
 
 
 
@@ -38,7 +38,7 @@ Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecutio
 
 <#
 
-.DESCRIPTION 
+.DESCRIPTION
 Add alias to the config file.
 
 #>

@@ -85,7 +85,7 @@ Function Invoke-PSConfigFile {
         Write-Color 'Using PSCustomConfig file: ', $($confile.fullname) -ShowTime -Color DarkCyan, DarkYellow -LogFile $logfile
 
         # User Data
-        Write-Color 'Details of Config File:' -ShowTime -Color DarkCyan -LinesBefore 1 
+        Write-Color 'Details of Config File:' -ShowTime -Color DarkCyan -LinesBefore 1
         $JSONParameter.Userdata.PSObject.Properties | ForEach-Object { Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -StartTab 4 }
 
         # Set Location
@@ -96,13 +96,13 @@ Function Invoke-PSConfigFile {
 
         #Set Variables
         Write-Color 'Setting Default Variables:' -ShowTime -Color DarkCyan -LinesBefore 1 -LogFile $logfile
-        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object { 
-            Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile 
-            New-Variable -Name $_.name -Value $_.value -Force -Scope global 
+        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
+            Write-Color $_.name, ':', $_.value -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile
+            New-Variable -Name $_.name -Value $_.value -Force -Scope global
         }
         Write-Color 'PSConfigFilePath', ':', ($confile.Directory).FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile
         New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
-        Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile 
+        Write-Color 'PSConfigFile', ':', $confile.FullName -Color Yellow, DarkCyan, Green -ShowTime -LogFile $logfile
         New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
 
         # Set PsDrives

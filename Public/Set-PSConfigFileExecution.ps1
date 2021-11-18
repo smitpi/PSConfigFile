@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.1
@@ -9,37 +9,37 @@
 
 .COMPANYNAME iOCO Tech
 
-.COPYRIGHT 
+.COPYRIGHT
 
 .TAGS ps
 
-.LICENSEURI 
+.LICENSEURI
 
-.PROJECTURI 
+.PROJECTURI
 
-.ICONURI 
+.ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
-.REQUIREDSCRIPTS 
+.REQUIREDSCRIPTS
 
-.EXTERNALSCRIPTDEPENDENCIES 
+.EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
 Created [18/11/2021_08:26] Initial Script Creating
 Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
-#> 
+#>
 
 
 
 
-<# 
+<#
 
-.DESCRIPTION 
+.DESCRIPTION
 Adds functionality to add the execution to your profile or a PowerShell module
 
-#> 
+#>
 
 
 <#

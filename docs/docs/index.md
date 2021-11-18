@@ -1,0 +1,28 @@
+# PSConfigFile
+
+## Description
+Creates a Config file with `Commands`, `Variables`, `PSDrives`, `Aliases\Shortcuts` and `Default Start locations`. 
+You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually. 
+This way you can quickly and easily switch between `environment setups` with these default values
+
+## Function Synopsis
+### Add-AliasToPSConfigFile
+Creates Shortcuts (Aliases) to commands or script blocks
+### Add-CommandToPSConfigFile
+Adds a command or script block to the config file, to be executed every time the invoke function is called.
+### Add-LocationToPSConfigFile
+Adds default location to the config file.
+### Add-PSDriveToPSConfigFile
+Add PSDrive to the config file.
+### Add-VariableToPSConfigFile
+Adds variable to the config file.
+### Invoke-PSConfigFile
+Executes the config from the json file.
+### New-PSConfigFile
+Creates a new config file
+### Set-PSConfigFileExecution
+Adds functionality to add the execution to your profile or a PowerShell module
+### Show-PSConfigFile
+Display what's configured in the config file.
+
+
