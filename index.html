@@ -67,9 +67,9 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#new-psconfigfile">New-PSConfigFile</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#show-psconfigfile">Show-PSConfigFile</a>
+    <li class="toctree-l3"><a class="reference internal" href="#set-psconfigfileexecution">Set-PSConfigFileExecution</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#update-psconfigfile">Update-PSConfigFile</a>
+    <li class="toctree-l3"><a class="reference internal" href="#show-psconfigfile">Show-PSConfigFile</a>
     </li>
         </ul>
     </li>
@@ -109,15 +109,11 @@
                     </li>
                 </ul>
                 <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="Set-PSConfigFileExecution/">Set-PSConfigFileExecution</a>
+                    </li>
+                </ul>
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="Show-PSConfigFile/">Show-PSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Update-PSConfigFile/">Update-PSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="about_PSConfigFile/">PSConfigFile</a>
                     </li>
                 </ul>
       </div>
@@ -158,7 +154,9 @@
               
                 <h1 id="psconfigfile">PSConfigFile</h1>
 <h2 id="description">Description</h2>
-<p>Creates a Config file with Commands,Variables,PSDrives and locations, that can be imported into a session, and the objects are recreated \ executed</p>
+<p>Creates a Config file with <code>Commands</code>, <code>Variables</code>, <code>PSDrives</code>, <code>Aliases\Shortcuts</code> and <code>Default Start locations</code>. 
+You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually. 
+This way you can quickly and easily switch between <code>environment setups</code> with these default values</p>
 <h2 id="function-synopsis">Function Synopsis</h2>
 <h3 id="add-aliastopsconfigfile">Add-AliasToPSConfigFile</h3>
 <p>Creates Shortcuts (Aliases) to commands or script blocks</p>
@@ -174,10 +172,10 @@
 <p>Executes the config from the json file.</p>
 <h3 id="new-psconfigfile">New-PSConfigFile</h3>
 <p>Creates a new config file</p>
+<h3 id="set-psconfigfileexecution">Set-PSConfigFileExecution</h3>
+<p>Adds functionality to add the execution to your profile or a PowerShell module</p>
 <h3 id="show-psconfigfile">Show-PSConfigFile</h3>
 <p>Display what's configured in the config file.</p>
-<h3 id="update-psconfigfile">Update-PSConfigFile</h3>
-<p>Adds functionality to add the execution to your profile or a PowerShell module</p>
               
             </div>
           </div>
@@ -236,5 +234,5 @@
 
 <!--
 MkDocs version : 1.2.3
-Build Date UTC : 2021-11-16 22:09:59.820839+00:00
+Build Date UTC : 2021-11-18 07:03:55.093028+00:00
 -->

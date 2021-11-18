@@ -9,7 +9,7 @@
   <meta name="author" content="Pierre Smit">
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Update-PSConfigFile - PSConfigFile</title>
+  <title>Set-PSConfigFileExecution - PSConfigFile</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Update-PSConfigFile";
-    var mkdocs_page_input_path = "Update-PSConfigFile.md";
+    var mkdocs_page_name = "Set-PSConfigFileExecution";
+    var mkdocs_page_input_path = "Set-PSConfigFileExecution.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -82,16 +82,18 @@
                     <li class="toctree-l1"><a class="reference internal" href="../PSConfigFile/">PSConfigFile Module</a>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../Show-PSConfigFile/">Show-PSConfigFile</a>
-                    </li>
-                </ul>
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Update-PSConfigFile</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Set-PSConfigFileExecution</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#synopsis">SYNOPSIS</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#syntax">SYNTAX</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#profile-default">Profile (Default)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#module">Module</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#description">DESCRIPTION</a>
     </li>
@@ -103,15 +105,15 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#parameters">PARAMETERS</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#-addtomodule">-AddToModule</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#-addtoprofile">-AddToProfile</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#-configfile">-ConfigFile</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#-executenow">-ExecuteNow</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#-pathtopsm1file">-PathToPSM1File</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#-psmodule">-PSModule</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#-psprofile">-PSProfile</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#-confirm">-Confirm</a>
     </li>
@@ -133,7 +135,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../about_PSConfigFile/">PSConfigFile</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../Show-PSConfigFile/">Show-PSConfigFile</a>
                     </li>
                 </ul>
       </div>
@@ -157,10 +159,10 @@
     
       
     
-    <li>Update-PSConfigFile</li>
+    <li>Set-PSConfigFileExecution</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/Update-PSConfigFile.md"
+        <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/Set-PSConfigFileExecution.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -172,44 +174,25 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="update-psconfigfile">Update-PSConfigFile</h1>
+                <h1 id="set-psconfigfileexecution">Set-PSConfigFileExecution</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Adds functionality to add the execution to your profile or a PowerShell module</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code>Update-PSConfigFile [-ConfigFile] &lt;FileInfo&gt; [[-AddToProfile] &lt;String&gt;] [[-AddToModule] &lt;String&gt;]
- [[-PathToPSM1File] &lt;FileInfo&gt;] [-ExecuteNow] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+<h3 id="profile-default">Profile (Default)</h3>
+<pre><code>Set-PSConfigFileExecution -ConfigFile &lt;FileInfo&gt; [-PSProfile &lt;String&gt;] [-ExecuteNow] [-WhatIf] [-Confirm]
+ [&lt;CommonParameters&gt;]
+</code></pre>
+<h3 id="module">Module</h3>
+<pre><code>Set-PSConfigFileExecution -ConfigFile &lt;FileInfo&gt; [-PSModule &lt;String&gt;] [-PathToPSM1File &lt;FileInfo&gt;]
+ [-ExecuteNow] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Adds functionality to add the execution to your profile or a PowerShell module</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<pre><code>Update-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -AddToProfile AddScript -AddToModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+<pre><code>Set-PSConfigFileExecution -ConfigFile C:\Temp\jdh\PSCustomConfig.json -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 </code></pre>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-addtomodule">-AddToModule</h3>
-<p>Enable or disable loading of config when a specific module is loaded.</p>
-<pre><code class="language-yaml">Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: Ignore
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-addtoprofile">-AddToProfile</h3>
-<p>Enable or disable loading of config when your ps profile is loaded.</p>
-<pre><code class="language-yaml">Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
 <h3 id="-configfile">-ConfigFile</h3>
 <p>Path to the the config file ($PSConfigfile is a default variable created with the config file)</p>
 <pre><code class="language-yaml">Type: FileInfo
@@ -217,7 +200,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -237,12 +220,36 @@ Accept wildcard characters: False
 <h3 id="-pathtopsm1file">-PathToPSM1File</h3>
 <p>Path to the .psm1 file</p>
 <pre><code class="language-yaml">Type: FileInfo
-Parameter Sets: (All)
+Parameter Sets: Module
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-psmodule">-PSModule</h3>
+<p>Enable or disable loading of config when a specific module is loaded.</p>
+<pre><code class="language-yaml">Type: String
+Parameter Sets: Module
+Aliases:
+
+Required: False
+Position: Named
+Default value: Ignore
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-psprofile">-PSProfile</h3>
+<p>Enable or disable loading of config when your ps profile is loaded.</p>
+<pre><code class="language-yaml">Type: String
+Parameter Sets: Profile
+Aliases:
+
+Required: False
+Position: Named
+Default value: Ignore
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -284,10 +291,10 @@ Accept wildcard characters: False
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../about_PSConfigFile/" class="btn btn-neutral float-right" title="PSConfigFile">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../Show-PSConfigFile/" class="btn btn-neutral float-right" title="Show-PSConfigFile">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../Show-PSConfigFile/" class="btn btn-neutral" title="Show-PSConfigFile"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../PSConfigFile/" class="btn btn-neutral" title="PSConfigFile Module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -317,10 +324,10 @@ Accept wildcard characters: False
         </span>
     
     
-      <span><a href="../Show-PSConfigFile/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../PSConfigFile/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../about_PSConfigFile/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../Show-PSConfigFile/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
