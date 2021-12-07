@@ -49,22 +49,24 @@ Display what's configured in the config file.
 .DESCRIPTION
 Display what's configured in the config file. But doesn't execute the commands
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .EXAMPLE
-Show-PSConfigFile -ConfigFile $PSConfigFile
+Show-PSConfigFile
 
 #>
 Function Show-PSConfigFile {
     [Cmdletbinding()]
-    param (
-        [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile
-    )
+    param ()
+
     try {
-        $confile = Get-Item $ConfigFile -ErrorAction SilentlyContinue
+        try{
+            $confile = Get-Item $PSConfigFile -ErrorAction stop
+        }catch {
+            Add-Type -AssemblyName System.Windows.Forms
+
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json'}
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        }
 
         Write-Color 'PSConfigFile' -ShowTime -Color DarkCyan -LinesBefore 4
         Write-Color '#######################################################' -ShowTime -Color Green
