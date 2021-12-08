@@ -1,238 +1,222 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="None">
-  <meta name="author" content="Pierre Smit">
   
-  <link rel="shortcut icon" href="img/favicon.ico">
-  <title>PSConfigFile</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for PSConfigFile">
+    <meta name="author" content="Pierre Smit">
+    <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/">
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Documentation for PSConfigFile</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
 
-  <link rel="stylesheet" href="css/theme.css" />
-  <link rel="stylesheet" href="css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "PSConfigFile";
-    var mkdocs_page_input_path = "index.md";
-    var mkdocs_page_url = null;
-  </script>
-  
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+      <script src="./js/elasticlunr.min.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = (window === window.parent);
+        
+        var pageToc = [
+          {title: "Description", url: "#_top", children: [
+          ]},
+          {title: "Getting Started", url: "#getting-started", children: [
+          ]},
+          {title: "Functions", url: "#functions", children: [
+          ]},
+        ];
+
+    </script>
+    <script src="./js/base.js"></script> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-  <div class="wy-grid-for-nav">
-
+<nav class="navbar wm-page-top-frame">
+  <div class="container-fluid wm-top-container">
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> PSConfigFile</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
-  </form>
-</div>
-      </div>
+    <div class="wm-top-tool pull-right wm-vcenter">
+      <form class="dropdown wm-vcentered" id="wm-search-form" action="./search.html">
+        
+        <button id="wm-search-show" class="btn btn-sm btn-default" type="submit"
+          ><i class="fa fa-search" aria-hidden="true"></i></button>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href=".">PSConfigFile</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#function-synopsis">Function Synopsis</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#add-aliastopsconfigfile">Add-AliasToPSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#add-commandtopsconfigfile">Add-CommandToPSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#add-locationtopsconfigfile">Add-LocationToPSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#add-psdrivetopsconfigfile">Add-PSDriveToPSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#add-variabletopsconfigfile">Add-VariableToPSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#invoke-psconfigfile">Invoke-PSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#new-psconfigfile">New-PSConfigFile</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#set-psconfigfileexecution">Set-PSConfigFileExecution</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#show-psconfigfile">Show-PSConfigFile</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Add-AliasToPSConfigFile/">Add-AliasToPSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Add-CommandToPSConfigFile/">Add-CommandToPSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Add-LocationToPSConfigFile/">Add-LocationToPSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Add-PSDriveToPSConfigFile/">Add-PSDriveToPSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Add-VariableToPSConfigFile/">Add-VariableToPSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Invoke-PSConfigFile/">Invoke-PSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="New-PSConfigFile/">New-PSConfigFile</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="PSConfigFile/">PSConfigFile Module</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Set-PSConfigFileExecution/">Set-PSConfigFileExecution</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="Show-PSConfigFile/">Show-PSConfigFile</a>
-                    </li>
-                </ul>
-      </div>
-    </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">PSConfigFile</a>
-      </nav>
-
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href=".">Docs</a> &raquo;</li>
-    
-      
-    
-    <li>PSConfigFile</li>
-    <li class="wy-breadcrumbs-aside">
-      
-        <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/index.md"
-          class="icon icon-github"> Edit on GitHub</a>
-      
-    </li>
-  </ul>
-  
-  <hr/>
-</div>
-
-          <div role="main">
-            <div class="section">
-              
-                <h1 id="psconfigfile">PSConfigFile</h1>
-<h2 id="description">Description</h2>
-<p>Creates a Config file with <code>Commands</code>, <code>Variables</code>, <code>PSDrives</code>, <code>Aliases\Shortcuts</code> and <code>Default Start locations</code>. 
-You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually. 
-This way you can quickly and easily switch between <code>environment setups</code> with these default values</p>
-<h2 id="function-synopsis">Function Synopsis</h2>
-<h3 id="add-aliastopsconfigfile">Add-AliasToPSConfigFile</h3>
-<p>Creates Shortcuts (Aliases) to commands or script blocks</p>
-<h3 id="add-commandtopsconfigfile">Add-CommandToPSConfigFile</h3>
-<p>Adds a command or script block to the config file, to be executed every time the invoke function is called.</p>
-<h3 id="add-locationtopsconfigfile">Add-LocationToPSConfigFile</h3>
-<p>Adds default location to the config file.</p>
-<h3 id="add-psdrivetopsconfigfile">Add-PSDriveToPSConfigFile</h3>
-<p>Add PSDrive to the config file.</p>
-<h3 id="add-variabletopsconfigfile">Add-VariableToPSConfigFile</h3>
-<p>Adds variable to the config file.</p>
-<h3 id="invoke-psconfigfile">Invoke-PSConfigFile</h3>
-<p>Executes the config from the json file.</p>
-<h3 id="new-psconfigfile">New-PSConfigFile</h3>
-<p>Creates a new config file</p>
-<h3 id="set-psconfigfileexecution">Set-PSConfigFileExecution</h3>
-<p>Adds functionality to add the execution to your profile or a PowerShell module</p>
-<h3 id="show-psconfigfile">Show-PSConfigFile</h3>
-<p>Display what's configured in the config file.</p>
-              
-            </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Add-AliasToPSConfigFile/" class="btn btn-neutral float-right" title="Add-AliasToPSConfigFile">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-    </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-    
-  </div>
-
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
-      
+        <div class="input-group input-group-sm wm-top-search">
+          <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search" autocomplete="off">
+          <span class="input-group-btn" role="search">
+            
+            <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
+            <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right"></ul>
+            <button id="wm-search-go" class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </span>
         </div>
+      </form>
+    </div>
+
+    
+    <div class="wm-top-tool wm-vcenter pull-right wm-small-left">
+      <button id="wm-toc-button" type="button" class="btn btn-sm btn-default wm-vcentered"><i class="fa fa-th-list" aria-hidden="true"></i></button>
+    </div>
+
+    
+    
+
+    
+    <a href="" class="wm-top-brand wm-top-link wm-vcenter">
+      
+      <div class="wm-top-title">
+        Documentation for PSConfigFile<br>
+        
       </div>
+    </a>
+  </div>
+</nav>
 
-    </section>
+  <div id="main-content" class="wm-page-top-frame">
+    
+<nav class="wm-toc-pane">
+  
+    <ul class="wm-toctree wm-toc-repo">
+      <li class="wm-toc-li wm-toc-lev1">
+      <a class="wm-article-link wm-toc-text" href="https://github.com/smitpi/PSConfigFile/">
+        
+        smitpi/PSConfigFile
+      </a>
+      </li>
+    </ul>
+  <ul class="wm-toctree">
+        <li class="wm-toc-li wm-toc-lev1 "><a href="" class="wm-article-link wm-toc-text">Home</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Add-AliasToPSConfigFile/" class="wm-article-link wm-toc-text">Add-AliasToPSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Add-CommandToPSConfigFile/" class="wm-article-link wm-toc-text">Add-CommandToPSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Add-LocationToPSConfigFile/" class="wm-article-link wm-toc-text">Add-LocationToPSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Add-PSDriveToPSConfigFile/" class="wm-article-link wm-toc-text">Add-PSDriveToPSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Add-VariableToPSConfigFile/" class="wm-article-link wm-toc-text">Add-VariableToPSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Invoke-PSConfigFile/" class="wm-article-link wm-toc-text">Invoke-PSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="New-PSConfigFile/" class="wm-article-link wm-toc-text">New-PSConfigFile</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="PSConfigFile/" class="wm-article-link wm-toc-text">PSConfigFile Module</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Set-PSConfigFileExecution/" class="wm-article-link wm-toc-text">Set-PSConfigFileExecution</a>
+</li>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="Show-PSConfigFile/" class="wm-article-link wm-toc-text">Show-PSConfigFile</a>
+</li>
+  </ul>
+</nav>
 
+    <div class="wm-content-pane">
+      <iframe class="wm-article" name="article"></iframe>
+    </div>
   </div>
 
-  <div class="rst-versions" role="note" aria-label="versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
     
-        <span>
-          <a href="https://github.com/smitpi/PSConfigFile/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
+
     
     
+      
     
-      <span><a href="Add-AliasToPSConfigFile/" style="color: #fcfcfc">Next &raquo;</a></span>
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
     
-  </span>
+    <div class="wm-article-nav pull-right">
+      <a href="Add-AliasToPSConfigFile/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="Add-AliasToPSConfigFile/" class="btn btn-xs btn-link">
+        Add-AliasToPSConfigFile
+      </a>
+    </div>
+    
+  </div>
+
+    
+
+    <h2 id="description">Description</h2>
+<p>Creates a Config file with Commands, Variables, PSDrives, Aliases\Shortcuts and Default Start locations.
+You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually.</p>
+<p>This way you can quickly and easily switch between �environment setups� with these default values</p>
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+<li><code>Install-Module -Name PSConfigFile -Verbose</code></li>
+<li><code>Import-Module PSConfigFile -Verbose -Force</code></li>
+<li><code>Get-Command -Module PSConfigFile</code></li>
+</ul>
+<h2 id="functions">Functions</h2>
+<ul>
+<li><a href="Add-AliasToPSConfigFile/">Add-AliasToPSConfigFile</a> -- Creates Shortcuts (Aliases) to commands or script blocks</li>
+<li><a href="Add-CommandToPSConfigFile/">Add-CommandToPSConfigFile</a> -- Adds a command or script block to the config file, to be executed every time the invoke function is called.</li>
+<li><a href="Add-LocationToPSConfigFile/">Add-LocationToPSConfigFile</a> -- Adds default location to the config file.</li>
+<li><a href="Add-PSDriveToPSConfigFile/">Add-PSDriveToPSConfigFile</a> -- Add PSDrive to the config file.</li>
+<li><a href="Add-VariableToPSConfigFile/">Add-VariableToPSConfigFile</a> -- Adds variable to the config file.</li>
+<li><a href="Invoke-PSConfigFile/">Invoke-PSConfigFile</a> -- Executes the config from the json file.</li>
+<li><a href="New-PSConfigFile/">New-PSConfigFile</a> -- Creates a new config file</li>
+<li><a href="Set-PSConfigFileExecution/">Set-PSConfigFileExecution</a> -- Adds functionality to add the execution to your profile or a PowerShell module</li>
+<li><a href="Show-PSConfigFile/">Show-PSConfigFile</a> -- Display what's configured in the config file.</li>
+</ul>
+
+  <br>
+    
+
+    
+    
+      
+    
+
+  <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    
+    <div class="wm-article-nav pull-right">
+      <a href="Add-AliasToPSConfigFile/" class="btn btn-xs btn-default pull-right">
+        Next
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+      <a href="Add-AliasToPSConfigFile/" class="btn btn-xs btn-link">
+        Add-AliasToPSConfigFile
+      </a>
+    </div>
+    
+  </div>
+
+    <br>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="js/theme_extra.js" defer></script>
-    <script src="js/theme.js" defer></script>
-      <script src="search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        };
-    </script>
+
+<footer class="container-fluid wm-page-content">
+      <p>
+        <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/index.md">Edit on smitpi/PSConfigFile</a>
+      </p><p>(c) 2021 Pierre Smit. All rights reserved.</p>
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
 
 </body>
 </html>
-
 <!--
 MkDocs version : 1.2.3
-Build Date UTC : 2021-11-18 07:03:55.093028+00:00
+Build Date UTC : 2021-12-08 23:37:51.990631+00:00
 -->
