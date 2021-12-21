@@ -78,10 +78,10 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
     </div>
     
     <div class="wm-article-nav">
-      <a href="../PSConfigFile/" class="btn btn-xs btn-default pull-left">
+      <a href="../New-PSConfigFile/" class="btn btn-xs btn-default pull-left">
         <i class="fa fa-chevron-left" aria-hidden="true"></i>
-        Previous</a><a href="../PSConfigFile/" class="btn btn-xs btn-link">
-        PSConfigFile Module
+        Previous</a><a href="../New-PSConfigFile/" class="btn btn-xs btn-link">
+        New-PSConfigFile
       </a>
     </div>
     
@@ -120,27 +120,15 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-executenow">-ExecuteNow</h3>
-<p>Execute the config file, to make sure everything runs as expected.</p>
-<pre><code class="language-yaml">Type: SwitchParameter
-Parameter Sets: (All)
+<h3 id="-psprofile">-PSProfile</h3>
+<p>Enable or disable loading of config when your ps profile is loaded.</p>
+<pre><code class="language-yaml">Type: String
+Parameter Sets: Profile
 Aliases:
 
 Required: False
 Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-pathtopsm1file">-PathToPSM1File</h3>
-<p>Path to the .psm1 file</p>
-<pre><code class="language-yaml">Type: FileInfo
-Parameter Sets: Module
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
+Default value: Ignore
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -156,27 +144,27 @@ Default value: Ignore
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-psprofile">-PSProfile</h3>
-<p>Enable or disable loading of config when your ps profile is loaded.</p>
-<pre><code class="language-yaml">Type: String
-Parameter Sets: Profile
+<h3 id="-pathtopsm1file">-PathToPSM1File</h3>
+<p>Path to the .psm1 file</p>
+<pre><code class="language-yaml">Type: FileInfo
+Parameter Sets: Module
 Aliases:
 
 Required: False
 Position: Named
-Default value: Ignore
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-confirm">-Confirm</h3>
-<p>Prompts you for confirmation before running the cmdlet.</p>
+<h3 id="-executenow">-ExecuteNow</h3>
+<p>Execute the config file, to make sure everything runs as expected.</p>
 <pre><code class="language-yaml">Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: cf
+Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -186,6 +174,18 @@ The cmdlet is not run.</p>
 <pre><code class="language-yaml">Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-confirm">-Confirm</h3>
+<p>Prompts you for confirmation before running the cmdlet.</p>
+<pre><code class="language-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -221,10 +221,10 @@ Accept wildcard characters: False
     </div>
     
     <div class="wm-article-nav">
-      <a href="../PSConfigFile/" class="btn btn-xs btn-default pull-left">
+      <a href="../New-PSConfigFile/" class="btn btn-xs btn-default pull-left">
         <i class="fa fa-chevron-left" aria-hidden="true"></i>
-        Previous</a><a href="../PSConfigFile/" class="btn btn-xs btn-link">
-        PSConfigFile Module
+        Previous</a><a href="../New-PSConfigFile/" class="btn btn-xs btn-link">
+        New-PSConfigFile
       </a>
     </div>
     

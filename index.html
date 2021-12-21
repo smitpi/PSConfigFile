@@ -34,11 +34,10 @@
       var is_top_frame = (window === window.parent);
         
         var pageToc = [
-          {title: "Description", url: "#_top", children: [
-          ]},
-          {title: "Getting Started", url: "#getting-started", children: [
-          ]},
-          {title: "Functions", url: "#functions", children: [
+          {title: "PSConfigFile", url: "#_top", children: [
+              {title: "Description", url: "#description" },
+              {title: "Getting Started", url: "#getting-started" },
+              {title: "Functions", url: "#functions" },
           ]},
         ];
 
@@ -104,7 +103,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       </li>
     </ul>
   <ul class="wm-toctree">
-        <li class="wm-toc-li wm-toc-lev1 "><a href="" class="wm-article-link wm-toc-text">Home</a>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="" class="wm-article-link wm-toc-text">PSConfigFile</a>
 </li>
         <li class="wm-toc-li wm-toc-lev1 "><a href="Add-AliasToPSConfigFile/" class="wm-article-link wm-toc-text">Add-AliasToPSConfigFile</a>
 </li>
@@ -119,8 +118,6 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
         <li class="wm-toc-li wm-toc-lev1 "><a href="Invoke-PSConfigFile/" class="wm-article-link wm-toc-text">Invoke-PSConfigFile</a>
 </li>
         <li class="wm-toc-li wm-toc-lev1 "><a href="New-PSConfigFile/" class="wm-article-link wm-toc-text">New-PSConfigFile</a>
-</li>
-        <li class="wm-toc-li wm-toc-lev1 "><a href="PSConfigFile/" class="wm-article-link wm-toc-text">PSConfigFile Module</a>
 </li>
         <li class="wm-toc-li wm-toc-lev1 "><a href="Set-PSConfigFileExecution/" class="wm-article-link wm-toc-text">Set-PSConfigFileExecution</a>
 </li>
@@ -159,27 +156,34 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <h2 id="description">Description</h2>
+    <h1 id="psconfigfile">PSConfigFile</h1>
+<h2 id="description">Description</h2>
 <p>Creates a Config file with Commands, Variables, PSDrives, Aliases\Shortcuts and Default Start locations.
 You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually.</p>
 <p>This way you can quickly and easily switch between "environment setups" with these default values</p>
 <h2 id="getting-started">Getting Started</h2>
-<ul>
-<li><code>Install-Module -Name PSConfigFile -Verbose</code></li>
-<li><code>Import-Module PSConfigFile -Verbose -Force</code></li>
-<li><code>Get-Command -Module PSConfigFile</code></li>
-</ul>
+<pre><code>- Install-Module -Name PSConfigFile -Verbose
+</code></pre>
+<p>OR</p>
+<pre><code>git clone https://github.com/smitpi/PSConfigFile (Join-Path (get-item (Join-Path (Get-Item $profile).Directory 'Modules')).FullName -ChildPath PSConfigFile)
+</code></pre>
+<p>Then:</p>
+<pre><code>- Import-Module PSConfigFile -Verbose -Force
+
+- Get-Command -Module PSConfigFile
+- Get-Help about_PSConfigFile
+</code></pre>
 <h2 id="functions">Functions</h2>
 <ul>
-<li><a href="Add-AliasToPSConfigFile/">Add-AliasToPSConfigFile</a> -- Creates Shortcuts (Aliases) to commands or script blocks</li>
-<li><a href="Add-CommandToPSConfigFile/">Add-CommandToPSConfigFile</a> -- Adds a command or script block to the config file, to be executed every time the invoke function is called.</li>
-<li><a href="Add-LocationToPSConfigFile/">Add-LocationToPSConfigFile</a> -- Adds default location to the config file.</li>
-<li><a href="Add-PSDriveToPSConfigFile/">Add-PSDriveToPSConfigFile</a> -- Add PSDrive to the config file.</li>
-<li><a href="Add-VariableToPSConfigFile/">Add-VariableToPSConfigFile</a> -- Adds variable to the config file.</li>
-<li><a href="Invoke-PSConfigFile/">Invoke-PSConfigFile</a> -- Executes the config from the json file.</li>
-<li><a href="New-PSConfigFile/">New-PSConfigFile</a> -- Creates a new config file</li>
-<li><a href="Set-PSConfigFileExecution/">Set-PSConfigFileExecution</a> -- Adds functionality to add the execution to your profile or a PowerShell module</li>
-<li><a href="Show-PSConfigFile/">Show-PSConfigFile</a> -- Display what's configured in the config file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Add-AliasToPSConfigFile">Add-AliasToPSConfigFile</a> -- Creates Shortcuts (Aliases) to commands or script blocks</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Add-CommandToPSConfigFile">Add-CommandToPSConfigFile</a> -- Adds a command or script block to the config file, to be executed every time the invoke function is called.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Add-LocationToPSConfigFile">Add-LocationToPSConfigFile</a> -- Adds default location to the config file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Add-PSDriveToPSConfigFile">Add-PSDriveToPSConfigFile</a> -- Add PSDrive to the config file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Add-VariableToPSConfigFile">Add-VariableToPSConfigFile</a> -- Adds variable to the config file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Invoke-PSConfigFile">Invoke-PSConfigFile</a> -- Executes the config from the json file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#New-PSConfigFile">New-PSConfigFile</a> -- Creates a new config file</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Set-PSConfigFileExecution">Set-PSConfigFileExecution</a> -- Adds functionality to add the execution to your profile or a PowerShell module</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/#Show-PSConfigFile">Show-PSConfigFile</a> -- Display what's configured in the config file.</li>
 </ul>
 
   <br>
@@ -218,5 +222,5 @@ You can then execute this default config when your profile is loaded, or when a 
 </html>
 <!--
 MkDocs version : 1.2.3
-Build Date UTC : 2021-12-08 23:43:27.649172+00:00
+Build Date UTC : 2021-12-21 20:59:12.610801+00:00
 -->

@@ -81,7 +81,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       <a href=".." class="btn btn-xs btn-default pull-left">
         <i class="fa fa-chevron-left" aria-hidden="true"></i>
         Previous</a><a href=".." class="btn btn-xs btn-link">
-        Home
+        PSConfigFile
       </a>
     </div>
     
@@ -103,6 +103,18 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <pre><code>Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun &quot;import-module .\*.psm1 -force -verbose&quot;
 </code></pre>
 <h2 id="parameters">PARAMETERS</h2>
+<h3 id="-configfile">-ConfigFile</h3>
+<p>Path to the the config file ($PSConfigfile is a default variable created with the config file)</p>
+<pre><code class="language-yaml">Type: FileInfo
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-aliasname">-AliasName</h3>
 <p>Name to use for the command</p>
 <pre><code class="language-yaml">Type: String
@@ -123,18 +135,6 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-configfile">-ConfigFile</h3>
-<p>Path to the the config file ($PSConfigfile is a default variable created with the config file)</p>
-<pre><code class="language-yaml">Type: FileInfo
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -170,7 +170,7 @@ Accept wildcard characters: False
       <a href=".." class="btn btn-xs btn-default pull-left">
         <i class="fa fa-chevron-left" aria-hidden="true"></i>
         Previous</a><a href=".." class="btn btn-xs btn-link">
-        Home
+        PSConfigFile
       </a>
     </div>
     
