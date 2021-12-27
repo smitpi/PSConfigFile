@@ -1,7 +1,7 @@
 ---
 external help file: PSConfigFile-help.xml
 Module Name: PSConfigFile
-online version:
+online version: https://smitpi.github.io/PSConfigFile/#Add-CommandToPSConfigFile
 schema: 2.0.0
 ---
 
@@ -44,21 +44,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ScriptBlock
-The commands to be executed
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ScriptBlockName
 Name for the script block
 
@@ -69,6 +54,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ScriptBlock
+The commands to be executed
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

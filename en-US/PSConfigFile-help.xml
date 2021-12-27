@@ -54,6 +54,18 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>ConfigFile</maml:name>
+        <maml:description>
+          <maml:para>Path to the the config file ($PSConfigfile is a default variable created with the config file)</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
+        <dev:type>
+          <maml:name>FileInfo</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>AliasName</maml:name>
         <maml:description>
@@ -78,18 +90,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>ConfigFile</maml:name>
-        <maml:description>
-          <maml:para>Path to the the config file ($PSConfigfile is a default variable created with the config file)</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
-        <dev:type>
-          <maml:name>FileInfo</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
     </command:parameters>
     <command:inputTypes />
     <command:returnValues />
@@ -107,7 +107,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Add-AliasToPSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -175,10 +180,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>ScriptBlock</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>ScriptBlockName</maml:name>
         <maml:description>
-          <maml:para>The commands to be executed</maml:para>
+          <maml:para>Name for the script block</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -187,10 +192,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>ScriptBlockName</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>ScriptBlock</maml:name>
         <maml:description>
-          <maml:para>Name for the script block</maml:para>
+          <maml:para>The commands to be executed</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -216,7 +221,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Add-CommandToPSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -301,7 +311,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Add-LocationToPSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -386,7 +401,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Add-PSDriveToPSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -471,7 +491,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Add-VariableToPSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -532,7 +557,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Invoke-PSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -561,10 +591,10 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-          <maml:name>Confirm</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
           <maml:description>
-            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -572,10 +602,10 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-          <maml:name>WhatIf</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
           <maml:description>
-            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -598,10 +628,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-        <maml:name>Confirm</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
         <maml:description>
-          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -610,10 +640,10 @@
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
-        <maml:name>WhatIf</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
         <maml:description>
-          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -639,7 +669,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#New-PSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -669,32 +704,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ExecuteNow</maml:name>
+          <maml:name>PSProfile</maml:name>
           <maml:description>
-            <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>PathToPSM1File</maml:name>
-          <maml:description>
-            <maml:para>Path to the .psm1 file</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
-          <dev:type>
-            <maml:name>FileInfo</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>PSModule</maml:name>
-          <maml:description>
-            <maml:para>Enable or disable loading of config when a specific module is loaded.</maml:para>
+            <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -703,10 +715,10 @@
           </dev:type>
           <dev:defaultValue>Ignore</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-          <maml:name>Confirm</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExecuteNow</maml:name>
           <maml:description>
-            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+            <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -718,6 +730,17 @@
           <maml:name>WhatIf</maml:name>
           <maml:description>
             <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -741,20 +764,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ExecuteNow</maml:name>
+          <maml:name>PSModule</maml:name>
           <maml:description>
-            <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>PSProfile</maml:name>
-          <maml:description>
-            <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
+            <maml:para>Enable or disable loading of config when a specific module is loaded.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -763,10 +775,22 @@
           </dev:type>
           <dev:defaultValue>Ignore</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-          <maml:name>Confirm</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PathToPSM1File</maml:name>
           <maml:description>
-            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+            <maml:para>Path to the .psm1 file</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
+          <dev:type>
+            <maml:name>FileInfo</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExecuteNow</maml:name>
+          <maml:description>
+            <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -778,6 +802,17 @@
           <maml:name>WhatIf</maml:name>
           <maml:description>
             <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -801,28 +836,16 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>ExecuteNow</maml:name>
+        <maml:name>PSProfile</maml:name>
         <maml:description>
-          <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
+          <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
         </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>SwitchParameter</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>PathToPSM1File</maml:name>
-        <maml:description>
-          <maml:para>Path to the .psm1 file</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
-        <dev:type>
-          <maml:name>FileInfo</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>Ignore</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PSModule</maml:name>
@@ -837,21 +860,21 @@
         <dev:defaultValue>Ignore</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>PSProfile</maml:name>
+        <maml:name>PathToPSM1File</maml:name>
         <maml:description>
-          <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
+          <maml:para>Path to the .psm1 file</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>FileInfo</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>Ignore</dev:defaultValue>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
-        <maml:name>Confirm</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ExecuteNow</maml:name>
         <maml:description>
-          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          <maml:para>Execute the config file, to make sure everything runs as expected.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -864,6 +887,18 @@
         <maml:name>WhatIf</maml:name>
         <maml:description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -889,7 +924,12 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Set-PSConfigFileExecution</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -925,6 +965,11 @@
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://smitpi.github.io/PSConfigFile/#Show-PSConfigFile</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
 </helpItems>

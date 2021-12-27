@@ -1,7 +1,7 @@
 ---
 external help file: PSConfigFile-help.xml
 Module Name: PSConfigFile
-online version:
+online version: https://smitpi.github.io/PSConfigFile/#Add-AliasToPSConfigFile
 schema: 2.0.0
 ---
 
@@ -29,6 +29,21 @@ Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun 
 
 ## PARAMETERS
 
+### -ConfigFile
+Path to the the config file ($PSConfigfile is a default variable created with the config file)
+
+```yaml
+Type: FileInfo
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -AliasName
 Name to use for the command
 
@@ -54,21 +69,6 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
-```yaml
-Type: FileInfo
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
