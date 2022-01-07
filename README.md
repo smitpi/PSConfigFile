@@ -1,7 +1,34 @@
 # PSConfigFile
+ 
+## Description
+Creates a Config file with Commands, Variables, PSDrives, Aliases\Shortcuts and Default Start locations.
+You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually.
 
-
-Creates a `Config file` with `Commands`, `Variables`, `PSDrives`, `Aliases\Shortcuts` and `Default Start locations`. 
-You can then execute this default config when your profile is loaded, or when a specific module is imported, or you can run it manually. 
-
-This way you can quickly and easily switch between “environment setups” with these default values
+This way you can quickly and easily switch between "environment setups" with these default values
+ 
+## Getting Started
+```
+- Install-Module -Name PSConfigFile -Verbose
+```
+OR
+```
+git clone https://github.com/smitpi/PSConfigFile (Join-Path (get-item (Join-Path (Get-Item $profile).Directory 'Modules')).FullName -ChildPath PSConfigFile)
+```
+Then:
+```
+- Import-Module PSConfigFile -Verbose -Force
+ 
+- Get-Command -Module PSConfigFile
+- Get-Help about_PSConfigFile
+```
+ 
+## Functions
+- [Add-AliasToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-AliasToPSConfigFile) -- Creates Shortcuts (Aliases) to commands or script blocks
+- [Add-CommandToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-CommandToPSConfigFile) -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
+- [Add-LocationToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-LocationToPSConfigFile) -- Adds default location to the config file.
+- [Add-PSDriveToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-PSDriveToPSConfigFile) -- Add PSDrive to the config file.
+- [Add-VariableToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-VariableToPSConfigFile) -- Adds variable to the config file.
+- [Invoke-PSConfigFile](https://smitpi.github.io/PSConfigFile/#Invoke-PSConfigFile) -- Executes the config from the json file.
+- [New-PSConfigFile](https://smitpi.github.io/PSConfigFile/#New-PSConfigFile) -- Creates a new config file
+- [Set-PSConfigFileExecution](https://smitpi.github.io/PSConfigFile/#Set-PSConfigFileExecution) -- Adds functionality to add the execution to your profile or a PowerShell module
+- [Show-PSConfigFile](https://smitpi.github.io/PSConfigFile/#Show-PSConfigFile) -- Display what's configured in the config file.

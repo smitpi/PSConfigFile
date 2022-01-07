@@ -1,7 +1,7 @@
 ---
 external help file: PSConfigFile-help.xml
 Module Name: PSConfigFile
-online version:
+online version: https://smitpi.github.io/PSConfigFile/#Add-LocationToPSConfigFile
 schema: 2.0.0
 ---
 

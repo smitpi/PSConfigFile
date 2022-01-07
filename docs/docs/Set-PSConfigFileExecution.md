@@ -1,7 +1,7 @@
 ---
 external help file: PSConfigFile-help.xml
 Module Name: PSConfigFile
-online version:
+online version: https://smitpi.github.io/PSConfigFile/#Set-PSConfigFileExecution
 schema: 2.0.0
 ---
 
@@ -51,32 +51,17 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExecuteNow
-Execute the config file, to make sure everything runs as expected.
+### -PSProfile
+Enable or disable loading of config when your ps profile is loaded.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
+Type: String
+Parameter Sets: Profile
 Aliases:
 
 Required: False
 Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PathToPSM1File
-Path to the .psm1 file
-
-```yaml
-Type: FileInfo
-Parameter Sets: Module
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
+Default value: Ignore
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -96,32 +81,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PSProfile
-Enable or disable loading of config when your ps profile is loaded.
+### -PathToPSM1File
+Path to the .psm1 file
 
 ```yaml
-Type: String
-Parameter Sets: Profile
+Type: FileInfo
+Parameter Sets: Module
 Aliases:
 
 Required: False
 Position: Named
-Default value: Ignore
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Confirm
-Prompts you for confirmation before running the cmdlet.
+### -ExecuteNow
+Execute the config file, to make sure everything runs as expected.
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: cf
+Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -134,6 +119,21 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named

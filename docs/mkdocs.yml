@@ -1,15 +1,1 @@
-site_name: 'Documentation for PSConfigFile'
-site_description: 'Documentation for PSConfigFile'
-site_author: 'Pierre Smit'
-site_url: 'https://smitpi.github.io/PSConfigFile'
-
-theme:
-  name: 'windmill'
-  language: 'en'
-
-
-repo_name: 'smitpi/PSConfigFile'
-repo_url: 'https://github.com/smitpi/PSConfigFile'
-
-copyright: '(c) 2021 Pierre Smit. All rights reserved.'
-
+True
