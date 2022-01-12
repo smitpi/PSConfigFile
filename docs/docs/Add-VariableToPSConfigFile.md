@@ -1,7 +1,7 @@
 ---
 external help file: PSConfigFile-help.xml
 Module Name: PSConfigFile
-online version: https://smitpi.github.io/PSConfigFile/#Add-VariableToPSConfigFile
+online version:
 schema: 2.0.0
 ---
 
