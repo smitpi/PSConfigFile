@@ -69,11 +69,11 @@ Name for the script block
 The commands to be executed
 
 .EXAMPLE
-Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 
 #>
 Function Add-CommandToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,

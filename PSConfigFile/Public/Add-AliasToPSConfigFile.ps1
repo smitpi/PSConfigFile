@@ -65,7 +65,7 @@ Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun 
 
 #>
 Function Add-AliasToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,

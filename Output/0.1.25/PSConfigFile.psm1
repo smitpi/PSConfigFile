@@ -1,7 +1,7 @@
-﻿############################################
+############################################
 # source: Add-AliasToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -27,7 +27,7 @@ Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun 
 
 #>
 Function Add-AliasToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
@@ -80,7 +80,7 @@ Function Add-AliasToPSConfigFile {
 ############################################
 # source: Add-CommandToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -102,11 +102,11 @@ Name for the script block
 The commands to be executed
 
 .EXAMPLE
-Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 
 #>
 Function Add-CommandToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
@@ -163,7 +163,7 @@ Function Add-CommandToPSConfigFile {
 ############################################
 # source: Add-LocationToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -186,7 +186,7 @@ Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\
 
 #>
 Function Add-LocationToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
@@ -220,7 +220,7 @@ Function Add-LocationToPSConfigFile {
 ############################################
 # source: Add-PSDriveToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -243,7 +243,7 @@ Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName
 
 #>
 Function Add-PSDriveToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
@@ -293,7 +293,7 @@ Function Add-PSDriveToPSConfigFile {
 ############################################
 # source: Add-VariableToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -316,7 +316,7 @@ Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken
 
 #>
 Function Add-VariableToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
@@ -370,7 +370,7 @@ Function Add-VariableToPSConfigFile {
 ############################################
 # source: Invoke-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -390,7 +390,7 @@ Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 
 #>
 Function Invoke-PSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
@@ -472,7 +472,7 @@ Function Invoke-PSConfigFile {
 ############################################
 # source: New-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -493,7 +493,7 @@ Directory to create config file
 
 #>
 Function New-PSConfigFile {
-    [Cmdletbinding(SupportsShouldProcess = $true)]
+    [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]
@@ -573,7 +573,7 @@ Function New-PSConfigFile {
 ############################################
 # source: Set-PSConfigFileExecution.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -605,7 +605,7 @@ Set-PSConfigFileExecution -ConfigFile C:\Temp\jdh\PSCustomConfig.json -PSProfile
 
 #>
 Function Set-PSConfigFileExecution {
-    [Cmdletbinding(SupportsShouldProcess = $true,DefaultParameterSetName='Profile')]
+    [Cmdletbinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Profile', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
@@ -716,7 +716,7 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 ############################################
 # source: Show-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: iOCO Tech
 #############################################
@@ -733,7 +733,7 @@ Show-PSConfigFile
 
 #>
 Function Show-PSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param ()
 
     try {

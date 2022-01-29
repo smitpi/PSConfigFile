@@ -47,7 +47,7 @@ Updated [13/11/2021_16:30] Added Alias Script
 <#
 
 .DESCRIPTION
-Add a startup location to the config file
+Add a start-up location to the config file
 
 #>
 
@@ -71,7 +71,7 @@ Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\
 
 #>
 Function Add-LocationToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,

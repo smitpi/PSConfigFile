@@ -66,7 +66,7 @@ Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
 
 #>
 Function Invoke-PSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]

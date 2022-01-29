@@ -54,7 +54,7 @@ Show-PSConfigFile
 
 #>
 Function Show-PSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param ()
 
     try {

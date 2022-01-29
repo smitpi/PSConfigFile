@@ -1,16 +1,21 @@
-# Dot source public/private functions
-$publicFunctionsPath = Join-Path -Path $PSScriptRoot -ChildPath 'Public/*.ps1'
+Set-StrictMode -Version Latest
+# Get public and private function definition files.
 
-$public = @(Get-ChildItem -Path $publicFunctionsPath -Recurse -ErrorAction Stop)
+$Public = @(Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue)
+$Private = @(Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue)
 
-foreach ($file in @($public)) {
+# Dot source the files.
+foreach ($import in @($Public + $Private)) {
     try {
-        . $file.FullName
+        Write-Verbose "Importing $($import.FullName)"
+        . $import.FullName
     }
     catch {
-        throw "Unable to dot source [$($file.FullName)]"
+        Write-Error "Failed to import function $($import.FullName): $_"
     }
-
 }
 
-Export-ModuleMember -Function $public.BaseName
+## Export all of the public functions making them available to the user
+foreach ($file in $Public) {
+    Export-ModuleMember -Function $file.BaseName
+}

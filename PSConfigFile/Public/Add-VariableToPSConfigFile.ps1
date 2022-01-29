@@ -69,7 +69,7 @@ Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken
 
 #>
 Function Add-VariableToPSConfigFile {
-    [Cmdletbinding()]
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,

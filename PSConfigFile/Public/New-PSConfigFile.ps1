@@ -68,7 +68,7 @@ Directory to create config file
 
 #>
 Function New-PSConfigFile {
-    [Cmdletbinding(SupportsShouldProcess = $true)]
+    [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]

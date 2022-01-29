@@ -24,7 +24,7 @@ Adds a command or script block to the config file, to be executed every time the
 
 ### EXAMPLE 1
 ```
-Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "get-childitem c:\"
+Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 ```
 
 ## PARAMETERS

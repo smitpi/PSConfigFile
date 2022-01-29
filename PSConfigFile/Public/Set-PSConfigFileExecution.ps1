@@ -69,7 +69,7 @@ Set-PSConfigFileExecution -ConfigFile C:\Temp\jdh\PSCustomConfig.json -PSProfile
 
 #>
 Function Set-PSConfigFileExecution {
-    [Cmdletbinding(SupportsShouldProcess = $true,DefaultParameterSetName='Profile')]
+    [Cmdletbinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Profile', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution')]
     param (
         [parameter(Mandatory)]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
