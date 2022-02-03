@@ -39,10 +39,6 @@ Updated [13/11/2021_16:30] Added Alias Script
 #Requires -Module PSWriteColor
 
 
-
-
-
-
 <#
 
 .DESCRIPTION
@@ -62,7 +58,7 @@ Executes the config from the json file.
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 .PARAMETER DisplayOutput
-Do not show the output on the console.
+By default no output is shown, switch this on to display the output.
 
 .EXAMPLE
 Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
@@ -76,92 +72,104 @@ Function Invoke-PSConfigFile {
         [System.IO.FileInfo]$ConfigFile,
         [switch]$DisplayOutput = $false
     )
-    $output = New-Item (Join-Path $env:TEMP -ChildPath "$(Get-Random).txt")
-    & {
-    try {
-            $confile = Get-Item $ConfigFile -ErrorAction SilentlyContinue
-            $logfile = Join-Path $confile.DirectoryName -ChildPath PSCustomConfigLog.log
-            if ((Test-Path $logfile) -eq $false) { New-Item -Path $logfile -ItemType File -Force | Out-Null }
 
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start"
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################"
-            Write-Output " "
-            
+        try {
+            $confile = Get-Item $ConfigFile -ErrorAction Stop
+            $PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
+            $PSConfigFileOutput.Add('')
+
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
             if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)"
-            
+            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+
             # User Data
-            Write-Output "  "
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:"
-            $JSONParameter.Userdata.PSObject.Properties | ForEach-Object { 
-                  Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] `t`t$($_.name) : $($_.value)"  
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
+            $JSONParameter.Userdata.PSObject.Properties | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+            }
+
+            #Set Variables
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                #$PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) `t`t`t`t: $($_.value)"
+                New-Variable -Name $_.name -Value $_.value -Force -Scope global
+            }
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
+            $PSConfigFileOutput.Add($output)
+            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+            $PSConfigFileOutput.Add($output)
+            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+
+            # Set PsDrives
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
+                $PSConfigFileOutput.Add($output)
+                if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
+                    New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+                }
+                else { Write-Warning '<w>Warning: PSDrive - Already exists' }
+            }
+
+            # Set Alias
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
+            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                $command = "function global:$($_.name) {$($_.value)}"
+                $tmp = [scriptblock]::Create($command)
+                $tmp.invoke()
+            }
+
+            # Execute Commands
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
+                $tmp = [scriptblock]::Create($_.value)
+                $tmp.invoke()
             }
 
             # Set Location
             if ([bool]$JSONParameter.SetLocation.WorkerDir -like $true) {
-                Write-Output "  "
-                Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Setting Folder Location: $($JSONParameter.SetLocation.WorkerDir)"
+                $PSConfigFileOutput.Add('<h>  ')
+                $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+                $PSConfigFileOutput.Add($output)
                 Set-Location $JSONParameter.SetLocation.WorkerDir -ErrorAction SilentlyContinue
             }
 
-            #Set Variables
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:"
-            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-                Write-Output "  "
-                Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) : $($_.value)"
-                New-Variable -Name $_.name -Value $_.value -Force -Scope global
-            }
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFilePath : ($confile.Directory).FullName"
-            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile : $($confile.FullName)"
-            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
+        }
+        catch {
+            Write-Warning "<e>An Error...:`n $_.Exception `n $_.Exception.message `n $_"
+        }
 
-            # Set PsDrives
-            Write-Output "  "
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:"
-            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object { Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) : $($_.value.root)"
-                if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
-                    New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
-                }
-                else { Write-Warning '`nWarning: PSDrive - Already exists'}
-            }
-
-            # Set Alias
-           Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: "
-            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $tmp = $null
-                Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) : $($_.value)"
-                $command = "function global:$($_.name) {$($_.value)}"
-                $tmp = [scriptblock]::Create($command)
-                $tmp.invoke() | Tee-Object -FilePath $logfile -Append
-            }
-
-            # Execute Commands
-            Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: "
-            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $tmp = $null
-                Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) : $($_.value)"
-                Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] ScriptBlock Output:"
-                $tmp = [scriptblock]::Create($_.value)
-                $tmp.invoke() | Tee-Object -FilePath $logfile -Append
-            }
-
-           Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################"
-           Write-Output "[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End"
+    if ($DisplayOutput) {
+        foreach ($line in $PSConfigFileOutput) {
+            if ($line -like '<h>*') { Write-Color $line.Replace('<h>', '') -Color DarkCyan }
+            if ($line -like '<b>*') { Write-Color $line.Replace('<b>', '') -Color DarkGray }
+            if ($line -like '<w>*') { Write-Color $line.Replace('<w>', '') -Color DarkYellow }
+            if ($line -like '<e>*') { Write-Color $line.Replace('<e>', '') -Color DarkRed }
+        }
     }
-    catch {
-        Write-Error "An Error...:`n $_.Exception `n $_.Exception.message"
+    else {
+        Write-Output "[$ConfigFile] Invoke-PSConfigFile Completed:"
     }
-    } *> $output.FullName
-
-    $Feedback = Get-Content $output.FullName
-    $warning = Select-String -Path $output.FullName -Pattern 'Warning'
-    $configErrors = Select-String -Path $output.FullName -Pattern 'Error'
-
-    if ($DisplayOutput){ $Feedback}
-    else {Write-Output "Invoke-PSConfigFile Completed: $($warning.count) Warnings; $($configErrors.count) Errors"}
-
-    
-
+    Remove-Item $output
 } #end Function

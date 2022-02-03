@@ -83,19 +83,11 @@ Function New-PSConfigFile {
         $Execute = @()
         $PSAlias = @()
 
-        $OSDetails = Get-ComputerInfo
         $Userdata = New-Object PSObject -Property @{
-            Computer                       = $env:COMPUTERNAME
-            WindowsProductName             = $OSDetails.WindowsProductName
-            WindowsEditionId               = $OSDetails.WindowsEditionId
-            WindowsInstallationType        = $OSDetails.WindowsInstallationType
-            WindowsInstallDateFromRegistry = $OSDetails.WindowsInstallDateFromRegistry
-            OsArchitecture                 = $OSDetails.OsArchitecture
-            OsProductType                  = $OSDetails.OsProductType
-            OsStatus                       = $OSDetails.OsStatus
-            DomainName                     = $env:USERDNSDOMAIN
-            Userid                         = $env:USERNAME
-            CreatedOn                      = (Get-Date -Format yyyy/MM/dd_HH:MM)
+            DomainName                  = $env:USERDNSDOMAIN
+            Userid                      = $env:USERNAME
+            CreatedOn                   = (Get-Date -Format yyyy/MM/dd_HH:MM)
+            PSExecutionPolicyPreference = $env:PSExecutionPolicyPreference
         }
         $SetLocation = New-Object PSObject -Property @{}
         $SetVariable = New-Object PSObject -Property @{

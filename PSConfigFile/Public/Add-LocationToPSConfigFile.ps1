@@ -64,7 +64,7 @@ Adds default location to the config file.
 Path to the the config file ($PSConfigfile is a default variable created with the config file)
 
 .PARAMETER Path
-Path to be set.
+Path or PS Drive to set location to.
 
 .EXAMPLE
 Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
@@ -75,20 +75,25 @@ Function Add-LocationToPSConfigFile {
     PARAM(
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
         [System.IO.FileInfo]$ConfigFile,
-        [ValidateScript( { ( Test-Path $_) })]
-        [System.IO.DirectoryInfo]$Path
+        [ValidateScript( { ( Test-Path $_) -or ( Get-PSDrive $_) })]
+        [string]$Path
     )
     try {
         $confile = Get-Item $ConfigFile
         Test-Path -Path $confile.FullName
     }
     catch { throw 'Incorect file' }
+    try {
+        if ([bool](Get-PSDrive $Path) -like $true ) { [string]$AddPath = (Get-PSDrive $Path).name }
+        else { [string]$AddPath = (Get-Item $path).FullName }
+    }
+    catch { throw 'Could not find path' }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $Update = @()
     $SetLocation = @{}
     $SetLocation += @{
-        WorkerDir = $((Get-Item $path).FullName)
+        WorkerDir = $($AddPath)
     }
     $Update = [psobject]@{
         Userdata    = $Json.Userdata
