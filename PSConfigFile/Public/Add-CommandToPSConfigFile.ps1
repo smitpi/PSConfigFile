@@ -59,9 +59,6 @@ Adds a command or script block to the config file, to be executed every time the
 .DESCRIPTION
 Adds a command or script block to the config file, to be executed every time the invoke function is called.
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .PARAMETER ScriptBlockName
 Name for the script block
 
@@ -69,14 +66,12 @@ Name for the script block
 The commands to be executed
 
 .EXAMPLE
-Add-CommandToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
+Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 
 #>
 Function Add-CommandToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]
     PARAM(
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
         [ValidateNotNullOrEmpty()]
         [string]$ScriptBlockName,
         [ValidateNotNullOrEmpty()]
@@ -84,16 +79,21 @@ Function Add-CommandToPSConfigFile {
     )
 
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
 
     ## TODO Allow user to modify the order
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $Update = @()
     $Execute = @{}
-    if ($Json.Execute.Default -eq 'Default') {
+    if ($Json.Execute.psobject.Properties.name -like 'Default' -and
+        $Json.Execute.psobject.Properties.value -like 'Default') {
         $Execute += @{
             "[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
         }
@@ -120,8 +120,12 @@ Function Add-CommandToPSConfigFile {
         SetVariable = $Json.SetVariable
         Execute     = $Execute
     }
-    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
-
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'Command added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    }
+    catch { Write-Error "Error: `n $_" }
 
 
 

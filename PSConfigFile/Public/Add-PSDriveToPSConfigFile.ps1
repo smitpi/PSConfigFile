@@ -53,36 +53,37 @@ Add PSDrive to the config file.
 .DESCRIPTION
 Add PSDrive to the config file.
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .PARAMETER DriveName
 Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
 
 .EXAMPLE
-Add-PSDriveToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -DriveName TempDrive
+Add-PSDriveToPSConfigFile -DriveName TempDrive
 
 #>
 Function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
     PARAM(
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
         [ValidateScript( { ( Get-PSDrive $_) })]
         [string]$DriveName
     )
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $Update = @()
     $SetPSDrive = @{}
-    $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name,Root
-    if ($null -eq $InputDrive) {Write-Error "Unknown psdrive";break}
-    if ($Json.PSDrive.Default -eq 'Default') {
+    $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
+    if ($null -eq $InputDrive) { Write-Error 'Unknown psdrive'; break }
+
+    if ($Json.PSDrive.psobject.Properties.name -like 'Default' -and
+        $Json.PSDrive.psobject.Properties.value -like 'Default') {
         $SetPSDrive = @{
             $InputDrive.Name = $InputDrive
         }
@@ -107,6 +108,11 @@ Function Add-PSDriveToPSConfigFile {
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
     }
-    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'PSDrive added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    }
+    catch { Write-Error "Error: `n $_" }
 } #end Function
 

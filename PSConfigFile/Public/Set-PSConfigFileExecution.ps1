@@ -49,9 +49,6 @@ Adds functionality to add the execution to your profile or a PowerShell module
 .DESCRIPTION
 Adds functionality to add the execution to your profile or a PowerShell module
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .PARAMETER PSProfile
 Enable or disable loading of config when your ps profile is loaded.
 
@@ -61,19 +58,13 @@ Enable or disable loading of config when a specific module is loaded.
 .PARAMETER PathToPSM1File
 Path to the .psm1 file
 
-.PARAMETER ExecuteNow
-Execute the config file, to make sure everything runs as expected.
-
 .EXAMPLE
-Set-PSConfigFileExecution -ConfigFile C:\Temp\jdh\PSCustomConfig.json -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 
 #>
 Function Set-PSConfigFileExecution {
     [Cmdletbinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Profile', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution')]
     param (
-        [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
         [Parameter(ParameterSetName = 'Profile')]
         [validateSet('AddScript', 'RemoveScript')]
         [string]$PSProfile = 'Ignore',
@@ -82,15 +73,18 @@ Function Set-PSConfigFileExecution {
         [string]$PSModule = 'Ignore',
         [Parameter(ParameterSetName = 'Module')]
         [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.psm1') })]
-        [System.IO.FileInfo]$PathToPSM1File,
-        [switch]$ExecuteNow = $false
+        [System.IO.FileInfo]$PathToPSM1File
     )
 
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
 
         $module = Get-Module PSConfigFile
@@ -166,11 +160,6 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 
 
         }
-        if ($ExecuteNow) {
-            Clear-Host
-            Invoke-PSConfigFile -ConfigFile $($confile.FullName)
-        }
-
     }
 
 

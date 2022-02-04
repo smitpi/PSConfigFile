@@ -60,32 +60,46 @@ Adds default location to the config file.
 .DESCRIPTION
 Adds default location to the config file.
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
+.PARAMETER LocationType
+Is the location a folder or a PS-Drive.
 
 .PARAMETER Path
-Path or PS Drive to set location to.
+Path to the folder or the PS-Drive name.
 
 .EXAMPLE
-Add-LocationToPSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json -Path c:\temp
+Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
+
+.EXAMPLE
+Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
 
 #>
 Function Add-LocationToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
     PARAM(
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
-        [ValidateScript( { ( Test-Path $_) -or ( Get-PSDrive $_) })]
+        [Parameter(Mandatory = $true)]
+        [validateSet('PSDrive', 'Folder')]
+        [string]$LocationType,
+        [Parameter(Mandatory = $true)]
+        [ValidateScript( { ( Test-Path $_) -or ( [bool](Get-PSDrive $_)) })]
         [string]$Path
     )
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
     try {
-        if ([bool](Get-PSDrive $Path) -like $true ) { [string]$AddPath = (Get-PSDrive $Path).name }
-        else { [string]$AddPath = (Get-Item $path).FullName }
+        if ($LocationType -like 'PSDrive') {
+            $check = Get-PSDrive $Path -ErrorAction Stop
+            [string]$AddPath = "$($path)"
+        }
+        if ($LocationType -like 'Folder') {
+            [string]$AddPath = (Get-Item $path).FullName
+        }
     }
     catch { throw 'Could not find path' }
 
@@ -103,6 +117,11 @@ Function Add-LocationToPSConfigFile {
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
     }
-    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'Location added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    }
+    catch { Write-Error "Error: `n $_" }
 
 } #end Function

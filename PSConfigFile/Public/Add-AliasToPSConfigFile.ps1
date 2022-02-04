@@ -51,9 +51,6 @@ Creates Shortcuts (Aliases) to commands or script blocks
 .DESCRIPTION
 Creates Shortcuts (Aliases) to commands or script blocks
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .PARAMETER AliasName
 Name to use for the command
 
@@ -61,14 +58,12 @@ Name to use for the command
 Command to run in a string format
 
 .EXAMPLE
-Add-AliasToPSConfigFile -ConfigFile $PSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
+Add-AliasToPSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
 
 #>
 Function Add-AliasToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile')]
     PARAM(
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
         [ValidateNotNullOrEmpty()]
         [string]$AliasName,
         [ValidateNotNullOrEmpty()]
@@ -76,17 +71,22 @@ Function Add-AliasToPSConfigFile {
     )
 
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms$
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 
     $Update = @()
     $SetAlias = @{}
 
-    if ($Json.PSAlias.Default -eq 'Default') {
+    if ($Json.PSAlias.psobject.Properties.name -like 'Default' -and
+        $Json.PSAlias.psobject.Properties.value -like 'Default') {
         $SetAlias = @{
             $AliasName = $CommandToRun
         }
@@ -111,6 +111,10 @@ Function Add-AliasToPSConfigFile {
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
     }
-    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
-
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'Alias added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    }
+    catch { Write-Error "Error: `n $_" }
 } #end Function

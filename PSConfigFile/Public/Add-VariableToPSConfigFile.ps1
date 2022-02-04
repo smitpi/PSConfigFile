@@ -58,29 +58,28 @@ Adds variable to the config file.
 .DESCRIPTION
 Adds variable to the config file.
 
-.PARAMETER ConfigFile
-Path to the the config file ($PSConfigfile is a default variable created with the config file)
-
 .PARAMETER VariableNames
 The name of the variable. (Needs to exist already)
 
 .EXAMPLE
-Add-VariableToPSConfigFile -ConfigFile $PSConfigFile -VariableNames AzureToken
+Add-VariableToPSConfigFile -VariableNames AzureToken
 
 #>
 Function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
     PARAM(
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
-        [System.IO.FileInfo]$ConfigFile,
         [ValidateScript( { ( Get-Variable $_) })]
         [string[]]$VariableNames
     )
     try {
-        $confile = Get-Item $ConfigFile
-        Test-Path -Path $confile.FullName
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
     }
-    catch { throw 'Incorect file' }
+    catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 
@@ -91,7 +90,8 @@ Function Add-VariableToPSConfigFile {
         $inputtype = $InputVar.Value.GetType()
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
-        if ($Json.SetVariable.Default -eq 'Default') {
+        if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
+            $Json.SetVariable.psobject.Properties.value -like 'Default') {
             $SetVariable = @{
                 $InputVar.Name = $InputVar.Value
             }
@@ -116,6 +116,11 @@ Function Add-VariableToPSConfigFile {
             SetVariable = $SetVariable
             Execute     = $Json.Execute
         }
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Verbose -Force
+        try {
+            $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+            Write-Output 'Variable added'
+            Write-Output "ConfigFile: $($confile.FullName)"
+        }
+        catch { Write-Error "Error: `n $_" }
     }
 } #end Function
