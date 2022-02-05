@@ -33,6 +33,7 @@ Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecutio
 
 
 
+#Requires -Module PSWriteColor
 
 <#
 
@@ -55,11 +56,12 @@ Enable or disable loading of config when your ps profile is loaded.
 .PARAMETER PSModule
 Enable or disable loading of config when a specific module is loaded.
 
-.PARAMETER PathToPSM1File
-Path to the .psm1 file
+.PARAMETER ModuleName
+Name of the module to be updated.
+If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.
 
 .EXAMPLE
-Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
+Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts
 
 #>
 Function Set-PSConfigFileExecution {
@@ -72,8 +74,11 @@ Function Set-PSConfigFileExecution {
         [validateSet('AddScript', 'RemoveScript')]
         [string]$PSModule = 'Ignore',
         [Parameter(ParameterSetName = 'Module')]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.psm1') })]
-        [System.IO.FileInfo]$PathToPSM1File
+        [ValidateScript( {
+                $IsAdmin = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+                if ($IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -and ([bool](Get-Module $_) -or ([bool](Get-Module $_ -ListAvailable)))) { $True }
+                else { Throw 'Invalid Module name and you must be running an elevated prompt to use this fuction.' } })]
+        [string]$ModuleName
     )
 
     try {
@@ -99,14 +104,62 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 "@
 
         if ($PSModule -like 'AddScript') {
+            try {
+                $ModModules = Get-Module $ModuleName
+                if (-not($ModModules)) { $ModModules = Get-Module $ModuleName -ListAvailable }
+                if (-not($ModModules)) { throw 'Module not found' }
 
-            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*#PSConfigFile*' }
-            Set-Content -Value ($ori + $string) -Path $PathToPSM1File -Verbose
+                foreach ($ModModule in $ModModules) {
+
+                    if (-not(Test-Path -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile'))) { $PSConfigFilePath = New-Item -Path $ModModule.ModuleBase -Name PSConfigFile -ItemType Directory }
+                    else { $PSConfigFilePath = Get-Item (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile') }
+
+                    if (-not(Test-Path (Join-Path $PSConfigFilePath.FullName -ChildPath 'PSConfigFile_ScriptToProcess.ps1'))) {
+                        $string | Set-Content -Path (Join-Path $PSConfigFilePath.FullName -ChildPath 'PSConfigFile_ScriptToProcess.ps1') -Force
+                    }
+
+                    $ModModuleManifest = Test-ModuleManifest -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath "\$($ModModule.Name).psd1")
+                    [System.Collections.ArrayList]$newScriptsToProcess = @()
+                    foreach ($Scripts in $ModModuleManifest.Scripts) {
+                        $ScriptPath = Get-Item $Scripts
+                        [void]$newScriptsToProcess.Add("$(($ScriptPath.Directory).Name)\$($ScriptPath.Name)")
+                    }
+
+
+                    [void]$newScriptsToProcess.Add('PSConfigFile\PSConfigFile_ScriptToProcess.ps1')
+                    Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess $newScriptsToProcess
+                    Write-Color '[Updated]', 'Modulename: ', $ModuleName -Color Cyan, Gray, Yellow
+                }
+            }
+            catch { Write-Error "Unable to update Module Manifest: `n $_" }
 
         }
         if ($PSModule -like 'RemoveScript') {
-            $ori = Get-Content $PathToPSM1File | Where-Object { $_ -notlike '*#PSConfigFile*' }
-            Set-Content -Value ($ori) -Path $PathToPSM1File -Verbose
+            try {
+                $ModModules = Get-Module $ModuleName
+                if (-not($ModModules)) { $ModModules = Get-Module $ModuleName -ListAvailable }
+                if (-not($ModModules)) { throw 'Module not found' }
+
+                foreach ($ModModule in $ModModules) {
+                    $ModModuleManifest = Test-ModuleManifest -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath "\$($ModModule.Name).psd1")
+                    [System.Collections.ArrayList]$newScriptsToProcess = @()
+                    foreach ($Scripts in ($ModModuleManifest.Scripts | Where-Object { $_ -notlike '*PSConfigFile*' })) {
+                        $ScriptPath = Get-Item $Scripts
+                        [void]$newScriptsToProcess.Add("$(($ScriptPath.Directory).Name)\$($ScriptPath.Name)")
+                    }
+
+                    if ($null -like $newScriptsToProcess ) {
+                        $null = New-Item -Path $ModModule.ModuleBase -Name 'empty.ps1' -ItemType File -Value '# Because Update-ModuleManifest cant have empty ScriptsToProcess values'
+                        Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess 'empty.ps1'
+                    }
+                    else {
+                        Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess $newScriptsToProcess
+                    }
+                    if (Test-Path -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile')) { Remove-Item -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile') -Recurse -Force }
+                    Write-Color '[Removed]', 'Modulename: ', $ModuleName -Color Cyan, Gray, Yellow
+                }
+            }
+            catch { Write-Error "Unable to update Module Manifest: `n $_" }
         }
         if ($PSProfile -like 'AddScript') {
 
@@ -122,15 +175,18 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 
             if (Test-Path $ps) {
                 $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $ps -Verbose
+                Set-Content -Value ($ori + $string) -Path $ps
+                Write-Color '[Updated]', 'Profile: ', $ps -Color Cyan, Gray, Yellow
             }
             if (Test-Path $ise) {
                 $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $ise -Verbose
+                Set-Content -Value ($ori + $string) -Path $ise
+                Write-Color '[Updated]', 'Profile: ', $ise -Color Cyan, Gray, Yellow
             }
             if (Test-Path $vs) {
                 $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $vs -Verbose
+                Set-Content -Value ($ori + $string) -Path $vs
+                Write-Color '[Updated]', 'Profile: ', $vs -Color Cyan, Gray, Yellow
             }
 
         }
@@ -147,21 +203,22 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 
             if (Test-Path $ps) {
                 $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $ps -Verbose
+                Set-Content -Value ($ori) -Path $ps
+                Write-Color '[Removed]', 'Profile: ', $ps -Color Cyan, Gray, Yellow
             }
             if (Test-Path $ise) {
                 $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $ise -Verbose
+                Set-Content -Value ($ori) -Path $ise
+                Write-Color '[Removed]', 'Profile: ', $ise -Color Cyan, Gray, Yellow
             }
             if (Test-Path $vs) {
                 $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $vs -Verbose
+                Set-Content -Value ($ori) -Path $vs
+                Write-Color '[Removed]', 'Profile: ', $vs -Color Cyan, Gray, Yellow
             }
 
 
         }
     }
-
-
 } #end Function
 
