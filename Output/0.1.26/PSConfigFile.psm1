@@ -1,7 +1,11 @@
+﻿#region Private Functions
+#endregion
+#region Public Functions
+#region Add-AliasToPSConfigFile.ps1
 ############################################
 # source: Add-AliasToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -81,10 +85,14 @@ Function Add-AliasToPSConfigFile {
     catch { Write-Error "Error: `n $_" }
 } #end Function
  
+Export-ModuleMember -Function Add-AliasToPSConfigFile
+#endregion
+ 
+#region Add-CommandToPSConfigFile.ps1
 ############################################
 # source: Add-CommandToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -168,10 +176,14 @@ Function Add-CommandToPSConfigFile {
 
 } #end Function
  
+Export-ModuleMember -Function Add-CommandToPSConfigFile
+#endregion
+ 
+#region Add-LocationToPSConfigFile.ps1
 ############################################
 # source: Add-LocationToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -249,10 +261,14 @@ Function Add-LocationToPSConfigFile {
 
 } #end Function
  
+Export-ModuleMember -Function Add-LocationToPSConfigFile
+#endregion
+ 
+#region Add-PSDriveToPSConfigFile.ps1
 ############################################
 # source: Add-PSDriveToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -328,10 +344,14 @@ Function Add-PSDriveToPSConfigFile {
 } #end Function
 
  
+Export-ModuleMember -Function Add-PSDriveToPSConfigFile
+#endregion
+ 
+#region Add-VariableToPSConfigFile.ps1
 ############################################
 # source: Add-VariableToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -410,10 +430,14 @@ Function Add-VariableToPSConfigFile {
     }
 } #end Function
  
+Export-ModuleMember -Function Add-VariableToPSConfigFile
+#endregion
+ 
+#region Invoke-PSConfigFile.ps1
 ############################################
 # source: Invoke-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -555,10 +579,14 @@ Function Invoke-PSConfigFile {
     }
 } #end Function
  
+Export-ModuleMember -Function Invoke-PSConfigFile
+#endregion
+ 
+#region New-PSConfigFile.ps1
 ############################################
 # source: New-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -647,10 +675,14 @@ Function New-PSConfigFile {
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
 }
  
+Export-ModuleMember -Function New-PSConfigFile
+#endregion
+ 
+#region Set-PSConfigFileExecution.ps1
 ############################################
 # source: Set-PSConfigFileExecution.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -708,9 +740,8 @@ Function Set-PSConfigFileExecution {
         if (![bool]$module) { $module = Get-Module PSConfigFile -ListAvailable }
 
         $string = @"
-
 #PSConfigFile
-`$PSConfigFileModule = get-item `"$((Join-Path $module.ModuleBase \PSConfigFile.psm1 -Resolve))`" #PSConfigFile
+`$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 "@
@@ -835,10 +866,14 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 } #end Function
 
  
+Export-ModuleMember -Function Set-PSConfigFileExecution
+#endregion
+ 
+#region Show-PSConfigFile.ps1
 ############################################
 # source: Show-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.25
+# version: 0.1.26
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -968,3 +1003,7 @@ Function Show-PSConfigFile {
 
 } #end Function
  
+Export-ModuleMember -Function Show-PSConfigFile
+#endregion
+ 
+#endregion

@@ -96,9 +96,8 @@ Function Set-PSConfigFileExecution {
         if (![bool]$module) { $module = Get-Module PSConfigFile -ListAvailable }
 
         $string = @"
-
 #PSConfigFile
-`$PSConfigFileModule = get-item `"$((Join-Path $module.ModuleBase \PSConfigFile.psm1 -Resolve))`" #PSConfigFile
+`$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 "@
