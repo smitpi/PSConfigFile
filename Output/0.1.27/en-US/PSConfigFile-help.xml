@@ -640,13 +640,13 @@
           <dev:defaultValue>Ignore</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>ModuleName</maml:name>
+          <maml:name>PathToPSM1File</maml:name>
           <maml:description>
-            <maml:para>Name of the module to be updated. If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.</maml:para>
+            <maml:para>Path to the .psm1 file</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
           <dev:type>
-            <maml:name>String</maml:name>
+            <maml:name>FileInfo</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -701,13 +701,13 @@
         <dev:defaultValue>Ignore</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>ModuleName</maml:name>
+        <maml:name>PathToPSM1File</maml:name>
         <maml:description>
-          <maml:para>Name of the module to be updated. If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.</maml:para>
+          <maml:para>Path to the .psm1 file</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
-          <maml:name>String</maml:name>
+          <maml:name>FileInfo</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -747,7 +747,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts</dev:code>
+        <dev:code>Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>

@@ -19,7 +19,8 @@ Set-PSConfigFileExecution [-PSProfile <String>] [-WhatIf] [-Confirm] [<CommonPar
 
 ### Module
 ```
-Set-PSConfigFileExecution [-PSModule <String>] [-ModuleName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Set-PSConfigFileExecution [-PSModule <String>] [-PathToPSM1File <FileInfo>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,7 +30,7 @@ Adds functionality to add the execution to your profile or a PowerShell module
 
 ### EXAMPLE 1
 ```
-Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts
+Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -PathToPSM1File C:\Utils\LabScripts\LabScripts.psm1
 ```
 
 ## PARAMETERS
@@ -64,12 +65,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ModuleName
-Name of the module to be updated.
-If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.
+### -PathToPSM1File
+Path to the .psm1 file
 
 ```yaml
-Type: String
+Type: FileInfo
 Parameter Sets: Module
 Aliases:
 

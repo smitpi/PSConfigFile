@@ -5,7 +5,7 @@
 ############################################
 # source: Add-AliasToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -92,7 +92,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ############################################
 # source: Add-CommandToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -183,7 +183,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ############################################
 # source: Add-LocationToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -268,7 +268,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ############################################
 # source: Add-PSDriveToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -351,7 +351,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ############################################
 # source: Add-VariableToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -437,7 +437,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ############################################
 # source: Invoke-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -586,7 +586,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ############################################
 # source: New-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -682,7 +682,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ############################################
 # source: Set-PSConfigFileExecution.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -873,7 +873,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ############################################
 # source: Show-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.26
+# version: 0.1.27
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
