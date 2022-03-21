@@ -1,4 +1,4 @@
-	PARAM(
+`	PARAM(
 		[Parameter(Mandatory = $true)]
 		[ValidateScript( { $IsAdmin = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 				if ($IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { $True }
@@ -24,4 +24,8 @@
 		Get-ChildItem -Directory "C:\Program Files\WindowsPowerShell\Modules\$($ModuleName)" | Compress-Archive -DestinationPath "C:\Program Files\WindowsPowerShell\Modules\$($ModuleName)\$($ModuleName)-bck.zip" -Update
 		Get-ChildItem -Directory "C:\Program Files\WindowsPowerShell\Modules\$($ModuleName)" | Remove-Item -Recurse -Force
 		Copy-Item -Path $newmod.FullName -Destination "C:\Program Files\WindowsPowerShell\Modules\$($ModuleName)\" -Force -Recurse
+
+        Get-ChildItem -Directory "\\dfnas\Profile\Utils\PSModules\$($ModuleName)" | Compress-Archive -DestinationPath "\\dfnas\Profile\Utils\PSModules\$($ModuleName)\$($ModuleName)-bck.zip" -Update
+		Get-ChildItem -Directory "\\dfnas\Profile\Utils\PSModules\$($ModuleName)" | Remove-Item -Recurse -Force
+		Copy-Item -Path $newmod.FullName -Destination "\\dfnas\Profile\Utils\PSModules\$($ModuleName)\" -Force -Recurse
 	} catch {Write-Warning "Unable to copy the new module `nMessage:$($_.Exception.Message)`nItem:$($_.Exception.ItemName)"}
