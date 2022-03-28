@@ -75,7 +75,7 @@ Function Invoke-PSConfigFile {
     try {
         #region import file
         $confile = Get-Item $ConfigFile -ErrorAction Stop
-        $Script:PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
+        $Global:PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
         $PSConfigFileOutput.Add('')
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
