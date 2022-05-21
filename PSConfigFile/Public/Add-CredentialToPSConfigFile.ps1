@@ -113,7 +113,7 @@ Function Add-CredentialToPSConfigFile {
  try {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
-		Add-Type -AssemblyName System.Windows.Forms$
+		Add-Type -AssemblyName System.Windows.Forms
 		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
