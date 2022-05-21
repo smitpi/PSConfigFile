@@ -29,6 +29,7 @@ Documentation can be found at: [Github_Pages](https://smitpi.github.io/PSConfigF
 ## Functions
 - [Add-AliasToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-AliasToPSConfigFile) -- Creates Shortcuts (Aliases) to commands or script blocks
 - [Add-CommandToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-CommandToPSConfigFile) -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
+- [Add-CredentialToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-CredentialToPSConfigFile) -- Creates a self signed cert, then uses it to securely save a credentials to the config file.
 - [Add-LocationToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-LocationToPSConfigFile) -- Adds default location to the config file.
 - [Add-PSDriveToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-PSDriveToPSConfigFile) -- Add PSDrive to the config file.
 - [Add-VariableToPSConfigFile](https://smitpi.github.io/PSConfigFile/#Add-VariableToPSConfigFile) -- Adds variable to the config file.

@@ -1,11 +1,13 @@
 ﻿#region Private Functions
 #endregion
+ 
+ 
 #region Public Functions
 #region Add-AliasToPSConfigFile.ps1
 ############################################
 # source: Add-AliasToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -73,6 +75,7 @@ Function Add-AliasToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $SetAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
@@ -92,7 +95,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ############################################
 # source: Add-CommandToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -161,6 +164,7 @@ Function Add-CommandToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Execute
@@ -179,11 +183,230 @@ Function Add-CommandToPSConfigFile {
 Export-ModuleMember -Function Add-CommandToPSConfigFile
 #endregion
  
+#region Add-CredentialToPSConfigFile.ps1
+############################################
+# source: Add-CredentialToPSConfigFile.ps1
+# Module: PSConfigFile
+# version: 0.1.24
+# Author: Pierre Smit
+# Company: HTPCZA Tech
+#############################################
+ 
+<#
+.SYNOPSIS
+Creates a self signed cert, then uses it to securely save a credentials to the config file.
+
+.DESCRIPTION
+Creates a self signed cert, then uses it to securely save a credentials to the config file.
+
+.EXAMPLE
+Add-CredentialToPSConfigFile
+
+#>
+
+<#
+.SYNOPSIS
+Creates a self signed cert, then uses it to securely save a credentials to the config file.
+
+.DESCRIPTION
+Creates a self signed cert, then uses it to securely save a credentials to the config file. 
+You can export the cert, and install it on other machines. Then you would be able to decrypt the password on those machines.
+
+.PARAMETER CredName
+This name will be used for the variable when invoke command is executed.
+
+.PARAMETER Credentials
+Credential object to be saved.
+
+.PARAMETER ExportPFX
+Select to export a pfx file, that can be installed on other machines.
+
+.PARAMETER ExportPath
+Where to save the pfx file.
+
+.PARAMETER ExportCredentials
+The password will be used to export the pfx file.
+
+.PARAMETER RenewSelfSignedCert
+Creates a new self signed certificate, and re-encrypts the passwords.
+
+.EXAMPLE
+$labcred = get-credential
+Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred
+
+#>
+Function Add-CredentialToPSConfigFile {
+	[Cmdletbinding(DefaultParameterSetName = 'Def', HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile')]
+	[OutputType([System.Object[]])]
+	PARAM(
+		[Parameter(ParameterSetName = 'Def')]
+		[string]$CredName,
+
+		[Parameter(ParameterSetName = 'Def')]
+		[pscredential]$Credentials,
+
+		[Parameter(ParameterSetName = 'Renew')]
+		[switch]$RenewSelfSignedCert = $false,
+
+		[Parameter(ParameterSetName = 'Export')]
+		[switch]$ExportPFX = $false,
+
+		[ValidateScript( { if (Test-Path $_) { $true }
+				else { New-Item -Path $_ -ItemType Directory -Force | Out-Null; $true }
+			})]
+		[Parameter(ParameterSetName = 'Export')]
+		[System.IO.DirectoryInfo]$ExportPath = 'C:\Temp',
+
+		[Parameter(ParameterSetName = 'Export')]
+		[pscredential]$ExportCredentials
+	)
+
+ try {
+		$confile = Get-Item $PSConfigFile -ErrorAction stop
+	} catch {
+		Add-Type -AssemblyName System.Windows.Forms$
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$null = $FileBrowser.ShowDialog()
+		$confile = Get-Item $FileBrowser.FileName
+	}
+
+	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+
+	if ($RenewSelfSignedCert) { 
+		Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
+		$SelfSignedCertParams = @{
+			DnsName           = 'PSConfigFileCert'
+			KeyDescription    = 'PowerShell Credencial Encryption-Decryption Key'
+			Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider'
+			KeyFriendlyName   = 'PSConfigFileCert'
+			FriendlyName      = 'PSConfigFileCert'
+			Subject           = 'PSConfigFileCert'
+			KeyUsage          = 'DataEncipherment'
+			Type              = 'DocumentEncryptionCert'
+			HashAlgorithm     = 'sha256'
+			CertStoreLocation = 'Cert:\\CurrentUser\\My'
+			NotAfter          = (Get-Date).AddMonths(2)
+			KeyExportPolicy   = 'Exportable'
+		} # end params
+		New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
+		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		$Update =@()
+        $RenewCreds = @{}
+        $Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'} | ForEach-Object {
+			$username = $_.value.split(']-')[0].Replace('[', '')
+            $tmpcred = Get-Credential -Credential $username
+            $PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
+		    $PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
+		    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
+		    $EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
+		    if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
+		    else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
+		    $EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
+            $RenewCreds +=  @{
+				"$($_.name)" = "[$($username)]-$($EncryptedPwd)"
+			}
+        }
+        $Update = [psobject]@{
+			Userdata    = $Json.Userdata
+			PSDrive     = $Json.PSDrive
+			PSAlias     = $Json.PSAlias
+			PSCreds     = $RenewCreds
+			SetLocation = $Json.SetLocation
+			SetVariable = $Json.SetVariable
+			Execute     = $Json.Execute
+		}
+		try {
+			$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+			Write-Output 'Credentials Updated'
+			Write-Output "ConfigFile: $($confile.FullName)"
+		} catch { Write-Error "Error: `n $_" }
+		} 
+    elseif ($ExportPFX) {
+            if (-not($ExportCredentials)) {$ExportCredentials = Get-Credential -Message "For exported pfx file"}
+            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		    if (-not($selfcert)) { Write-Error "Certificate does not exist, nothing to export"}
+            else {
+			    if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
+			    else {
+				    $selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $ExportCredentials.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
+			    }
+            }
+		}
+    else {
+		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		if (-not($selfcert)) {
+			$SelfSignedCertParams = @{
+				DnsName           = 'PSConfigFileCert'
+				KeyDescription    = 'PowerShell Credencial Encryption-Decryption Key'
+				Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider'
+				KeyFriendlyName   = 'PSConfigFileCert'
+				FriendlyName      = 'PSConfigFileCert'
+				Subject           = 'PSConfigFileCert'
+				KeyUsage          = 'DataEncipherment'
+				Type              = 'DocumentEncryptionCert'
+				HashAlgorithm     = 'sha256'
+				CertStoreLocation = 'Cert:\\CurrentUser\\My'
+				NotAfter          = (Get-Date).AddMonths(2)
+				KeyExportPolicy   = 'Exportable'
+			} # end params
+			New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
+			$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		}
+        if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
+
+		$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
+		$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
+		[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
+		$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
+		if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
+		else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
+		$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
+	
+		$Update = @()
+		$SetCreds = @{}
+
+		if ($Json.PSCreds.psobject.Properties.name -like 'Default' -and
+			$Json.PSCreds.psobject.Properties.value -like 'Default') {
+			$SetCreds = @{
+				$CredName = "[$($Credentials.UserName)]-$($EncryptedPwd)"
+			}
+		} else {
+			$members = $Json.PSCreds | Get-Member -MemberType NoteProperty
+			foreach ($mem in $members) {
+				$SetCreds += @{
+					$mem.Name = $json.PSCreds.$($mem.Name)
+				}
+			}
+			$SetCreds += @{
+				$CredName = "[$($Credentials.UserName)]-$($EncryptedPwd)"
+			}
+		}
+
+		$Update = [psobject]@{
+			Userdata    = $Json.Userdata
+			PSDrive     = $Json.PSDrive
+			PSAlias     = $Json.PSAlias
+			PSCreds     = $SetCreds
+			SetLocation = $Json.SetLocation
+			SetVariable = $Json.SetVariable
+			Execute     = $Json.Execute
+		}
+		try {
+			$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+			Write-Output 'Credentials added'
+			Write-Output "ConfigFile: $($confile.FullName)"
+		} catch { Write-Error "Error: `n $_" }
+    }
+} #end Function
+ 
+Export-ModuleMember -Function Add-CredentialToPSConfigFile
+#endregion
+ 
 #region Add-LocationToPSConfigFile.ps1
 ############################################
 # source: Add-LocationToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -248,6 +471,7 @@ Function Add-LocationToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
@@ -268,7 +492,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ############################################
 # source: Add-PSDriveToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -331,6 +555,7 @@ Function Add-PSDriveToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $SetPSDrive
         PSAlias     = $Json.PSAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
@@ -351,7 +576,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ############################################
 # source: Add-VariableToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -417,6 +642,7 @@ Function Add-VariableToPSConfigFile {
             Userdata    = $Json.Userdata
             PSDrive     = $Json.PSDrive
             PSAlias     = $Json.PSAlias
+            PSCreds     = $Json.PSCreds
             SetLocation = $Json.SetLocation
             SetVariable = $SetVariable
             Execute     = $Json.Execute
@@ -437,7 +663,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ############################################
 # source: Invoke-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -490,78 +716,113 @@ Function Invoke-PSConfigFile {
         #endregion
 
         #region Set Variables
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                #$PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) `t`t`t`t: $($_.value)"
+                New-Variable -Name $_.name -Value $_.value -Force -Scope global
+            }
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
             $PSConfigFileOutput.Add($output)
-            #$PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) `t`t`t`t: $($_.value)"
-            New-Variable -Name $_.name -Value $_.value -Force -Scope global
-        }
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
-        $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
-        $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+            $PSConfigFileOutput.Add($output)
+            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
+
         #endregion
 
         #region Set PsDrives
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
-            $PSConfigFileOutput.Add($output)
-            if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
-                New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
+                $PSConfigFileOutput.Add($output)
+                if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
+                    New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+                } else { Write-Warning '<w>Warning: PSDrive - Already exists' }
             }
-            else { Write-Warning '<w>Warning: PSDrive - Already exists' }
-        }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
         #region Set Alias
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-        $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-            $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-            $PSConfigFileOutput.Add($output)
-            $command = "function global:$($_.name) {$($_.value)}"
-            $tmp = [scriptblock]::Create($command)
-            $tmp.invoke()
-        }
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
+            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                $command = "function global:$($_.name) {$($_.value)}"
+                $tmp = [scriptblock]::Create($command)
+                $tmp.invoke()
+            }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
+        #endregion
+
+        #region Creds
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+            if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate Expired'}
+            else {
+                $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                    $username = $_.value.split("]-")[0].Replace("[","")
+                    $password = $_.value.split("]-")[-1]
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name),$($username)
+                    $PSConfigFileOutput.Add($output)
+                    $EncryptedBytes = [System.Convert]::FromBase64String($password)
+                    if ($PSVersionTable.PSEdition -like "Desktop") {
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                        }
+                    else {
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+                        }
+                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
+                    New-Variable -Name $_.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global                   
+                }
+            }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
         #region Execute Commands
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-        $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-            $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-            $PSConfigFileOutput.Add($output)
-            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
-            $tmp = [scriptblock]::Create($_.value)
-            $tmp.invoke()
-        }
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $PSConfigFileOutput.Add($output)
+                $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
+                $tmp = [scriptblock]::Create($_.value)
+                $tmp.invoke()
+            }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
 
         #region Set Location
-        if ($null -notlike $JSONParameter.SetLocation) {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
-            $PSConfigFileOutput.Add($output)
-            if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
-            elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
-            else { Write-Error '<e>No valid location found.' }
-        }
+        try {
+            if ($null -notlike $JSONParameter.SetLocation) {
+                $PSConfigFileOutput.Add('<h>  ')
+                $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+                $PSConfigFileOutput.Add($output)
+                if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
+                elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
+                else { Write-Error '<e>No valid location found.' }
+            }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-    }
-    catch {
+    } catch {
         Write-Error "<e>An Error...:`n $_"
     }
 
@@ -572,8 +833,7 @@ Function Invoke-PSConfigFile {
             if ($line -like '<w>*') { Write-Color $line.Replace('<w>', '') -Color DarkYellow }
             if ($line -like '<e>*') { Write-Color $line.Replace('<e>', '') -Color DarkRed }
         }
-    }
-    else {
+    } else {
         Write-Output '[PSConfigFile] Output:'
         Write-Output "[$ConfigFile] Invoke-PSConfigFile Completed:"
     }
@@ -586,7 +846,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ############################################
 # source: New-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -639,11 +899,15 @@ Function New-PSConfigFile {
         $PSAlias = New-Object PSObject -Property @{
             Default = 'Default'
         }
+        $PSCreds = New-Object PSObject -Property @{
+            Default = 'Default'
+        }        
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
             PSAlias     = $PSAlias
+            PSCreds     = $PSCreds
             SetLocation = $SetLocation
             SetVariable = $SetVariable
             Execute     = $Execute
@@ -682,7 +946,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ############################################
 # source: Set-PSConfigFileExecution.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -873,7 +1137,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ############################################
 # source: Show-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.23
+# version: 0.1.24
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################

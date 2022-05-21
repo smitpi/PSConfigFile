@@ -149,18 +149,20 @@ Function Invoke-PSConfigFile {
             $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
             if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate Expired'}
             else {
-                $index = 1
                 $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $("PSConfigFileCreds$($index)"), $($_.name)
+                    $username = $_.value.split("]-")[0].Replace("[","")
+                    $password = $_.value.split("]-")[-1]
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name),$($username)
                     $PSConfigFileOutput.Add($output)
-                    $EncryptedBytes = [System.Convert]::FromBase64String($_.value)
+                    $EncryptedBytes = [System.Convert]::FromBase64String($password)
                     if ($PSVersionTable.PSEdition -like "Desktop") {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)}
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                        }
                     else {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+                        }
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $"PSConfigFileCreds$($index)" -Value (New-Object System.Management.Automation.PSCredential ($_.name, $DecryptedPwd)) -Scope Global
-                    $index++
+                    New-Variable -Name $_.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global                   
                 }
             }
         } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
