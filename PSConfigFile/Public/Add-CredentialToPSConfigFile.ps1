@@ -139,23 +139,23 @@ Function Add-CredentialToPSConfigFile {
 		} # end params
 		New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		$Update =@()
-        $RenewCreds = @{}
-        $Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'} | ForEach-Object {
+		$Update = @()
+		$RenewCreds = @{}
+		$Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'} | ForEach-Object {
 			$username = $_.value.split(']-')[0].Replace('[', '')
-            $tmpcred = Get-Credential -Credential $username
-            $PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
-		    $PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
-		    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
-		    $EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
-		    if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
-		    else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
-		    $EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
-            $RenewCreds +=  @{
+			$tmpcred = Get-Credential -Credential $username
+			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
+			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
+			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
+			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
+			if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
+			else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
+			$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
+			$RenewCreds += @{
 				"$($_.name)" = "[$($username)]-$($EncryptedPwd)"
 			}
-        }
-        $Update = [psobject]@{
+		}
+		$Update = [psobject]@{
 			Userdata    = $Json.Userdata
 			PSDrive     = $Json.PSDrive
 			PSAlias     = $Json.PSAlias
@@ -169,19 +169,17 @@ Function Add-CredentialToPSConfigFile {
 			Write-Output 'Credentials Updated'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }
-		} 
-    elseif ($ExportPFX) {
-            if (-not($ExportCredentials)) {$ExportCredentials = Get-Credential -Message "For exported pfx file"}
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		    if (-not($selfcert)) { Write-Error "Certificate does not exist, nothing to export"}
-            else {
-			    if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
-			    else {
-				    $selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $ExportCredentials.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
-			    }
-            }
+	} elseif ($ExportPFX) {
+		if (-not($ExportCredentials)) {$ExportCredentials = Get-Credential -Message 'For exported pfx file'}
+		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
+		else {
+			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
+			else {
+				$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $ExportCredentials.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
+			}
 		}
-    else {
+	} else {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		if (-not($selfcert)) {
 			$SelfSignedCertParams = @{
@@ -201,7 +199,7 @@ Function Add-CredentialToPSConfigFile {
 			New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 			$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		}
-        if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
+		if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
 
 		$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
 		$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
@@ -245,5 +243,5 @@ Function Add-CredentialToPSConfigFile {
 			Write-Output 'Credentials added'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }
-    }
+	}
 } #end Function

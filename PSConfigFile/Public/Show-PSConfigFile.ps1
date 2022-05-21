@@ -75,12 +75,10 @@ Function Show-PSConfigFile {
                 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
                 $null = $FileBrowser.ShowDialog()
                 $confile = Get-Item $FileBrowser.FileName
-            }
-            else {
+            } else {
                 try {
                     $confile = Get-Item $PSConfigFile -ErrorAction stop
-                }
-                catch {
+                } catch {
                     Add-Type -AssemblyName System.Windows.Forms
                     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
                     $null = $FileBrowser.ShowDialog()
@@ -132,6 +130,15 @@ Function Show-PSConfigFile {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
+            #region Creds
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $username = $_.value.split(']-')[0].Replace('[', '')
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
+                $PSConfigFileOutput.Add($output)
+            }
+            #endregion
 
             # Execute Commands
             $outputfile.Add('<h>  ')
@@ -151,8 +158,7 @@ Function Show-PSConfigFile {
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-        }
-        catch {
+        } catch {
             Write-Warning $_.Exception
             Write-Warning $_.Exception.message
         }

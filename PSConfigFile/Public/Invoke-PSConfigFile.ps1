@@ -146,21 +146,20 @@ Function Invoke-PSConfigFile {
         try {
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-            if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate Expired'}
-            else {
-                $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                    $username = $_.value.split("]-")[0].Replace("[","")
-                    $password = $_.value.split("]-")[-1]
-                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name),$($username)
+            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+                if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate not found or Expired'}
+                else {
+                    $username = $_.value.split(']-')[0].Replace('[', '')
+                    $password = $_.value.split(']-')[-1]
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
                     $PSConfigFileOutput.Add($output)
                     $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                    if ($PSVersionTable.PSEdition -like "Desktop") {
+                    if ($PSVersionTable.PSEdition -like 'Desktop') {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                        }
-                    else {
+                    } else {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                        }
+                    }
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
                     New-Variable -Name $_.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global                   
                 }

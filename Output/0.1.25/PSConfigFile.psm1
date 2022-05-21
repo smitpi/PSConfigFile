@@ -7,7 +7,7 @@
 ############################################
 # source: Add-AliasToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -95,7 +95,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ############################################
 # source: Add-CommandToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -187,7 +187,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ############################################
 # source: Add-CredentialToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -290,23 +290,23 @@ Function Add-CredentialToPSConfigFile {
 		} # end params
 		New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		$Update =@()
-        $RenewCreds = @{}
-        $Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'} | ForEach-Object {
+		$Update = @()
+		$RenewCreds = @{}
+		$Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'} | ForEach-Object {
 			$username = $_.value.split(']-')[0].Replace('[', '')
-            $tmpcred = Get-Credential -Credential $username
-            $PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
-		    $PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
-		    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
-		    $EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
-		    if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
-		    else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
-		    $EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
-            $RenewCreds +=  @{
+			$tmpcred = Get-Credential -Credential $username
+			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
+			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
+			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
+			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
+			if ($PSVersionTable.PSEdition -like 'Desktop') {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)}
+			else {$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)}
+			$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
+			$RenewCreds += @{
 				"$($_.name)" = "[$($username)]-$($EncryptedPwd)"
 			}
-        }
-        $Update = [psobject]@{
+		}
+		$Update = [psobject]@{
 			Userdata    = $Json.Userdata
 			PSDrive     = $Json.PSDrive
 			PSAlias     = $Json.PSAlias
@@ -320,19 +320,17 @@ Function Add-CredentialToPSConfigFile {
 			Write-Output 'Credentials Updated'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }
-		} 
-    elseif ($ExportPFX) {
-            if (-not($ExportCredentials)) {$ExportCredentials = Get-Credential -Message "For exported pfx file"}
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		    if (-not($selfcert)) { Write-Error "Certificate does not exist, nothing to export"}
-            else {
-			    if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
-			    else {
-				    $selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $ExportCredentials.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
-			    }
-            }
+	} elseif ($ExportPFX) {
+		if (-not($ExportCredentials)) {$ExportCredentials = Get-Credential -Message 'For exported pfx file'}
+		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+		if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
+		else {
+			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
+			else {
+				$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $ExportCredentials.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
+			}
 		}
-    else {
+	} else {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		if (-not($selfcert)) {
 			$SelfSignedCertParams = @{
@@ -352,7 +350,7 @@ Function Add-CredentialToPSConfigFile {
 			New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 			$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		}
-        if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
+		if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
 
 		$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
 		$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
@@ -396,7 +394,7 @@ Function Add-CredentialToPSConfigFile {
 			Write-Output 'Credentials added'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }
-    }
+	}
 } #end Function
  
 Export-ModuleMember -Function Add-CredentialToPSConfigFile
@@ -406,7 +404,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ############################################
 # source: Add-LocationToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -492,7 +490,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ############################################
 # source: Add-PSDriveToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -576,7 +574,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ############################################
 # source: Add-VariableToPSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -663,7 +661,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ############################################
 # source: Invoke-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -768,21 +766,20 @@ Function Invoke-PSConfigFile {
         try {
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-            if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate Expired'}
-            else {
-                $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                    $username = $_.value.split("]-")[0].Replace("[","")
-                    $password = $_.value.split("]-")[-1]
-                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name),$($username)
+            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+                if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate not found or Expired'}
+                else {
+                    $username = $_.value.split(']-')[0].Replace('[', '')
+                    $password = $_.value.split(']-')[-1]
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
                     $PSConfigFileOutput.Add($output)
                     $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                    if ($PSVersionTable.PSEdition -like "Desktop") {
+                    if ($PSVersionTable.PSEdition -like 'Desktop') {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                        }
-                    else {
+                    } else {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                        }
+                    }
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
                     New-Variable -Name $_.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global                   
                 }
@@ -846,7 +843,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ############################################
 # source: New-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -946,7 +943,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ############################################
 # source: Set-PSConfigFileExecution.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -1137,7 +1134,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ############################################
 # source: Show-PSConfigFile.ps1
 # Module: PSConfigFile
-# version: 0.1.24
+# version: 0.1.25
 # Author: Pierre Smit
 # Company: HTPCZA Tech
 #############################################
@@ -1175,12 +1172,10 @@ Function Show-PSConfigFile {
                 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
                 $null = $FileBrowser.ShowDialog()
                 $confile = Get-Item $FileBrowser.FileName
-            }
-            else {
+            } else {
                 try {
                     $confile = Get-Item $PSConfigFile -ErrorAction stop
-                }
-                catch {
+                } catch {
                     Add-Type -AssemblyName System.Windows.Forms
                     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
                     $null = $FileBrowser.ShowDialog()
@@ -1232,6 +1227,15 @@ Function Show-PSConfigFile {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
+            #region Creds
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+                $username = $_.value.split(']-')[0].Replace('[', '')
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
+                $PSConfigFileOutput.Add($output)
+            }
+            #endregion
 
             # Execute Commands
             $outputfile.Add('<h>  ')
@@ -1251,8 +1255,7 @@ Function Show-PSConfigFile {
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-        }
-        catch {
+        } catch {
             Write-Warning $_.Exception
             Write-Warning $_.Exception.message
         }
