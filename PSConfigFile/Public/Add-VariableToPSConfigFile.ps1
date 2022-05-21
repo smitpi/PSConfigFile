@@ -112,6 +112,7 @@ Function Add-VariableToPSConfigFile {
             Userdata    = $Json.Userdata
             PSDrive     = $Json.PSDrive
             PSAlias     = $Json.PSAlias
+            PSCreds     = $Json.PSCreds
             SetLocation = $Json.SetLocation
             SetVariable = $SetVariable
             Execute     = $Json.Execute

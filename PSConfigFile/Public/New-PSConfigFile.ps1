@@ -100,11 +100,15 @@ Function New-PSConfigFile {
         $PSAlias = New-Object PSObject -Property @{
             Default = 'Default'
         }
+        $PSCreds = New-Object PSObject -Property @{
+            Default = 'Default'
+        }        
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
             PSAlias     = $PSAlias
+            PSCreds     = $PSCreds
             SetLocation = $SetLocation
             SetVariable = $SetVariable
             Execute     = $Execute

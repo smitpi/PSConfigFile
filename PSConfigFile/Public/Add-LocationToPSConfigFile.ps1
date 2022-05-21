@@ -113,6 +113,7 @@ Function Add-LocationToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute

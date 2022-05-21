@@ -104,6 +104,7 @@ Function Add-PSDriveToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $SetPSDrive
         PSAlias     = $Json.PSAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute

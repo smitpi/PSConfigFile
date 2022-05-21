@@ -107,6 +107,7 @@ Function Add-AliasToPSConfigFile {
         Userdata    = $Json.Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $SetAlias
+        PSCreds     = $Json.PSCreds
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Json.Execute
