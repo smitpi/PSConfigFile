@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -89,7 +89,7 @@ Function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	PARAM(
 		[Parameter(ParameterSetName = 'Def')]
-		[string]$CredName,
+		[SecureString]$CredName,
 
 		[Parameter(ParameterSetName = 'Def')]
 		[pscredential]$Credentials,
