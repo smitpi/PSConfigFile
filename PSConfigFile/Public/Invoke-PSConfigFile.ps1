@@ -115,14 +115,16 @@ Function Invoke-PSConfigFile {
         $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
-            New-Variable -Name $_.name -Value $_.value -Force -Scope global
+            try {
+                New-Variable -Name $_.name -Value $_.value -Force -Scope global -ErrorAction Stop
+            } catch {Write-Warning "<e>Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
         $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
+        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
         $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
     } catch {Write-Warning "<e>Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
 
     #endregion
@@ -181,9 +183,9 @@ Function Invoke-PSConfigFile {
                 }
                 try {
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global  
-                    New-Variable -Name "$($Cred.Name)_DecryptedPwd" -Value $DecryptedPwd -Scope Global
-                    New-Variable -Name "$($Cred.Name)_DecryptedBytes" -Value $DecryptedBytes -Scope Global
+                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop  
+                    New-Variable -Name "$($Cred.Name)_DecryptedPwd" -Value $DecryptedPwd -Scope Global -Force -ErrorAction Stop
+                    New-Variable -Name "$($Cred.Name)_DecryptedBytes" -Value $DecryptedBytes -Scope Global -Force -ErrorAction Stop
                 } catch {Write-Warning "<e>Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
             }
         }
