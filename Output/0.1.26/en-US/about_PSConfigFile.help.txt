@@ -14,27 +14,9 @@ Functions in this module:
 	 Add-LocationToPSConfigFile -- Adds default location to the config file.
 	 Add-PSDriveToPSConfigFile -- Add PSDrive to the config file.
 	 Add-VariableToPSConfigFile -- Adds variable to the config file.
-	 gitpull -- 
-gitpull 
-
-	 gitpush -- 
-gitpush 
-
 	 Invoke-PSConfigFile -- Executes the config from the json file.
 	 New-PSConfigFile -- Creates a new config file
 	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
-	 set-location-AllUsersModules -- 
-set-location-AllUsersModules 
-
-	 set-location-labscripts -- 
-set-location-labscripts 
-
-	 set-location-prodmodules -- 
-set-location-prodmodules 
-
-	 set-location-psmodules -- 
-set-location-psmodules 
-
 	 Set-PSConfigFileExecution -- Adds functionality to add the execution to your profile or a PowerShell module
 	 Show-PSConfigFile -- Display what's configured in the config file.
  
