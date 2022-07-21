@@ -53,7 +53,7 @@ Display what's configured in the config file. But doesn't execute the commands
 Display the output of the last Invoke-PSConfigFile execution.
 
 .PARAMETER OtherConfigFile
-Will show a dialog box to select another config file.
+Path to a previously created config file.
 
 .EXAMPLE
 Show-PSConfigFile -ShowLastInvokeOutput
@@ -63,9 +63,8 @@ Function Show-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param (
         [switch]$ShowLastInvokeOutput,
-        [string]$OtherConfigFile
+        [System.IO.FileInfo]$OtherConfigFile = $PSConfigFile
     )
-
 
     if ($ShowLastInvokeOutput) { $outputfile = $PSConfigFileOutput }
     else {
@@ -92,16 +91,26 @@ Function Show-PSConfigFile {
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
-            if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
+            if ([string]::IsNullOrEmpty($JSONParameter)) { Write-Error 'Valid Parameters file not found'; break }
             $outputfile.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
 
-            # User Data
+            #region User Data
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-            $JSONParameter.Userdata.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-35}: {1,-20}" -f $($_.name), $($_.value)
+            $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
+            #endregion
+
+            #region User Data Modified
+            $outputfile.Add('<h>  ')
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
+            $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $outputfile.Add($output)
+            }
+            #endregion
 
             #Set Variables
             $outputfile.Add('<h>  ')
@@ -130,13 +139,14 @@ Function Show-PSConfigFile {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
+
             #region Creds
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $outputfile.Add('<h>  ')
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
             $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
                 $username = $_.value.split(']-')[0].Replace('[', '')
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
-                $PSConfigFileOutput.Add($output)
+                $outputfile.Add($output)
             }
             #endregion
 

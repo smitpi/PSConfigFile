@@ -84,10 +84,20 @@ Function Invoke-PSConfigFile {
         if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
         #endregion
+
         #region User Data
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-        $JSONParameter.Userdata.PSObject.Properties | ForEach-Object {
+        $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $PSConfigFileOutput.Add($output)
+        }
+        #endregion
+
+        #region User Data Modified
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
+        $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
@@ -167,6 +177,20 @@ Function Invoke-PSConfigFile {
         } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
+        #region Set Location
+        try {
+            if ($null -notlike $JSONParameter.SetLocation) {
+                $PSConfigFileOutput.Add('<h>  ')
+                $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+                $PSConfigFileOutput.Add($output)
+                if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
+                elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
+                else { Write-Error '<e>No valid location found.' }
+            }
+        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
+        #endregion
+
         #region Execute Commands
         try {
             $PSConfigFileOutput.Add('<h>  ')
@@ -182,20 +206,6 @@ Function Invoke-PSConfigFile {
         } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
         #endregion
 
-
-        #region Set Location
-        try {
-            if ($null -notlike $JSONParameter.SetLocation) {
-                $PSConfigFileOutput.Add('<h>  ')
-                $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
-                $PSConfigFileOutput.Add($output)
-                if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
-                elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
-                else { Write-Error '<e>No valid location found.' }
-            }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")

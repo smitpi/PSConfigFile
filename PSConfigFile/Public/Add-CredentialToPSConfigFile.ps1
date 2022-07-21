@@ -61,7 +61,7 @@ Creates a self signed cert, then uses it to securely save a credentials to the c
 Creates a self signed cert, then uses it to securely save a credentials to the config file. 
 You can export the cert, and install it on other machines. Then you would be able to decrypt the password on those machines.
 
-.PARAMETER CredName
+.PARAMETER Name
 This name will be used for the variable when invoke command is executed.
 
 .PARAMETER Credentials
@@ -81,7 +81,7 @@ Creates a new self signed certificate, and re-encrypts the passwords.
 
 .EXAMPLE
 $labcred = get-credential
-Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred
+Add-CredentialToPSConfigFile -Name LabTest -Credentials $labcred
 
 #>
 Function Add-CredentialToPSConfigFile {
@@ -89,7 +89,7 @@ Function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	PARAM(
 		[Parameter(ParameterSetName = 'Def')]
-		[string]$CredName,
+		[string]$Name,
 
 		[Parameter(ParameterSetName = 'Def')]
 		[pscredential]$Credentials,
@@ -120,6 +120,22 @@ Function Add-CredentialToPSConfigFile {
 	}
 
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add Credencial $($Name)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
 
 	if ($RenewSelfSignedCert) { 
 		Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
@@ -156,7 +172,7 @@ Function Add-CredentialToPSConfigFile {
 			}
 		}
 		$Update = [psobject]@{
-			Userdata    = $Json.Userdata
+			Userdata    = $Userdata
 			PSDrive     = $Json.PSDrive
 			PSAlias     = $Json.PSAlias
 			PSCreds     = $RenewCreds
@@ -199,7 +215,7 @@ Function Add-CredentialToPSConfigFile {
 			New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 			$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		}
-		if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($CredName)"}
+		if (-not($Credentials)) {$Credentials = Get-Credential -Message "Credentials for $($Name)"}
 
 		$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
 		$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
@@ -215,7 +231,7 @@ Function Add-CredentialToPSConfigFile {
 		if ($Json.PSCreds.psobject.Properties.name -like 'Default' -and
 			$Json.PSCreds.psobject.Properties.value -like 'Default') {
 			$SetCreds = @{
-				$CredName = "[$($Credentials.UserName)]-$($EncryptedPwd)"
+				$Name = "[$($Credentials.UserName)]-$($EncryptedPwd)"
 			}
 		} else {
 			$members = $Json.PSCreds | Get-Member -MemberType NoteProperty
@@ -225,12 +241,12 @@ Function Add-CredentialToPSConfigFile {
 				}
 			}
 			$SetCreds += @{
-				$CredName = "[$($Credentials.UserName)]-$($EncryptedPwd)"
+				$Name = "[$($Credentials.UserName)]-$($EncryptedPwd)"
 			}
 		}
 
 		$Update = [psobject]@{
-			Userdata    = $Json.Userdata
+			Userdata    = $Userdata
 			PSDrive     = $Json.PSDrive
 			PSAlias     = $Json.PSAlias
 			PSCreds     = $SetCreds

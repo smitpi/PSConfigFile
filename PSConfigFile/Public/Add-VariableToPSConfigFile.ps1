@@ -73,8 +73,7 @@ Function Add-VariableToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -82,6 +81,22 @@ Function Add-VariableToPSConfigFile {
     }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add variable $($VariableNames)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
 
     foreach ($VariableName in $VariableNames) {
         $Update = @()
@@ -95,8 +110,7 @@ Function Add-VariableToPSConfigFile {
             $SetVariable = @{
                 $InputVar.Name = $InputVar.Value
             }
-        }
-        else {
+        } else {
             $members = $Json.SetVariable | Get-Member -MemberType NoteProperty
             foreach ($mem in $members) {
                 $SetVariable += @{
@@ -109,7 +123,7 @@ Function Add-VariableToPSConfigFile {
         }
 
         $Update = [psobject]@{
-            Userdata    = $Json.Userdata
+            Userdata    = $Userdata
             PSDrive     = $Json.PSDrive
             PSAlias     = $Json.PSAlias
             PSCreds     = $Json.PSCreds
@@ -121,7 +135,13 @@ Function Add-VariableToPSConfigFile {
             $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
-        }
-        catch { Write-Error "Error: `n $_" }
+        } catch { Write-Error "Error: `n $_" }
     }
 } #end Function
+
+
+$scriptblock = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Get-Variable | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object {"$($_.name)"}  
+}
+Register-ArgumentCompleter -CommandName Add-VariableToPSConfigFile -ParameterName VariableNames -ScriptBlock $scriptBlock

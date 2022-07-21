@@ -82,10 +82,13 @@ Function New-PSConfigFile {
         $PSAlias = @()
 
         $Userdata = New-Object PSObject -Property @{
-            DomainName                  = $env:USERDNSDOMAIN
-            Userid                      = $env:USERNAME
-            CreatedOn                   = (Get-Date -Format yyyy/MM/dd_HH:MM)
-            PSExecutionPolicyPreference = $env:PSExecutionPolicyPreference
+            Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            CreatedOn         = (Get-Date -Format u)
+            PSExecutionPolicy = $env:PSExecutionPolicyPreference
+            Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
+            Hostname          = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+            PSEdition         = $PSVersionTable.PSEdition
+            OS                = $PSVersionTable.OS
         }
         $SetLocation = New-Object PSObject -Property @{}
         $SetVariable = New-Object PSObject -Property @{
@@ -125,8 +128,7 @@ Function New-PSConfigFile {
 
             $data = DafaultSettings
             $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
-        }
-        else {
+        } else {
 
             Write-Warning 'File exists, renaming file now'
             Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"

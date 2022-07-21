@@ -20,12 +20,9 @@ gitpull
 	 gitpush -- 
 gitpush 
 
-	 importmod -- 
-importmod 
-
 	 Invoke-PSConfigFile -- Executes the config from the json file.
 	 New-PSConfigFile -- Creates a new config file
-	 Remove-ConfigFromPSConfigFile -- Will display existing config with the option to remove it from the config file
+	 Remove-ConfigFromPSConfigFile -- 
 	 set-location-AllUsersModules -- 
 set-location-AllUsersModules 
 

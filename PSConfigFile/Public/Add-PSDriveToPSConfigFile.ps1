@@ -77,6 +77,23 @@ Function Add-PSDriveToPSConfigFile {
     }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add PS Drive $($DriveName)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
+
     $Update = @()
     $SetPSDrive = @{}
     $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
@@ -101,7 +118,7 @@ Function Add-PSDriveToPSConfigFile {
     }
 
     $Update = [psobject]@{
-        Userdata    = $Json.Userdata
+        Userdata    = $Userdata
         PSDrive     = $SetPSDrive
         PSAlias     = $Json.PSAlias
         PSCreds     = $Json.PSCreds

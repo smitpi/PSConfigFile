@@ -38,9 +38,8 @@ Then you would be able to decrypt the password on those machines.
 ### EXAMPLE 1
 ```
 $labcred = get-credential
-```
-
 Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred
+```
 
 ## PARAMETERS
 

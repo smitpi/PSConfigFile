@@ -104,13 +104,30 @@ Function Add-LocationToPSConfigFile {
     catch { throw 'Could not find path' }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add Location $($Path)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
+
     $Update = @()
     $SetLocation = @{}
     $SetLocation += @{
         WorkerDir = $($AddPath)
     }
     $Update = [psobject]@{
-        Userdata    = $Json.Userdata
+        Userdata    = $Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
         PSCreds     = $Json.PSCreds

@@ -90,6 +90,23 @@ Function Add-CommandToPSConfigFile {
 
     ## TODO Allow user to modify the order
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add Command $($ScriptBlockName)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
+
     $Update = @()
     $Execute = @{}
     if ($Json.Execute.psobject.Properties.name -like 'Default' -and
@@ -113,7 +130,7 @@ Function Add-CommandToPSConfigFile {
         }
     }
     $Update = [psobject]@{
-        Userdata    = $Json.Userdata
+        Userdata    = $Userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
         PSCreds     = $Json.PSCreds

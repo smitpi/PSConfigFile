@@ -356,9 +356,10 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$labcred = get-credential</dev:code>
+        <dev:code>$labcred = get-credential
+Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
         <dev:remarks>
-          <maml:para>Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

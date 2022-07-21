@@ -72,8 +72,7 @@ Function Add-AliasToPSConfigFile {
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -81,6 +80,22 @@ Function Add-AliasToPSConfigFile {
     }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add Alias $($AliasName)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
 
     $Update = @()
     $SetAlias = @{}
@@ -90,8 +105,7 @@ Function Add-AliasToPSConfigFile {
         $SetAlias = @{
             $AliasName = $CommandToRun
         }
-    }
-    else {
+    } else {
         $members = $Json.PSAlias | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
             $SetAlias += @{
@@ -104,7 +118,7 @@ Function Add-AliasToPSConfigFile {
     }
 
     $Update = [psobject]@{
-        Userdata    = $Json.Userdata
+        Userdata    = $userdata
         PSDrive     = $Json.PSDrive
         PSAlias     = $SetAlias
         PSCreds     = $Json.PSCreds
@@ -116,6 +130,5 @@ Function Add-AliasToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'Alias added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 } #end Function
