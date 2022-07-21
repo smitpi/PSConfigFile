@@ -13,7 +13,7 @@ Display what's configured in the config file.
 ## SYNTAX
 
 ```
-Show-PSConfigFile [-ShowLastInvokeOutput] [-OtherConfigFile] [<CommonParameters>]
+Show-PSConfigFile [-ShowLastInvokeOutput] [[-OtherConfigFile] <FileInfo>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,16 +45,16 @@ Accept wildcard characters: False
 ```
 
 ### -OtherConfigFile
-Will show a dialog box to select another config file.
+Path to a previously created config file.
 
 ```yaml
-Type: SwitchParameter
+Type: FileInfo
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: False
+Position: 1
+Default value: $PSConfigFile
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

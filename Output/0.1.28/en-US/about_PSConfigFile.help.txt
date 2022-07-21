@@ -22,7 +22,7 @@ gitpush
 
 	 Invoke-PSConfigFile -- Executes the config from the json file.
 	 New-PSConfigFile -- Creates a new config file
-	 Remove-ConfigFromPSConfigFile -- 
+	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
 	 set-location-AllUsersModules -- 
 set-location-AllUsersModules 
 

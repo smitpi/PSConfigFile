@@ -8,58 +8,104 @@ schema: 2.0.0
 # Remove-ConfigFromPSConfigFile
 
 ## SYNOPSIS
-Will display existing config with the option to remove it from the config file
+Removes a item from the config file.
 
 ## SYNTAX
 
 ```
-Remove-ConfigFromPSConfigFile [-Variable] [-PSDrive] [-Alias] [<CommonParameters>]
+Remove-ConfigFromPSConfigFile [[-Variable] <String[]>] [[-PSDrive] <String[]>] [[-PSAlias] <String[]>]
+ [[-Command] <String[]>] [[-Credential] <String[]>] [-Location] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Will display existing config with the option to remove it from the config file
+Removes a item from the config file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Remove-ConfigFromPSConfigFile -Export HTML -ReportPath C:\temp
+Remove-ConfigFromPSConfigFile -PSDrive ProdMods
 ```
 
 ## PARAMETERS
 
 ### -Variable
-{{ Fill Variable Description }}
+Name of the variable to remove.
 
 ```yaml
-Type: SwitchParameter
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: False
+Position: 1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PSDrive
-{{ Fill PSDrive Description }}
+Name of the psdrive to remove.
 
 ```yaml
-Type: SwitchParameter
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: False
+Position: 2
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Alias
-{{ Fill Alias Description }}
+### -PSAlias
+Name of the Alias to remove.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Command
+Name of the Command to remove.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Credential
+Name of the Credential to remove.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Location
+Set Location to blank again.
 
 ```yaml
 Type: SwitchParameter
@@ -80,7 +126,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Object[]
 ## NOTES
 
 ## RELATED LINKS

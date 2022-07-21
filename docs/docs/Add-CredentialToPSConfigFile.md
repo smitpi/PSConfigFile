@@ -14,7 +14,7 @@ Creates a self signed cert, then uses it to securely save a credentials to the c
 
 ### Def (Default)
 ```
-Add-CredentialToPSConfigFile [-CredName <SecureString>] [-Credentials <PSCredential>] [<CommonParameters>]
+Add-CredentialToPSConfigFile [-Name <String>] [-Credentials <PSCredential>] [<CommonParameters>]
 ```
 
 ### Renew
@@ -38,16 +38,17 @@ Then you would be able to decrypt the password on those machines.
 ### EXAMPLE 1
 ```
 $labcred = get-credential
-Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred
 ```
+
+Add-CredentialToPSConfigFile -Name LabTest -Credentials $labcred
 
 ## PARAMETERS
 
-### -CredName
+### -Name
 This name will be used for the variable when invoke command is executed.
 
 ```yaml
-Type: SecureString
+Type: String
 Parameter Sets: Def
 Aliases:
 

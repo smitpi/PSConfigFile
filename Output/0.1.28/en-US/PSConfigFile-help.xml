@@ -186,13 +186,13 @@
       <command:syntaxItem>
         <maml:name>Add-CredentialToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>CredName</maml:name>
+          <maml:name>Name</maml:name>
           <maml:description>
             <maml:para>This name will be used for the variable when invoke command is executed.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">SecureString</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>SecureString</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -265,13 +265,13 @@
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>CredName</maml:name>
+        <maml:name>Name</maml:name>
         <maml:description>
           <maml:para>This name will be used for the variable when invoke command is executed.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">SecureString</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
-          <maml:name>SecureString</maml:name>
+          <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -356,10 +356,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$labcred = get-credential
-Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
+        <dev:code>$labcred = get-credential</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Add-CredentialToPSConfigFile -Name LabTest -Credentials $labcred</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -776,41 +775,79 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
       <command:verb>Remove</command:verb>
       <command:noun>ConfigFromPSConfigFile</command:noun>
       <maml:description>
-        <maml:para>Will display existing config with the option to remove it from the config file</maml:para>
+        <maml:para>Removes a item from the config file.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Will display existing config with the option to remove it from the config file</maml:para>
+      <maml:para>Removes a item from the config file.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Remove-ConfigFromPSConfigFile</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Variable</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Variable Description }}</maml:para>
+            <maml:para>Name of the variable to remove.</maml:para>
           </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
-            <maml:name>SwitchParameter</maml:name>
+            <maml:name>String[]</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>PSDrive</maml:name>
           <maml:description>
-            <maml:para>{{ Fill PSDrive Description }}</maml:para>
+            <maml:para>Name of the psdrive to remove.</maml:para>
           </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
-            <maml:name>SwitchParameter</maml:name>
+            <maml:name>String[]</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>PSAlias</maml:name>
+          <maml:description>
+            <maml:para>Name of the Alias to remove.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>Command</maml:name>
+          <maml:description>
+            <maml:para>Name of the Command to remove.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>Name of the Credential to remove.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Alias</maml:name>
+          <maml:name>Location</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Alias Description }}</maml:para>
+            <maml:para>Set Location to blank again.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -821,34 +858,70 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Variable</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Variable Description }}</maml:para>
+          <maml:para>Name of the variable to remove.</maml:para>
         </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
-          <maml:name>SwitchParameter</maml:name>
+          <maml:name>String[]</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>PSDrive</maml:name>
         <maml:description>
-          <maml:para>{{ Fill PSDrive Description }}</maml:para>
+          <maml:para>Name of the psdrive to remove.</maml:para>
         </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
-          <maml:name>SwitchParameter</maml:name>
+          <maml:name>String[]</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>PSAlias</maml:name>
+        <maml:description>
+          <maml:para>Name of the Alias to remove.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>Command</maml:name>
+        <maml:description>
+          <maml:para>Name of the Command to remove.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>Name of the Credential to remove.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Alias</maml:name>
+        <maml:name>Location</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Alias Description }}</maml:para>
+          <maml:para>Set Location to blank again.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
@@ -859,16 +932,7 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
       </command:parameter>
     </command:parameters>
     <command:inputTypes />
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object[]</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
+    <command:returnValues />
     <maml:alertSet>
       <maml:alert>
         <maml:para></maml:para>
@@ -877,7 +941,7 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Remove-ConfigFromPSConfigFile -Export HTML -ReportPath C:\temp</dev:code>
+        <dev:code>Remove-ConfigFromPSConfigFile -PSDrive ProdMods</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
@@ -1080,21 +1144,22 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Show-PSConfigFile</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>OtherConfigFile</maml:name>
+          <maml:description>
+            <maml:para>Path to a previously created config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
+          <dev:type>
+            <maml:name>FileInfo</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>$PSConfigFile</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>ShowLastInvokeOutput</maml:name>
           <maml:description>
             <maml:para>Display the output of the last Invoke-PSConfigFile execution.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>OtherConfigFile</maml:name>
-          <maml:description>
-            <maml:para>Will show a dialog box to select another config file.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -1117,17 +1182,17 @@ Add-CredentialToPSConfigFile -CredName LabTest -Credentials $labcred</dev:code>
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>OtherConfigFile</maml:name>
         <maml:description>
-          <maml:para>Will show a dialog box to select another config file.</maml:para>
+          <maml:para>Path to a previously created config file.</maml:para>
         </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
-          <maml:name>SwitchParameter</maml:name>
+          <maml:name>FileInfo</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
+        <dev:defaultValue>$PSConfigFile</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes />

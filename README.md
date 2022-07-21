@@ -38,7 +38,7 @@ gitpush
 
 - [`Invoke-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile) -- Executes the config from the json file.
 - [`New-PSConfigFile`](https://smitpi.github.io/PSConfigFile/New-PSConfigFile) -- Creates a new config file
-- [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- 
+- [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a item from the config file.
 - [`set-location-AllUsersModules`](https://smitpi.github.io/PSConfigFile/set-location-AllUsersModules) -- 
 set-location-AllUsersModules 
 
