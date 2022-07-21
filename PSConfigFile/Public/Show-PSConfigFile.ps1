@@ -63,21 +63,21 @@ Function Show-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param (
         [switch]$ShowLastInvokeOutput,
-        [switch]$OtherConfigFile
+        [string]$OtherConfigFile
     )
 
 
     if ($ShowLastInvokeOutput) { $outputfile = $PSConfigFileOutput }
     else {
         try {
-            if ($OtherConfigFile) {
+            if ([string]::IsNullOrEmpty($OtherConfigFile)) {
                 Add-Type -AssemblyName System.Windows.Forms
                 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
                 $null = $FileBrowser.ShowDialog()
                 $confile = Get-Item $FileBrowser.FileName
             } else {
                 try {
-                    $confile = Get-Item $PSConfigFile -ErrorAction stop
+                    $confile = Get-Item $OtherConfigFile -ErrorAction stop
                 } catch {
                     Add-Type -AssemblyName System.Windows.Forms
                     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }

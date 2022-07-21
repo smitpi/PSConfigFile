@@ -89,7 +89,7 @@ Function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	PARAM(
 		[Parameter(ParameterSetName = 'Def')]
-		[SecureString]$CredName,
+		[string]$CredName,
 
 		[Parameter(ParameterSetName = 'Def')]
 		[pscredential]$Credentials,
