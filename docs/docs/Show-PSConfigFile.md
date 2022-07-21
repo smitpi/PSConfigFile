@@ -54,7 +54,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: $PSConfigFile
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

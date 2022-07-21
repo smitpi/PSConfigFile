@@ -63,7 +63,7 @@ Function Show-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param (
         [switch]$ShowLastInvokeOutput,
-        [System.IO.FileInfo]$OtherConfigFile = $PSConfigFile
+        [System.IO.FileInfo]$OtherConfigFile
     )
 
     if ($ShowLastInvokeOutput) { $outputfile = $PSConfigFileOutput }
@@ -107,7 +107,7 @@ Function Show-PSConfigFile {
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
             $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
             #endregion
@@ -168,10 +168,7 @@ Function Show-PSConfigFile {
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-        } catch {
-            Write-Warning $_.Exception
-            Write-Warning $_.Exception.message
-        }
+        } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
     }
 
     foreach ($line in $outputfile) {

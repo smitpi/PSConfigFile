@@ -1154,7 +1154,7 @@
             <maml:name>FileInfo</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>$PSConfigFile</dev:defaultValue>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>ShowLastInvokeOutput</maml:name>
@@ -1192,7 +1192,7 @@
           <maml:name>FileInfo</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>$PSConfigFile</dev:defaultValue>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes />

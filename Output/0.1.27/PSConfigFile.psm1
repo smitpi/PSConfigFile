@@ -3,7 +3,7 @@
 ######## Function 1 of 11 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -107,7 +107,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ######## Function 2 of 11 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -219,7 +219,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 3 of 11 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -455,7 +455,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 4 of 11 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -561,7 +561,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 11 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -665,7 +665,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 6 of 11 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -775,11 +775,11 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 7 of 11 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:52:25
+# ModifiedOn:       2022/07/21 17:57:44
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -809,8 +809,8 @@ Function Invoke-PSConfigFile {
         [switch]$DisplayOutput = $false
     )
 
+    #region import file
     try {
-        #region import file
         $confile = Get-Item $ConfigFile -ErrorAction Stop
         $Script:PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
         $PSConfigFileOutput.Add('')
@@ -820,135 +820,144 @@ Function Invoke-PSConfigFile {
         $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
         if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
-        #endregion
+    } catch {Write-Warning "<e>Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
+    #endregion
 
-        #region User Data
+    #region User Data
+    try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
         $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
-        #endregion
+    } catch {Write-Warning "<e>Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
+    #endregion
 
-        #region User Data Modified
+    #region User Data Modified
+    try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
         $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
-        #endregion
+    } catch {Write-Warning "<e>Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
+    #endregion
 
-        #region Set Variables
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $PSConfigFileOutput.Add($output)
-                #$PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($_.name) `t`t`t`t: $($_.value)"
-                New-Variable -Name $_.name -Value $_.value -Force -Scope global
-            }
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
+    #region Set Variables
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+            New-Variable -Name $_.name -Value $_.value -Force -Scope global
+        }
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
+    } catch {Write-Warning "<e>Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
+
+    #endregion
+
+    #region Set PsDrives
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+        $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
             $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
+            if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
+                New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+            } else { Write-Warning '<w>Warning: PSDrive - Already exists'; $PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
+        }
+    } catch {Write-Warning "<e>Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    #endregion
 
-        #endregion
+    #region Set Alias
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
+        $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+            $tmp = $null
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $PSConfigFileOutput.Add($output)
+            $command = "function global:$($_.name) {$($_.value)}"
+            $tmp = [scriptblock]::Create($command)
+            $tmp.invoke()
+        }
+    } catch {Write-Warning "<e>Error Alias: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Alias: Message:$($_.Exception.Message)")}
+    #endregion
 
-        #region Set PsDrives
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
+    #region Creds
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+        $JsonCred = $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name 
+        foreach ($Cred in $JsonCred) {
+            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+            if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate not found or Expired'}
+            else {
+                $username = $Cred.value.split(']-')[0].Replace('[', '')
+                $password = $Cred.value.split(']-')[-1]
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($Cred.name), $($username)
                 $PSConfigFileOutput.Add($output)
-                if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
-                    New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
-                } else { Write-Warning '<w>Warning: PSDrive - Already exists' }
-            }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
-
-        #region Set Alias
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $tmp = $null
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $PSConfigFileOutput.Add($output)
-                $command = "function global:$($_.name) {$($_.value)}"
-                $tmp = [scriptblock]::Create($command)
-                $tmp.invoke()
-            }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
-
-        #region Creds
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-                if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate not found or Expired'}
-                else {
-                    $username = $_.value.split(']-')[0].Replace('[', '')
-                    $password = $_.value.split(']-')[-1]
-                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
-                    $PSConfigFileOutput.Add($output)
-                    $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                    if ($PSVersionTable.PSEdition -like 'Desktop') {
+                $EncryptedBytes = [System.Convert]::FromBase64String($password)
+                if ($PSVersionTable.PSEdition -like 'Desktop') {
+                    try {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                    } else {
+                    } catch {Write-Warning "<e>Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+                } else {
+                    try {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                    }
-                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $_.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global                   
+                    } catch {Write-Warning "<e>Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
                 }
+                try {
+                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
+                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global  
+                    New-Variable -Name "$($Cred.Name)_DecryptedPwd" -Value $DecryptedPwd -Scope Global
+                    New-Variable -Name "$($Cred.Name)_DecryptedBytes" -Value $DecryptedBytes -Scope Global
+                } catch {Write-Warning "<e>Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
             }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
+        }
+    } catch {Write-Warning "<e>Error Credentials: `n`tMessage:$($_.Exception.Message)"}
+    #endregion
 
-        #region Set Location
-        try {
-            if ($null -notlike $JSONParameter.SetLocation) {
-                $PSConfigFileOutput.Add('<h>  ')
-                $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
-                $PSConfigFileOutput.Add($output)
-                if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
-                elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
-                else { Write-Error '<e>No valid location found.' }
-            }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
-
-        #region Execute Commands
-        try {
+    #region Set Location
+    try {
+        if ($null -notlike $JSONParameter.SetLocation) {
             $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $tmp = $null
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $PSConfigFileOutput.Add($output)
-                $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
-                $tmp = [scriptblock]::Create($_.value)
-                $tmp.invoke()
-            }
-        } catch {Write-Warning "<e>Error: `n`tMessage:$($_.Exception.Message)"}
-        #endregion
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+            $PSConfigFileOutput.Add($output)
+            if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
+            elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
+            else { Write-Error '<e>No valid location found.' }
+        }
+    } catch {Write-Warning "<e>Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+    #endregion
 
+    #region Execute Commands
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+        $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+            $tmp = $null
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $PSConfigFileOutput.Add($output)
+            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
+            $tmp = [scriptblock]::Create($_.value)
+            $tmp.invoke()
+        }
+    } catch {Write-Warning "<e>Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
+    #endregion
 
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-    } catch {
-        Write-Error "<e>An Error...:`n $_"
-    }
+    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
 
     if ($DisplayOutput) {
         foreach ($line in $PSConfigFileOutput) {
@@ -961,6 +970,7 @@ Function Invoke-PSConfigFile {
         Write-Output '[PSConfigFile] Output:'
         Write-Output "[$ConfigFile] Invoke-PSConfigFile Completed:"
     }
+    
 } #end Function
  
 Export-ModuleMember -Function Invoke-PSConfigFile
@@ -970,7 +980,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 8 of 11 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1075,11 +1085,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 9 of 11 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/07/21 06:08:48
+# ModifiedOn:       2022/07/21 06:51:18
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1133,6 +1143,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     [System.Collections.Generic.List[pscustomobject]]$JsonConfig = @()
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
+    $userdataModAction = "Removed Config:`n"
 
     if (-not([string]::IsNullOrEmpty($Variable))) {
         $userdataModAction += "Remove Variable $($Variable)`n"
@@ -1141,22 +1152,22 @@ Function Remove-ConfigFromPSConfigFile {
 
     if (-not([string]::IsNullOrEmpty($PSDrive))) {
         $userdataModAction += "Remove PSDrive $($PSDrive)`n"
-        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike $PSDrive} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
+        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$PSDrive*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
     if (-not([string]::IsNullOrEmpty($PSAlias))) {
         $userdataModAction += "Remove Alias $($PSAlias)`n"
-        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "$PSAlias"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
+        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$PSAlias*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
     } else {$SetPSAlias = $JsonConfig.PSAlias}
 
     if (-not([string]::IsNullOrEmpty($Command))) { 
         $userdataModAction += "Remove Command $($Command)`n"
-        $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "$Command"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
+        $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Command*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
     if (-not([string]::IsNullOrEmpty($Credential))) { 
         $userdataModAction += "Remove Credential $($Credential)`n"
-        $JsonConfig.PSCreds.PSObject.Properties | Where-Object {$_.name -notlike "$Credential"} | ForEach-Object {$SetCreds += @{$_.name = $_.value}}
+        $JsonConfig.PSCreds.PSObject.Properties | Where-Object {$_.name -notlike "*$Credential*"} | ForEach-Object {$SetCreds += @{$_.name = $_.value}}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
     if ($Location) {
@@ -1176,7 +1187,7 @@ Function Remove-ConfigFromPSConfigFile {
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = $userdataModAction | Out-String
+            ModifiedAction = ($userdataModAction | Out-String).Trim()
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -1206,7 +1217,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 10 of 11 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1400,11 +1411,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 11 of 11 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.26
+# ModuleVersion:    0.1.27
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:54:18
+# ModifiedOn:       2022/07/21 17:59:32
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1429,7 +1440,7 @@ Function Show-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Show-PSConfigFile')]
     param (
         [switch]$ShowLastInvokeOutput,
-        [System.IO.FileInfo]$OtherConfigFile = $PSConfigFile
+        [System.IO.FileInfo]$OtherConfigFile
     )
 
     if ($ShowLastInvokeOutput) { $outputfile = $PSConfigFileOutput }
@@ -1473,7 +1484,7 @@ Function Show-PSConfigFile {
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
             $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
             #endregion
@@ -1534,10 +1545,7 @@ Function Show-PSConfigFile {
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
-        } catch {
-            Write-Warning $_.Exception
-            Write-Warning $_.Exception.message
-        }
+        } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
     }
 
     foreach ($line in $outputfile) {
