@@ -10,13 +10,14 @@ NOTES
 Functions in this module:
 	 Add-AliasToPSConfigFile -- Creates Shortcuts (Aliases) to commands or script blocks
 	 Add-CommandToPSConfigFile -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
-	 Add-CredentialToPSConfigFile -- Creates a self signed cert, then uses it to securely save a credentials to the config file.
+	 Add-CredentialToPSConfigFile -- Creates a self signed cert, then uses it to securely save a credential to the config file.
 	 Add-LocationToPSConfigFile -- Adds default location to the config file.
 	 Add-PSDriveToPSConfigFile -- Add PSDrive to the config file.
 	 Add-VariableToPSConfigFile -- Adds variable to the config file.
 	 Invoke-PSConfigFile -- Executes the config from the json file.
 	 New-PSConfigFile -- Creates a new config file
 	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
+	 Set-CredentialsInPSConfigFile -- Allows you to renew the certificate,saved passwords and export/import pfx file
 	 Set-PSConfigFileExecution -- Adds functionality to add the execution to your profile or a PowerShell module
 	 Show-PSConfigFile -- Display what's configured in the config file.
  

@@ -163,13 +163,14 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
         $JsonCred = $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name 
-        foreach ($Cred in $JsonCred) {
+        foreach ($Cred in ($JsonCred | Where-Object {$_.name -like "*$($PSVersionTable.PSEdition)*"})) {
             $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
             if ($selfcert.NotAfter -lt (Get-Date)) {Write-Error 'Certificate not found or Expired'}
             else {
+                $credname = $Cred.Name.Split('_')[0]
                 $username = $Cred.value.split(']-')[0].Replace('[', '')
                 $password = $Cred.value.split(']-')[-1]
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($Cred.name), $($username)
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
                 $PSConfigFileOutput.Add($output)
                 $EncryptedBytes = [System.Convert]::FromBase64String($password)
                 if ($PSVersionTable.PSEdition -like 'Desktop') {
@@ -183,7 +184,7 @@ Function Invoke-PSConfigFile {
                 }
                 try {
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
+                    New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
                 } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
             }
         }
