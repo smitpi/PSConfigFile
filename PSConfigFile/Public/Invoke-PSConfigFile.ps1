@@ -10,7 +10,7 @@
 
 .COPYRIGHT
 
-.TAGS powershell ps
+.TAGS PowerShell ps
 
 .LICENSEURI
 
@@ -60,7 +60,7 @@ Path to the the config file that was created by New-PSConfigFile
 By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile C:\Temp\jdh\PSCustomConfig.json
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSCustomConfig.json
 
 #>
 Function Invoke-PSConfigFile {
@@ -175,18 +175,18 @@ Function Invoke-PSConfigFile {
                 if ($PSVersionTable.PSEdition -like 'Desktop') {
                     try {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
                 } else {
                     try {
                         $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
                 }
                 try {
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
                     New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop  
                     New-Variable -Name "$($Cred.Name)_DecryptedPwd" -Value $DecryptedPwd -Scope Global -Force -ErrorAction Stop
                     New-Variable -Name "$($Cred.Name)_DecryptedBytes" -Value $DecryptedBytes -Scope Global -Force -ErrorAction Stop
-                } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+                } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
             }
         }
     } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
