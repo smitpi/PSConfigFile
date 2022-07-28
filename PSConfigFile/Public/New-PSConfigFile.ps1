@@ -91,6 +91,13 @@ Function New-PSConfigFile {
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
                 PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+                ModifiedData      = [PSCustomObject]@{
+                    ModifiedDate   = 'None'
+                    ModifiedUser   = 'None'
+                    ModifiedAction = 'None'
+                    Path           = 'None'
+                    Hostname       = 'None'
+                }
             }
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
         
@@ -122,7 +129,6 @@ Function New-PSConfigFile {
         }
 
     }
-
 
     $Fullpath = Get-Item $ConfigDir
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {

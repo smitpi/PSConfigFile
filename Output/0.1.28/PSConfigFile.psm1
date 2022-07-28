@@ -984,7 +984,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/28 17:00:54
+# ModifiedOn:       2022/07/28 18:08:21
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1027,6 +1027,13 @@ Function New-PSConfigFile {
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
                 PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+                ModifiedData      = [PSCustomObject]@{
+                    ModifiedDate   = 'None'
+                    ModifiedUser   = 'None'
+                    ModifiedAction = 'None'
+                    Path           = 'None'
+                    Hostname       = 'None'
+                }
             }
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
         
@@ -1058,7 +1065,6 @@ Function New-PSConfigFile {
         }
 
     }
-
 
     $Fullpath = Get-Item $ConfigDir
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
