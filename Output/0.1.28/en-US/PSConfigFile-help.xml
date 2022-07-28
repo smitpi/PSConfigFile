@@ -761,7 +761,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>New-PSConfigFile -ConfigDir C:\Temp\jdh</dev:code>
+        <dev:code>New-PSConfigFile -ConfigDir C:\Temp\config</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>

@@ -3,7 +3,7 @@
 ######## Function 1 of 11 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -107,7 +107,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ######## Function 2 of 11 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -219,7 +219,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 3 of 11 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -455,7 +455,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 4 of 11 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -561,7 +561,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 11 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -665,7 +665,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 6 of 11 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -775,11 +775,11 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 7 of 11 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/28 07:02:18
+# ModifiedOn:       2022/07/28 16:47:49
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -920,9 +920,7 @@ Function Invoke-PSConfigFile {
                 }
                 try {
                     $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop  
-                    New-Variable -Name "$($Cred.Name)_DecryptedPwd" -Value $DecryptedPwd -Scope Global -Force -ErrorAction Stop
-                    New-Variable -Name "$($Cred.Name)_DecryptedBytes" -Value $DecryptedBytes -Scope Global -Force -ErrorAction Stop
+                    New-Variable -Name $Cred.name -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
                 } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
             }
         }
@@ -982,11 +980,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 8 of 11 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:45:58
+# ModifiedOn:       2022/07/28 17:00:54
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1001,7 +999,7 @@ Creates a new config file. If a config file already exists in that folder, it wi
 Directory to create config file
 
 .EXAMPLE
- New-PSConfigFile -ConfigDir C:\Temp\jdh
+ New-PSConfigFile -ConfigDir C:\Temp\config
 
 #>
 Function New-PSConfigFile {
@@ -1019,15 +1017,19 @@ Function New-PSConfigFile {
         $Execute = @()
         $PSAlias = @()
 
-        $Userdata = New-Object PSObject -Property @{
-            Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            CreatedOn         = (Get-Date -Format u)
-            PSExecutionPolicy = $env:PSExecutionPolicyPreference
-            Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
-            Hostname          = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
-            PSEdition         = $PSVersionTable.PSEdition
-            OS                = $PSVersionTable.OS
-        }
+        try {
+            $Userdata = New-Object PSObject -Property @{
+                Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+                CreatedOn         = (Get-Date -Format u)
+                PSExecutionPolicy = $env:PSExecutionPolicyPreference
+                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
+                Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
+                PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
+                OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+                PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+            }
+        } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
+        
         $SetLocation = New-Object PSObject -Property @{}
         $SetVariable = New-Object PSObject -Property @{
             Default = 'Default'
@@ -1087,7 +1089,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 9 of 11 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1219,7 +1221,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 10 of 11 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1413,7 +1415,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 11 of 11 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.28
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05

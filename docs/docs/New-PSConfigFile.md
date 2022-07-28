@@ -24,7 +24,7 @@ If a config file already exists in that folder, it will be renamed.
 
 ### EXAMPLE 1
 ```
-New-PSConfigFile -ConfigDir C:\Temp\jdh
+New-PSConfigFile -ConfigDir C:\Temp\config
 ```
 
 ## PARAMETERS

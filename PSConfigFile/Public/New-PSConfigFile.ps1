@@ -63,7 +63,7 @@ Creates a new config file. If a config file already exists in that folder, it wi
 Directory to create config file
 
 .EXAMPLE
- New-PSConfigFile -ConfigDir C:\Temp\jdh
+ New-PSConfigFile -ConfigDir C:\Temp\config
 
 #>
 Function New-PSConfigFile {
@@ -81,15 +81,19 @@ Function New-PSConfigFile {
         $Execute = @()
         $PSAlias = @()
 
-        $Userdata = New-Object PSObject -Property @{
-            Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            CreatedOn         = (Get-Date -Format u)
-            PSExecutionPolicy = $env:PSExecutionPolicyPreference
-            Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
-            Hostname          = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
-            PSEdition         = $PSVersionTable.PSEdition
-            OS                = $PSVersionTable.OS
-        }
+        try {
+            $Userdata = New-Object PSObject -Property @{
+                Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+                CreatedOn         = (Get-Date -Format u)
+                PSExecutionPolicy = $env:PSExecutionPolicyPreference
+                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
+                Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
+                PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
+                OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+                PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+            }
+        } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
+        
         $SetLocation = New-Object PSObject -Property @{}
         $SetVariable = New-Object PSObject -Property @{
             Default = 'Default'
