@@ -60,34 +60,4 @@
          <lastmod>2022-07-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/gitpull/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/gitpush/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/set-location-AllUsersModules/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/set-location-labscripts/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/set-location-prodmodules/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://smitpi.github.io/PSConfigFile/set-location-psmodules/</loc>
-         <lastmod>2022-07-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
 </urlset>
