@@ -120,7 +120,7 @@ Function Update-CredentialsInPSConfigFile {
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = 'Modified Credencials'
+			ModifiedAction = 'Modified Credentials'
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
