@@ -35,3 +35,4 @@ Documentation can be found at: [Github_Pages](https://smitpi.github.io/PSConfigF
 - [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a item from the config file.
 - [`Set-PSConfigFileExecution`](https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution) -- Adds functionality to add the execution to your profile or a PowerShell module
 - [`Show-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Show-PSConfigFile) -- Display what's configured in the config file.
+- [`Update-CredentialsInPSConfigFile`](https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile) -- Allows you to renew the certificate,saved passwords and export/import pfx file

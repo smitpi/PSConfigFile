@@ -19,6 +19,7 @@ Functions in this module:
 	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
 	 Set-PSConfigFileExecution -- Adds functionality to add the execution to your profile or a PowerShell module
 	 Show-PSConfigFile -- Display what's configured in the config file.
+	 Update-CredentialsInPSConfigFile -- Allows you to renew the certificate,saved passwords and export/import pfx file
  
 SEE ALSO
 	 https://github.com/smitpi/PSConfigFile
