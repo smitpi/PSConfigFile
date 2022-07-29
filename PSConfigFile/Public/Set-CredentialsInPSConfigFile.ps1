@@ -63,12 +63,11 @@ Where to export the .pfx file.
 This password will be used to import or export the .pfx file.
 
 .EXAMPLE
-Set-CredentialsInPSConfigFile -ExportPFX -ExportPath C:\Temp\ 
+Update-CredentialsInPSConfigFile -ExportPFX -ExportPath C:\Temp\ 
 
 #>
-Function Set-CredentialsInPSConfigFile {
-	[Cmdletbinding(DefaultParameterSetName = 'Set1', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-CredentialsInPSConfigFile')]
-	[OutputType([System.Object[]])]
+Function Update-CredentialsInPSConfigFile {
+	[Cmdletbinding(DefaultParameterSetName = 'Renew', HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
 	PARAM(
 		[Parameter(ParameterSetName = 'Renew')]
 		[switch]$RenewSelfSignedCert,
@@ -130,28 +129,16 @@ Function Set-CredentialsInPSConfigFile {
 	function RedoPass {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
-		$RenewCreds = @{}
-		$AllCreds = $Json.PSCreds.PSObject.Properties | Select-Object name, value | Where-Object {$_.value -notlike 'Default'}
+		[System.Collections.ArrayList]$RenewCreds = @()
         
-        foreach ($OtherCred in ($AllCreds | Where-Object {$_.name -notlike "*$($PSVersionTable.PSEdition)*"})) {
-        	$RenewCreds += @{
-					$OtherCred.Name = $OtherCred.value
-				}
-			}
+		foreach ($OtherCred in ($Json.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
+			[void]$RenewCreds.Add($OtherCred)
+		}
         
-        $AllCreds | ForEach-Object { $_.name = $_.name.split("_")[0]}
-        $UniqueCreds = $AllCreds | Sort-Object -Property Name  -Unique      
-          
+		$UniqueCreds = $Json.PSCreds | Sort-Object -Property Name -Unique
         
-        foreach ($cred in $UniqueCreds) {
-			if ($cred.name -like "*_*") {
-				$credname = $cred.name.split("_")[0]
-			}
-			else {
-				$credname = $cred.name
-			}
-			$username = $cred.value.split(']-')[0].Replace('[', '')
-			$tmpcred = Get-Credential -UserName $username -Message "Renew Password"
+		foreach ($cred in $UniqueCreds) {
+			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
 			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
 			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
 			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
@@ -159,15 +146,17 @@ Function Set-CredentialsInPSConfigFile {
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
 				$Edition = 'PSDesktop'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
-            } 
-            else {
+			} else {
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 			}
 			$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
-			$RenewCreds += @{
-				"$($credname)_$($Edition)" = "[$($username)]-$($EncryptedPwd)"
-			}
+			[void]$RenewCreds.Add([PSCustomObject]@{
+					Name         = $cred.name
+					Edition      = $Edition
+					UserName     = $cred.UserName
+					EncryptedPwd = $EncryptedPwd
+				})
 		}
 		$Update = [psobject]@{
 			Userdata    = $Userdata

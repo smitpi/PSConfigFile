@@ -17,7 +17,6 @@ Functions in this module:
 	 Invoke-PSConfigFile -- Executes the config from the json file.
 	 New-PSConfigFile -- Creates a new config file
 	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
-	 Set-CredentialsInPSConfigFile -- Allows you to renew the certificate,saved passwords and export/import pfx file
 	 Set-PSConfigFileExecution -- Adds functionality to add the execution to your profile or a PowerShell module
 	 Show-PSConfigFile -- Display what's configured in the config file.
  

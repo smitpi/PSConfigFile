@@ -91,88 +91,89 @@ Function Add-CredentialToPSConfigFile {
 
 	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
 	$userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
-        ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Credencial $($Name)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
-        }
-    }
+		Owner             = $json.Userdata.Owner
+		CreatedOn         = $json.Userdata.CreatedOn
+		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+		Path              = $json.Userdata.Path
+		Hostname          = $json.Userdata.Hostname
+		PSEdition         = $json.Userdata.PSEdition
+		OS                = $json.Userdata.OS
+		ModifiedData      = [PSCustomObject]@{
+			ModifiedDate   = (Get-Date -Format u)
+			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+			ModifiedAction = "Add Credencial $($Name)"
+			Path           = "$confile"
+			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+		}
+	}
 
+	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+	if (-not($selfcert)) {
+		$SelfSignedCertParams = @{
+			DnsName           = 'PSConfigFileCert'
+			KeyDescription    = 'PowerShell Credencial Encryption-Decryption Key'
+			Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider'
+			KeyFriendlyName   = 'PSConfigFileCert'
+			FriendlyName      = 'PSConfigFileCert'
+			Subject           = 'PSConfigFileCert'
+			KeyUsage          = 'DataEncipherment'
+			Type              = 'DocumentEncryptionCert'
+			HashAlgorithm     = 'sha256'
+			CertStoreLocation = 'Cert:\\CurrentUser\\My'
+			NotAfter          = (Get-Date).AddMonths(2)
+			KeyExportPolicy   = 'Exportable'
+		} # end params
+		New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		if (-not($selfcert)) {
-			$SelfSignedCertParams = @{
-				DnsName           = 'PSConfigFileCert'
-				KeyDescription    = 'PowerShell Credencial Encryption-Decryption Key'
-				Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider'
-				KeyFriendlyName   = 'PSConfigFileCert'
-				FriendlyName      = 'PSConfigFileCert'
-				Subject           = 'PSConfigFileCert'
-				KeyUsage          = 'DataEncipherment'
-				Type              = 'DocumentEncryptionCert'
-				HashAlgorithm     = 'sha256'
-				CertStoreLocation = 'Cert:\\CurrentUser\\My'
-				NotAfter          = (Get-Date).AddMonths(2)
-				KeyExportPolicy   = 'Exportable'
-			} # end params
-			New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
-			$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		}
+	}
 
-		$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
-		$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
-		[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
-		$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
-		if ($PSVersionTable.PSEdition -like 'Desktop') {
-			$Edition = 'PSDesktop'
-			$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
-		}
-		else {
-			$Edition = 'PSCore'
-			$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-		}
-		$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
+	$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
+	$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
+	[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
+	$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
+	if ($PSVersionTable.PSEdition -like 'Desktop') {
+		$Edition = 'PSDesktop'
+		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
+	} else {
+		$Edition = 'PSCore'
+		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+	}
+	$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
 	
-		$Update = @()
-		$SetCreds = @{}
+	$Update = @()
+	[System.Collections.ArrayList]$SetCreds = @()
+		
+	if ($Json.PSCreds.psobject.Properties.name -like 'Default' -and
+		$Json.PSCreds.psobject.Properties.value -like 'Default') {
+				
+		[void]$SetCreds.Add([PSCustomObject]@{
+				Name         = $Name
+				Edition      = $Edition
+				UserName     = $Credential.UserName
+				EncryptedPwd = $EncryptedPwd
+			})
+	} else {
+		$Json.PSCreds | ForEach-Object {$SetCreds.Add($_)}
+		[void]$SetCreds.Add([PSCustomObject]@{
+				Name         = $Name
+				Edition      = $Edition
+				UserName     = $Credential.UserName
+				EncryptedPwd = $EncryptedPwd
+			})
+	}
 
-		if ($Json.PSCreds.psobject.Properties.name -like 'Default' -and
-			$Json.PSCreds.psobject.Properties.value -like 'Default') {
-			$SetCreds = @{
-				"$($Name)_$($Edition)" = "[$($Credential.UserName)] - $($EncryptedPwd)"
-			}
-		} else {
-			$members = $Json.PSCreds | Get-Member -MemberType NoteProperty
-			foreach ($mem in $members) {
-				$SetCreds += @{
-					$mem.Name = $json.PSCreds.$($mem.Name)
-				}
-			}
-			$SetCreds += @{
-				"$($Name)_$($Edition)" = "[$($Credential.UserName)] - $($EncryptedPwd)"
-			}
-		}
-
-		$Update = [psobject]@{
-			Userdata    = $Userdata
-			PSDrive     = $Json.PSDrive
-			PSAlias     = $Json.PSAlias
-			PSCreds     = $SetCreds
-			SetLocation = $Json.SetLocation
-			SetVariable = $Json.SetVariable
-			Execute     = $Json.Execute
-		}
-		try {
-			$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
-			Write-Output 'Credential added'
-			Write-Output "ConfigFile: $($confile.FullName)"
-		} catch { Write-Error "Error: `n $_" }
+	$Update = [psobject]@{
+		Userdata    = $Userdata
+		PSDrive     = $Json.PSDrive
+		PSAlias     = $Json.PSAlias
+		PSCreds     = $SetCreds
+		SetLocation = $Json.SetLocation
+		SetVariable = $Json.SetVariable
+		Execute     = $Json.Execute
+	}
+	try {
+		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+		Write-Output 'Credential added'
+		Write-Output "ConfigFile: $($confile.FullName)"
+	} catch { Write-Error "Error: `n $_" }
 } #end Function
