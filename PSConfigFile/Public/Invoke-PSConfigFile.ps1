@@ -163,7 +163,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
         
-        foreach ($Cred in ($Json.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+        foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
             $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
             if ($selfcert.NotAfter -lt (Get-Date)) {
                 Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
@@ -177,7 +177,7 @@ Function Invoke-PSConfigFile {
                 $EncryptedBytes = [System.Convert]::FromBase64String($password)
                 if ($PSVersionTable.PSEdition -like 'Desktop') {
                     try {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                        $DecryptedBytes= $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
                     } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
                 } else {
                     try {
