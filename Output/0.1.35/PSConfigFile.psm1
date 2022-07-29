@@ -1,9 +1,9 @@
-﻿#region Public Functions
+#region Public Functions
 #region Add-AliasToPSConfigFile.ps1
 ######## Function 1 of 12 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -107,7 +107,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ######## Function 2 of 12 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -219,7 +219,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 3 of 12 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -371,7 +371,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 4 of 12 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -477,7 +477,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 12 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -581,7 +581,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 6 of 12 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -691,11 +691,11 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 7 of 12 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/29 23:00:45
+# ModifiedOn:       2022/07/29 23:17:07
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -815,32 +815,33 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        
-        foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-            if ($selfcert.NotAfter -lt (Get-Date)) {
-                Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
-            }
-            else {
-                $credname = $Cred.Name
-                $username = $Cred.UserName
-                $password = $Cred.EncryptedPwd
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
-                $PSConfigFileOutput.Add($output)
-                $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                if ($PSVersionTable.PSEdition -like 'Desktop') {
-                    try {
-                        $DecryptedBytes= $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
-                } else {
-                    try {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
+        if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds))){
+            foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+                $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+                if ($selfcert.NotAfter -lt (Get-Date)) {
+                    Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
                 }
-                try {
-                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
-                } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
+                else {
+                    $credname = $Cred.Name
+                    $username = $Cred.UserName
+                    $password = $Cred.EncryptedPwd
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
+                    $PSConfigFileOutput.Add($output)
+                    $EncryptedBytes = [System.Convert]::FromBase64String($password)
+                    if ($PSVersionTable.PSEdition -like 'Desktop') {
+                        try {
+                            $DecryptedBytes= $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                        } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
+                    } else {
+                        try {
+                            $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+                        } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
+                    }
+                    try {
+                        $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
+                        New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
+                    } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
+                }
             }
         }
     } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
@@ -899,11 +900,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 8 of 12 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/28 18:08:21
+# ModifiedOn:       2022/07/29 23:12:00
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -925,7 +926,9 @@ Function New-PSConfigFile {
     [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
     param (
         [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]
+        [ValidateScript( {if (Test-Path $_) {$true}
+                         else {new-item -Path $_ -ItemType Directory -Force |out-null }
+        })]
         [System.IO.DirectoryInfo]$ConfigDir
     )
 
@@ -992,16 +995,16 @@ Function New-PSConfigFile {
             Write-Output 'Config File does not exit, creating default settings.'
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
+            Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         } else {
 
-            Write-Warning 'File exists, renaming file now'
+            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
             Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
-
-
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
+           Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         }
     }
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
@@ -1014,7 +1017,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 9 of 12 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1146,7 +1149,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 10 of 12 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1340,7 +1343,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 11 of 12 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1493,7 +1496,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 12 of 12 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.34
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29

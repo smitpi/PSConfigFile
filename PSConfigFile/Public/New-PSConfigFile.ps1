@@ -70,7 +70,9 @@ Function New-PSConfigFile {
     [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
     param (
         [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Attributes -eq 'Directory') })]
+        [ValidateScript( {if (Test-Path $_) {$true}
+                         else {new-item -Path $_ -ItemType Directory -Force |out-null }
+        })]
         [System.IO.DirectoryInfo]$ConfigDir
     )
 
@@ -137,16 +139,16 @@ Function New-PSConfigFile {
             Write-Output 'Config File does not exit, creating default settings.'
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
+            Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         } else {
 
-            Write-Warning 'File exists, renaming file now'
+            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
             Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Verbose -Force
-
-
+            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
+           Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         }
     }
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
