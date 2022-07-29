@@ -325,33 +325,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#def-default" class="md-nav__link">
-    Def (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#renew" class="md-nav__link">
-    Renew
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export" class="md-nav__link">
-    Export
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -397,36 +370,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#-credentials" class="md-nav__link">
-    -Credentials
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-renewselfsignedcert" class="md-nav__link">
-    -RenewSelfSignedCert
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpfx" class="md-nav__link">
-    -ExportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpath" class="md-nav__link">
-    -ExportPath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportcredentials" class="md-nav__link">
-    -ExportCredentials
+  <a href="#-credential" class="md-nav__link">
+    -Credential
   </a>
   
 </li>
@@ -590,6 +535,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../Set-CredentialsInPSConfigFile/" class="md-nav__link">
+        Set-CredentialsInPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../Set-PSConfigFileExecution/" class="md-nav__link">
         Set-PSConfigFileExecution
       </a>
@@ -650,33 +610,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#def-default" class="md-nav__link">
-    Def (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#renew" class="md-nav__link">
-    Renew
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export" class="md-nav__link">
-    Export
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -722,36 +655,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#-credentials" class="md-nav__link">
-    -Credentials
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-renewselfsignedcert" class="md-nav__link">
-    -RenewSelfSignedCert
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpfx" class="md-nav__link">
-    -ExportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpath" class="md-nav__link">
-    -ExportPath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportcredentials" class="md-nav__link">
-    -ExportCredentials
+  <a href="#-credential" class="md-nav__link">
+    -Credential
   </a>
   
 </li>
@@ -829,96 +734,40 @@
 
 <h1 id="add-credentialtopsconfigfile">Add-CredentialToPSConfigFile</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Creates a self signed cert, then uses it to securely save a credentials to the config file.</p>
+<p>Creates a self signed cert, then uses it to securely save a credential to the config file.</p>
 <h2 id="syntax">SYNTAX</h2>
-<h3 id="def-default">Def (Default)</h3>
-<div class="highlight"><pre><span></span><code>Add-CredentialToPSConfigFile [-Name &lt;String&gt;] [-Credentials &lt;PSCredential&gt;] [&lt;CommonParameters&gt;]
-</code></pre></div>
-<h3 id="renew">Renew</h3>
-<div class="highlight"><pre><span></span><code>Add-CredentialToPSConfigFile [-RenewSelfSignedCert] [&lt;CommonParameters&gt;]
-</code></pre></div>
-<h3 id="export">Export</h3>
-<div class="highlight"><pre><span></span><code>Add-CredentialToPSConfigFile [-ExportPFX] [-ExportPath &lt;DirectoryInfo&gt;] [-ExportCredentials &lt;PSCredential&gt;]
- [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Add-CredentialToPSConfigFile [[-Name] &lt;String&gt;] [[-Credential] &lt;PSCredential&gt;] [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
-<p>Creates a self signed cert, then uses it to securely save a credentials to the config file. 
+<p>Creates a self signed cert, then uses it to securely save a credential to the config file. 
 You can export the cert, and install it on other machines.
 Then you would be able to decrypt the password on those machines.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
 <div class="highlight"><pre><span></span><code>$labcred = get-credential
 </code></pre></div>
-<p>Add-CredentialToPSConfigFile -Name LabTest -Credentials $labcred</p>
+<p>Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</p>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-name">-Name</h3>
 <p>This name will be used for the variable when invoke command is executed.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Def</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
-<h3 id="-credentials">-Credentials</h3>
+<h3 id="-credential">-Credential</h3>
 <p>Credential object to be saved.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSCredential</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Def</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-renewselfsignedcert">-RenewSelfSignedCert</h3>
-<p>Creates a new self signed certificate, and re-encrypts the passwords.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Renew</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-exportpfx">-ExportPFX</h3>
-<p>Select to export a pfx file, that can be installed on other machines.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-exportpath">-ExportPath</h3>
-<p>Where to save the pfx file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DirectoryInfo</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">C:\Temp</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-exportcredentials">-ExportCredentials</h3>
-<p>The password will be used to export the pfx file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSCredential</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>

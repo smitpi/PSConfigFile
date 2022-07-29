@@ -8,28 +8,16 @@ schema: 2.0.0
 # Add-CredentialToPSConfigFile
 
 ## SYNOPSIS
-Creates a self signed cert, then uses it to securely save a credentials to the config file.
+Creates a self signed cert, then uses it to securely save a credential to the config file.
 
 ## SYNTAX
 
-### Def (Default)
 ```
-Add-CredentialToPSConfigFile [-Name <String>] [-Credentials <PSCredential>] [<CommonParameters>]
-```
-
-### Renew
-```
-Add-CredentialToPSConfigFile [-RenewSelfSignedCert] [<CommonParameters>]
-```
-
-### Export
-```
-Add-CredentialToPSConfigFile [-ExportPFX] [-ExportPath <DirectoryInfo>] [-ExportCredentials <PSCredential>]
- [<CommonParameters>]
+Add-CredentialToPSConfigFile [[-Name] <String>] [[-Credential] <PSCredential>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a self signed cert, then uses it to securely save a credentials to the config file. 
+Creates a self signed cert, then uses it to securely save a credential to the config file. 
 You can export the cert, and install it on other machines.
 Then you would be able to decrypt the password on those machines.
 
@@ -40,7 +28,7 @@ Then you would be able to decrypt the password on those machines.
 $labcred = get-credential
 ```
 
-Add-CredentialToPSConfigFile -Name LabTest -Credentials $labcred
+Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred
 
 ## PARAMETERS
 
@@ -49,86 +37,26 @@ This name will be used for the variable when invoke command is executed.
 
 ```yaml
 Type: String
-Parameter Sets: Def
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Credentials
+### -Credential
 Credential object to be saved.
 
 ```yaml
 Type: PSCredential
-Parameter Sets: Def
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -RenewSelfSignedCert
-Creates a new self signed certificate, and re-encrypts the passwords.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Renew
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExportPFX
-Select to export a pfx file, that can be installed on other machines.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Export
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExportPath
-Where to save the pfx file.
-
-```yaml
-Type: DirectoryInfo
-Parameter Sets: Export
-Aliases:
-
-Required: False
-Position: Named
-Default value: C:\Temp
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExportCredentials
-The password will be used to export the pfx file.
-
-```yaml
-Type: PSCredential
-Parameter Sets: Export
-Aliases:
-
-Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
