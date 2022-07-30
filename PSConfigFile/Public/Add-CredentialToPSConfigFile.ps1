@@ -153,7 +153,7 @@ Function Add-CredentialToPSConfigFile {
 				EncryptedPwd = $EncryptedPwd
 			})
 	} else {
-		$Json.PSCreds | ForEach-Object {$SetCreds.Add($_)}
+		$Json.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition

@@ -143,10 +143,13 @@ Function Show-PSConfigFile {
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $username = $_.value.split(']-')[0].Replace('[', '')
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
-                $outputfile.Add($output)
+            if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
+                foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+                    $credname = $Cred.Name
+                    $username = $Cred.UserName
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
+                    $outputfile.Add($output)
+                }
             }
             #endregion
 

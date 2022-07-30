@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -53,7 +53,7 @@ Removes a item from the config file.
 Name of the variable to remove.
 
 .PARAMETER PSDrive
-Name of the psdrive to remove.
+Name of the PSDrive to remove.
 
 .PARAMETER PSAlias
 Name of the Alias to remove.
@@ -78,7 +78,7 @@ Function Remove-ConfigFromPSConfigFile {
         [string[]]$PSDrive,
         [string[]]$PSAlias,
         [string[]]$Command,
-        [string[]]$Credential,
+        [SecureString[]]$Credential,
         [switch]$Location
     )
 
