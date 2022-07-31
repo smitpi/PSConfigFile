@@ -256,10 +256,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$labcred = get-credential
-Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</dev:code>
+        <dev:code>$labcred = get-credential</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -700,7 +699,7 @@ Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>PSDrive</maml:name>
           <maml:description>
-            <maml:para>Name of the psdrive to remove.</maml:para>
+            <maml:para>Name of the PSDrive to remove.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
@@ -738,9 +737,9 @@ Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</dev:code>
           <maml:description>
             <maml:para>Name of the Credential to remove.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">SecureString[]</command:parameterValue>
           <dev:type>
-            <maml:name>String[]</maml:name>
+            <maml:name>SecureString[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -774,7 +773,7 @@ Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>PSDrive</maml:name>
         <maml:description>
-          <maml:para>Name of the psdrive to remove.</maml:para>
+          <maml:para>Name of the PSDrive to remove.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
@@ -812,9 +811,9 @@ Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred</dev:code>
         <maml:description>
           <maml:para>Name of the Credential to remove.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">SecureString[]</command:parameterValue>
         <dev:type>
-          <maml:name>String[]</maml:name>
+          <maml:name>SecureString[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

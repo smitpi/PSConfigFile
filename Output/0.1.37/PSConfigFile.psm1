@@ -1,9 +1,9 @@
-#region Public Functions
+﻿#region Public Functions
 #region Add-AliasToPSConfigFile.ps1
 ######## Function 1 of 12 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -107,7 +107,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ######## Function 2 of 12 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -219,11 +219,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 3 of 12 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/07/29 18:21:27
+# ModifiedOn:       2022/07/30 00:01:13
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -339,7 +339,7 @@ Function Add-CredentialToPSConfigFile {
 				EncryptedPwd = $EncryptedPwd
 			})
 	} else {
-		$Json.PSCreds | ForEach-Object {$SetCreds.Add($_)}
+		$Json.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
@@ -371,7 +371,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 4 of 12 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -477,7 +477,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 12 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -581,7 +581,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 6 of 12 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -691,7 +691,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 7 of 12 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -900,7 +900,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 8 of 12 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1017,11 +1017,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 9 of 12 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/07/21 06:51:18
+# ModifiedOn:       2022/07/30 00:00:14
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1036,7 +1036,7 @@ Removes a item from the config file.
 Name of the variable to remove.
 
 .PARAMETER PSDrive
-Name of the psdrive to remove.
+Name of the PSDrive to remove.
 
 .PARAMETER PSAlias
 Name of the Alias to remove.
@@ -1061,7 +1061,7 @@ Function Remove-ConfigFromPSConfigFile {
         [string[]]$PSDrive,
         [string[]]$PSAlias,
         [string[]]$Command,
-        [string[]]$Credential,
+        [SecureString[]]$Credential,
         [switch]$Location
     )
 
@@ -1149,7 +1149,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 10 of 12 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1343,11 +1343,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 11 of 12 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 17:59:32
+# ModifiedOn:       2022/07/30 00:15:31
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1452,10 +1452,13 @@ Function Show-PSConfigFile {
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            $JSONParameter.PSCreds.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $username = $_.value.split(']-')[0].Replace('[', '')
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($username)
-                $outputfile.Add($output)
+            if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
+                foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+                    $credname = $Cred.Name
+                    $username = $Cred.UserName
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
+                    $outputfile.Add($output)
+                }
             }
             #endregion
 
@@ -1496,11 +1499,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 12 of 12 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.36
+# ModuleVersion:    0.1.37
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/07/29 22:55:38
+# ModifiedOn:       2022/07/31 18:19:51
 # Synopsis:         Allows you to renew the certificate,saved passwords and export/import pfx file
 #############################################
  
@@ -1590,7 +1593,7 @@ Function Update-CredentialsInPSConfigFile {
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = 'Modified Credencials'
+			ModifiedAction = 'Modified Credentials'
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
@@ -1669,10 +1672,10 @@ Function Update-CredentialsInPSConfigFile {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
 		else {
-			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"}
-			else {
-				$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $Credential.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
+			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
+				Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
 			}
+			$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $Credential.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
 		}
 	} 
 	if ($ImportPFX) {

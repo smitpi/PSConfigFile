@@ -14,7 +14,7 @@ Removes a item from the config file.
 
 ```
 Remove-ConfigFromPSConfigFile [[-Variable] <String[]>] [[-PSDrive] <String[]>] [[-PSAlias] <String[]>]
- [[-Command] <String[]>] [[-Credential] <String[]>] [-Location] [<CommonParameters>]
+ [[-Command] <String[]>] [[-Credential] <SecureString[]>] [-Location] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,7 +45,7 @@ Accept wildcard characters: False
 ```
 
 ### -PSDrive
-Name of the psdrive to remove.
+Name of the PSDrive to remove.
 
 ```yaml
 Type: String[]
@@ -93,7 +93,7 @@ Accept wildcard characters: False
 Name of the Credential to remove.
 
 ```yaml
-Type: String[]
+Type: SecureString[]
 Parameter Sets: (All)
 Aliases:
 
