@@ -14,7 +14,7 @@ Removes a item from the config file.
 
 ```
 Remove-ConfigFromPSConfigFile [[-Variable] <String[]>] [[-PSDrive] <String[]>] [[-PSAlias] <String[]>]
- [[-Command] <String[]>] [[-Credential] <SecureString[]>] [-Location] [<CommonParameters>]
+ [[-Command] <String[]>] [[-CredentialName] <String[]>] [-Location] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -89,11 +89,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Credential
+### -CredentialName
 Name of the Credential to remove.
 
 ```yaml
-Type: SecureString[]
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

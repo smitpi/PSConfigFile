@@ -61,7 +61,7 @@ Name of the Alias to remove.
 .PARAMETER Command
 Name of the Command to remove.
 
-.PARAMETER Credential
+.PARAMETER CredentialName
 Name of the Credential to remove.
 
 .PARAMETER Location
@@ -78,7 +78,7 @@ Function Remove-ConfigFromPSConfigFile {
         [string[]]$PSDrive,
         [string[]]$PSAlias,
         [string[]]$Command,
-        [SecureString[]]$Credential,
+        [String[]]$CredentialName,
         [switch]$Location
     )
 
@@ -114,9 +114,9 @@ Function Remove-ConfigFromPSConfigFile {
         $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Command*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
-    if (-not([string]::IsNullOrEmpty($Credential))) { 
+    if (-not([string]::IsNullOrEmpty($Credential))) {
         $userdataModAction += "Remove Credential $($Credential)`n"
-        $JsonConfig.PSCreds.PSObject.Properties | Where-Object {$_.name -notlike "*$Credential*"} | ForEach-Object {$SetCreds += @{$_.name = $_.value}}
+        $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$CredentialName*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
     if ($Location) {

@@ -733,13 +733,13 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>Credential</maml:name>
+          <maml:name>CredentialName</maml:name>
           <maml:description>
             <maml:para>Name of the Credential to remove.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">SecureString[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
-            <maml:name>SecureString[]</maml:name>
+            <maml:name>String[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -807,13 +807,13 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>Credential</maml:name>
+        <maml:name>CredentialName</maml:name>
         <maml:description>
           <maml:para>Name of the Credential to remove.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">SecureString[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
-          <maml:name>SecureString[]</maml:name>
+          <maml:name>String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

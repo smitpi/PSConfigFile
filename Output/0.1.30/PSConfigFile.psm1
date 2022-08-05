@@ -3,7 +3,7 @@
 ######## Function 1 of 12 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -107,7 +107,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 ######## Function 2 of 12 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -219,7 +219,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 3 of 12 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -371,7 +371,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 4 of 12 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -477,7 +477,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 12 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -581,7 +581,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 6 of 12 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -691,7 +691,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 7 of 12 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -900,11 +900,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 8 of 12 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/29 23:12:00
+# ModifiedOn:       2022/07/29 23:10:46
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1017,11 +1017,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 9 of 12 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/07/30 00:00:14
+# ModifiedOn:       2022/08/06 00:44:54
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1044,7 +1044,7 @@ Name of the Alias to remove.
 .PARAMETER Command
 Name of the Command to remove.
 
-.PARAMETER Credential
+.PARAMETER CredentialName
 Name of the Credential to remove.
 
 .PARAMETER Location
@@ -1061,7 +1061,7 @@ Function Remove-ConfigFromPSConfigFile {
         [string[]]$PSDrive,
         [string[]]$PSAlias,
         [string[]]$Command,
-        [SecureString[]]$Credential,
+        [String[]]$CredentialName,
         [switch]$Location
     )
 
@@ -1097,9 +1097,9 @@ Function Remove-ConfigFromPSConfigFile {
         $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Command*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
-    if (-not([string]::IsNullOrEmpty($Credential))) { 
+    if (-not([string]::IsNullOrEmpty($Credential))) {
         $userdataModAction += "Remove Credential $($Credential)`n"
-        $JsonConfig.PSCreds.PSObject.Properties | Where-Object {$_.name -notlike "*$Credential*"} | ForEach-Object {$SetCreds += @{$_.name = $_.value}}
+        $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$CredentialName*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
     if ($Location) {
@@ -1149,7 +1149,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 10 of 12 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1343,7 +1343,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 11 of 12 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1499,7 +1499,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 12 of 12 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.29
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
