@@ -7,7 +7,7 @@
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:55:39
+# ModifiedOn:       2022/07/21 06:55:39
 # Synopsis:         Creates Shortcuts (Aliases) to commands or script blocks
 #############################################
  
@@ -111,7 +111,7 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:55:57
+# ModifiedOn:       2022/07/21 06:55:57
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -222,8 +222,8 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 # ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
-# CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/07/30 00:01:13
+# CreatedOn:        2022/05/21 04:47:31
+# ModifiedOn:       2022/07/30 01:01:13
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -375,7 +375,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:56:09
+# ModifiedOn:       2022/07/21 06:56:09
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -481,7 +481,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:56:15
+# ModifiedOn:       2022/07/21 06:56:15
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -585,7 +585,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/21 05:56:21
+# ModifiedOn:       2022/07/21 06:56:21
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -695,7 +695,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/29 23:22:44
+# ModifiedOn:       2022/07/30 00:22:44
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -904,7 +904,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/29 23:10:46
+# ModifiedOn:       2022/07/30 00:10:46
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1020,8 +1020,8 @@ Export-ModuleMember -Function New-PSConfigFile
 # ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
-# CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/06 00:44:54
+# CreatedOn:        2022/05/22 08:47:34
+# ModifiedOn:       2022/08/06 01:44:54
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1347,7 +1347,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/07/30 00:15:31
+# ModifiedOn:       2022/07/30 01:15:31
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1502,8 +1502,8 @@ Export-ModuleMember -Function Show-PSConfigFile
 # ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
-# CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/07/31 18:19:51
+# CreatedOn:        2022/07/28 21:29:29
+# ModifiedOn:       2022/07/31 19:19:51
 # Synopsis:         Allows you to renew the certificate,saved passwords and export/import pfx file
 #############################################
  
