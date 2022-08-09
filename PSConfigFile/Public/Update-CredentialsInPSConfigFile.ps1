@@ -73,7 +73,7 @@ Function Update-CredentialsInPSConfigFile {
 		[switch]$RenewSelfSignedCert,
 
 		[Parameter(ParameterSetName = 'Renew')]
-		[switch]$RenewSavedPasswords,
+		[string[]]$RenewSavedPasswords,
 
 		[Parameter(ParameterSetName = 'Export')]
 		[switch]$ExportPFX,
@@ -127,17 +127,24 @@ Function Update-CredentialsInPSConfigFile {
 	}
 
 	function RedoPass {
+        PARAM([string]$RenewSavedPasswords)
+
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
 		[System.Collections.ArrayList]$RenewCreds = @()
-        
+
 		foreach ($OtherCred in ($Json.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
 			[void]$RenewCreds.Add($OtherCred)
 		}
         
 		$UniqueCreds = $Json.PSCreds | Sort-Object -Property Name -Unique
-        
-		foreach ($cred in $UniqueCreds) {
+        if ($RenewSavedPasswords -like "All") {$renew = $UniqueCreds}
+        else {
+            $renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
+            $UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
+        }
+
+		foreach ($cred in $renew) {
 			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
 			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
 			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
@@ -191,9 +198,10 @@ Function Update-CredentialsInPSConfigFile {
 			KeyExportPolicy   = 'Exportable'
 		} # end params
 		New-SelfSignedCertificate @SelfSignedCertParams | Out-Null
-		RedoPass
+		RedoPass -RenewSavedPasswords All
 	} 
-	if ($RenewSavedPasswords) {RedoPass}
+	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
+
 	if ($ExportPFX) {
 		if ([string]::IsNullOrEmpty($Credential)) {$Credential = Get-Credential -UserName PFXExport -Message 'For the exported pfx file'}
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
@@ -211,3 +219,13 @@ Function Update-CredentialsInPSConfigFile {
 		Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $PFXFilePath -Password $Credential.Password 
 	}
 } #end Function
+
+
+$scriptblock = {
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $var = @("All")
+	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
+    $var
+	#Get-Variable | Where-Object {$_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
+}
+Register-ArgumentCompleter -CommandName Update-CredentialsInPSConfigFile -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
