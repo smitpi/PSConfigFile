@@ -835,7 +835,7 @@
 <p>Allows you to renew the certificate,saved passwords and export/import pfx file</p>
 <h2 id="syntax">SYNTAX</h2>
 <h3 id="renew-default">Renew (Default)</h3>
-<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [-RenewSavedPasswords] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [-RenewSavedPasswords &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h3 id="export">Export</h3>
 <div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-ExportPFX] [-ExportPath &lt;DirectoryInfo&gt;] [-Credential &lt;PSCredential&gt;]
@@ -867,13 +867,13 @@
 <h3 id="-renewsavedpasswords">-RenewSavedPasswords</h3>
 <p>Re-encrypts the passwords for the current PS Edition.
 Run it in PS core and desktop to save both version.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Renew</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
