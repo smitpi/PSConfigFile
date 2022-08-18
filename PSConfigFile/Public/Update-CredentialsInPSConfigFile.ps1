@@ -90,7 +90,7 @@ Function Update-CredentialsInPSConfigFile {
 	}
 
 	function RedoPass {
-        PARAM([string]$RenewSavedPasswords)
+		PARAM([string]$RenewSavedPasswords)
 
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
@@ -101,11 +101,11 @@ Function Update-CredentialsInPSConfigFile {
 		}
         
 		$UniqueCreds = $Json.PSCreds | Sort-Object -Property Name -Unique
-        if ($RenewSavedPasswords -like "All") {$renew = $UniqueCreds}
-        else {
-            $renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
-            $UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
-        }
+		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
+		else {
+			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
+			$UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
+		}
 
 		foreach ($cred in $renew) {
 			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
@@ -133,6 +133,7 @@ Function Update-CredentialsInPSConfigFile {
 			PSDrive     = $Json.PSDrive
 			PSAlias     = $Json.PSAlias
 			PSCreds     = $RenewCreds
+			PSDefaults  = $Json.PSDefaults
 			SetLocation = $Json.SetLocation
 			SetVariable = $Json.SetVariable
 			Execute     = $Json.Execute
@@ -170,9 +171,9 @@ Function Update-CredentialsInPSConfigFile {
 
 $scriptblock = {
 	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    $var = @("All")
-	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
-    $var
+	$var = @('All')
+	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
+	$var
 	#Get-Variable | Where-Object {$_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
 }
 Register-ArgumentCompleter -CommandName Update-CredentialsInPSConfigFile -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
