@@ -12,6 +12,7 @@ Functions in this module:
 	 Add-CommandToPSConfigFile -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
 	 Add-CredentialToPSConfigFile -- Creates a self signed cert, then uses it to securely save a credential to the config file.
 	 Add-LocationToPSConfigFile -- Adds default location to the config file.
+	 Add-PSDefaultParameterToPSConfigFile -- Add PSDefaultParameterValues to the config file
 	 Add-PSDriveToPSConfigFile -- Add PSDrive to the config file.
 	 Add-VariableToPSConfigFile -- Adds variable to the config file.
 	 Invoke-PSConfigFile -- Executes the config from the json file.

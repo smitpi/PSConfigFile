@@ -167,6 +167,7 @@ Function Add-CredentialToPSConfigFile {
 		PSDrive     = $Json.PSDrive
 		PSAlias     = $Json.PSAlias
 		PSCreds     = $SetCreds
+		PSDefaults  = $Json.PSDefaults
 		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable
 		Execute     = $Json.Execute

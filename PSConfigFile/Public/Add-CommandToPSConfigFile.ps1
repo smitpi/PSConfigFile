@@ -134,6 +134,7 @@ Function Add-CommandToPSConfigFile {
         PSDrive     = $Json.PSDrive
         PSAlias     = $Json.PSAlias
         PSCreds     = $Json.PSCreds
+        PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
         Execute     = $Execute

@@ -71,15 +71,29 @@ Set Location to blank again.
 Remove-ConfigFromPSConfigFile -PSDrive ProdMods
 
 #>
+<#
+.SYNOPSIS
+Removes a item from the config file.
+
+.DESCRIPTION
+Removes a item from the config file.
+
+.PARAMETER Config
+Which config item to remove.
+
+.PARAMETER Value
+The value of the config item to filter
+
+.EXAMPLE
+Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
+
+#>
 Function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]
     PARAM(
-        [string[]]$Variable,
-        [string[]]$PSDrive,
-        [string[]]$PSAlias,
-        [string[]]$Command,
-        [String[]]$CredentialName,
-        [switch]$Location
+        [ValidateSet('Variable', 'PSDrive', 'Alias', 'Command', 'Credential', 'PSDefaults', 'Location')]
+        [string]$Config,
+        [string]$Value
     )
 
     try {
@@ -94,37 +108,41 @@ Function Remove-ConfigFromPSConfigFile {
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
     $userdataModAction = "Removed Config:`n"
 
-    if (-not([string]::IsNullOrEmpty($Variable))) {
-        $userdataModAction += "Remove Variable $($Variable)`n"
-        $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike $Variable} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
+    if ($Config -like "Variable") {
+        $userdataModAction += "Remove Variable $($Value)`n"
+        $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
     } else {$SetVariable = $JsonConfig.setvariable}
 
-    if (-not([string]::IsNullOrEmpty($PSDrive))) {
-        $userdataModAction += "Remove PSDrive $($PSDrive)`n"
-        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$PSDrive*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
+    if ($Config -like "PSDrive") {
+        $userdataModAction += "Remove PSDrive $($Value)`n"
+        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
-    if (-not([string]::IsNullOrEmpty($PSAlias))) {
-        $userdataModAction += "Remove Alias $($PSAlias)`n"
-        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$PSAlias*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
+    if ($Config -like "Alias") {
+        $userdataModAction += "Remove Alias $($Value)`n"
+        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
     } else {$SetPSAlias = $JsonConfig.PSAlias}
 
-    if (-not([string]::IsNullOrEmpty($Command))) { 
-        $userdataModAction += "Remove Command $($Command)`n"
-        $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Command*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
+    if ($Config -like "Command") { 
+        $userdataModAction += "Remove Command $($Value)`n"
+        $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
-    if (-not([string]::IsNullOrEmpty($Credential))) {
-        $userdataModAction += "Remove Credential $($Credential)`n"
-        $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$CredentialName*"}
+    if ($Config -like "Credential") {
+        $userdataModAction += "Remove Credential $($Value)`n"
+        $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
-    if ($Location) {
+    if ($Config -like "PSDefaults") {
+        $userdataModAction += "Remove PSDefaults $($Value)`n"
+        $SetPSDefaults = $JsonConfig.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetPSDefaults = $JsonConfig.PSDefaults}
+
+    if ($Config -like 'Location') {
         $userdataModAction += "Remove Location`n"
         $SetLocation = @{}
     } else {$SetLocation = $JsonConfig.SetLocation}
     
-
     $userdata = [PSCustomObject]@{
         Owner             = $JsonConfig.Userdata.Owner
         CreatedOn         = $JsonConfig.Userdata.CreatedOn
@@ -141,18 +159,17 @@ Function Remove-ConfigFromPSConfigFile {
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
-
     $Update = @()
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $SetPSDrive
         PSAlias     = $SetPSAlias
         PSCreds     = $SetCreds
+        PSDefaults  = $SetPSDefaults
         SetLocation = $SetLocation
         SetVariable = $SetVariable
         Execute     = $SetExecute
     }
-
     try {
         $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
         Write-Output "ConfigFile: $($confile.FullName)"

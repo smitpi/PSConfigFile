@@ -194,6 +194,19 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
     #endregion
 
+    #region Set PSDefaults
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
+        foreach ($PSD in  $JSONParameter.PSDefaults) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+            $PSConfigFileOutput.Add($output)
+            $PSDefaultParameterValues.GetEnumerator() | Where-Object {$_.name -like "*$($PSD.Name)*"} | ForEach-Object {$PSDefaultParameterValues.Remove($PSDefaultParameterValues.$_.name)}
+            $PSDefaultParameterValues.Add($PSD.Name,$PSD.Value)
+        }
+    } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    #endregion
+
     #region Set Location
     try {
         if ($null -notlike $JSONParameter.SetLocation) {

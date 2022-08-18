@@ -153,6 +153,15 @@ Function Show-PSConfigFile {
             }
             #endregion
 
+            #region Set PSDefaults
+            $outputfile.Add('<h>  ')
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
+            foreach ($PSD in  $JSONParameter.PSDefaults) {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+                $outputfile.Add($output)
+            }
+            #endregion
+
             # Execute Commands
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")

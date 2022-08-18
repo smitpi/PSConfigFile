@@ -77,12 +77,6 @@ Function New-PSConfigFile {
     )
 
     function DafaultSettings {
-        $Userdata = @()
-        $SetLocation = @()
-        $SetVariable = @()
-        $Execute = @()
-        $PSAlias = @()
-
         try {
             $Userdata = New-Object PSObject -Property @{
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -118,13 +112,17 @@ Function New-PSConfigFile {
         }
         $PSCreds = New-Object PSObject -Property @{
             Default = 'Default'
-        }        
+        }
+        $PSDefaults = New-Object PSObject -Property @{
+            Default = 'Default'
+        }   
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
             PSAlias     = $PSAlias
             PSCreds     = $PSCreds
+            PSDefaults  = $PSDefaults
             SetLocation = $SetLocation
             SetVariable = $SetVariable
             Execute     = $Execute
