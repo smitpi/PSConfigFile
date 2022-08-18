@@ -12,14 +12,14 @@
         <meta name="author" content="Pierre Smit">
       
       
-        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/New-PSConfigFile/">
+        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile/">
       
       <link rel="icon" href="..">
       <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
     
     
       
-        <title>New-PSConfigFile - PSConfigFile</title>
+        <title>Add-PSDefaultParameterToPSConfigFile - PSConfigFile</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#new-psconfigfile" class="md-skip">
+        <a href="#add-psdefaultparametertopsconfigfile" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              New-PSConfigFile
+              Add-PSDefaultParameterToPSConfigFile
             
           </span>
         </div>
@@ -308,66 +308,6 @@
 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../Add-PSDefaultParameterToPSConfigFile/" class="md-nav__link">
-        Add-PSDefaultParameterToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Add-PSDriveToPSConfigFile/" class="md-nav__link">
-        Add-PSDriveToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Add-VariableToPSConfigFile/" class="md-nav__link">
-        Add-VariableToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Invoke-PSConfigFile/" class="md-nav__link">
-        Invoke-PSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
     
   
   
@@ -380,12 +320,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          New-PSConfigFile
+          Add-PSDefaultParameterToPSConfigFile
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        New-PSConfigFile
+        Add-PSDefaultParameterToPSConfigFile
       </a>
       
         
@@ -453,22 +393,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-configdir" class="md-nav__link">
-    -ConfigDir
+  <a href="#-function" class="md-nav__link">
+    -Function
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-whatif" class="md-nav__link">
-    -WhatIf
+  <a href="#-parameter" class="md-nav__link">
+    -Parameter
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-confirm" class="md-nav__link">
-    -Confirm
+  <a href="#-value" class="md-nav__link">
+    -Value
   </a>
   
 </li>
@@ -497,6 +437,19 @@
     OUTPUTS
   </a>
   
+    <nav class="md-nav" aria-label="OUTPUTS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#systemobject" class="md-nav__link">
+    System.Object[]
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -517,6 +470,66 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Add-PSDriveToPSConfigFile/" class="md-nav__link">
+        Add-PSDriveToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Add-VariableToPSConfigFile/" class="md-nav__link">
+        Add-VariableToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Invoke-PSConfigFile/" class="md-nav__link">
+        Invoke-PSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../New-PSConfigFile/" class="md-nav__link">
+        New-PSConfigFile
+      </a>
     </li>
   
 
@@ -657,22 +670,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-configdir" class="md-nav__link">
-    -ConfigDir
+  <a href="#-function" class="md-nav__link">
+    -Function
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-whatif" class="md-nav__link">
-    -WhatIf
+  <a href="#-parameter" class="md-nav__link">
+    -Parameter
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-confirm" class="md-nav__link">
-    -Confirm
+  <a href="#-value" class="md-nav__link">
+    -Value
   </a>
   
 </li>
@@ -700,6 +713,19 @@
   <a href="#outputs" class="md-nav__link">
     OUTPUTS
   </a>
+  
+    <nav class="md-nav" aria-label="OUTPUTS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#systemobject" class="md-nav__link">
+    System.Object[]
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -729,59 +755,58 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/New-PSConfigFile.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/smitpi/PSConfigFile/edit/master/docs/Add-PSDefaultParameterToPSConfigFile.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-<h1 id="new-psconfigfile">New-PSConfigFile</h1>
+<h1 id="add-psdefaultparametertopsconfigfile">Add-PSDefaultParameterToPSConfigFile</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Creates a new config file</p>
+<p>Add PSDefaultParameterValues to the config file</p>
 <h2 id="syntax">SYNTAX</h2>
-<div class="highlight"><pre><span></span><code>New-PSConfigFile [-ConfigDir] &lt;DirectoryInfo&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Add-PSDefaultParameterToPSConfigFile [[-Function] &lt;String&gt;] [[-Parameter] &lt;String&gt;] [[-Value] &lt;String&gt;]
+ [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
-<p>Creates a new config file.
-If a config file already exists in that folder, it will be renamed.</p>
+<p>Add PSDefaultParameterValues to the config file</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>New-PSConfigFile -ConfigDir C:\Temp\config
+<div class="highlight"><pre><span></span><code>Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\temp\PSLauncherConfig.json
 </code></pre></div>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-configdir">-ConfigDir</h3>
-<p>Directory to create config file</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DirectoryInfo</span><span class="w"></span>
+<h3 id="-function">-Function</h3>
+<p>The Function to add</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
-<h3 id="-whatif">-WhatIf</h3>
-<p>Shows what would happen if the cmdlet runs.
-The cmdlet is not run.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
+<h3 id="-parameter">-Parameter</h3>
+<p>The Parameter of that function.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wi</span><span class="w"></span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
-<h3 id="-confirm">-Confirm</h3>
-<p>Prompts you for confirmation before running the cmdlet.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
+<h3 id="-value">-Value</h3>
+<p>Value of the parameter.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cf</span><span class="w"></span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
@@ -790,6 +815,7 @@ The cmdlet is not run.</p>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
 <h2 id="outputs">OUTPUTS</h2>
+<h3 id="systemobject">System.Object[]</h3>
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
 
@@ -807,7 +833,7 @@ The cmdlet is not run.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../Invoke-PSConfigFile/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Invoke-PSConfigFile" rel="prev">
+        <a href="../Add-LocationToPSConfigFile/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Add-LocationToPSConfigFile" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -816,20 +842,20 @@ The cmdlet is not run.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Invoke-PSConfigFile
+              Add-LocationToPSConfigFile
             </div>
           </div>
         </a>
       
       
         
-        <a href="../Remove-ConfigFromPSConfigFile/" class="md-footer__link md-footer__link--next" aria-label="Next: Remove-ConfigFromPSConfigFile" rel="next">
+        <a href="../Add-PSDriveToPSConfigFile/" class="md-footer__link md-footer__link--next" aria-label="Next: Add-PSDriveToPSConfigFile" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Remove-ConfigFromPSConfigFile
+              Add-PSDriveToPSConfigFile
             </div>
           </div>
           <div class="md-footer__button md-icon">

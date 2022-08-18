@@ -310,6 +310,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../Add-PSDefaultParameterToPSConfigFile/" class="md-nav__link">
+        Add-PSDefaultParameterToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../Add-PSDriveToPSConfigFile/" class="md-nav__link">
         Add-PSDriveToPSConfigFile
       </a>
@@ -439,6 +454,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    EXAMPLE 2
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -453,43 +475,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-variable" class="md-nav__link">
-    -Variable
+  <a href="#-config" class="md-nav__link">
+    -Config
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-psdrive" class="md-nav__link">
-    -PSDrive
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-psalias" class="md-nav__link">
-    -PSAlias
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-command" class="md-nav__link">
-    -Command
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-credentialname" class="md-nav__link">
-    -CredentialName
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-location" class="md-nav__link">
-    -Location
+  <a href="#-value" class="md-nav__link">
+    -Value
   </a>
   
 </li>
@@ -649,6 +643,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    EXAMPLE 2
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -663,43 +664,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-variable" class="md-nav__link">
-    -Variable
+  <a href="#-config" class="md-nav__link">
+    -Config
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-psdrive" class="md-nav__link">
-    -PSDrive
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-psalias" class="md-nav__link">
-    -PSAlias
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-command" class="md-nav__link">
-    -Command
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-credentialname" class="md-nav__link">
-    -CredentialName
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-location" class="md-nav__link">
-    -Location
+  <a href="#-value" class="md-nav__link">
+    -Value
   </a>
   
 </li>
@@ -766,8 +739,7 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Removes a item from the config file.</p>
 <h2 id="syntax">SYNTAX</h2>
-<div class="highlight"><pre><span></span><code>Remove-ConfigFromPSConfigFile [[-Variable] &lt;String[]&gt;] [[-PSDrive] &lt;String[]&gt;] [[-PSAlias] &lt;String[]&gt;]
- [[-Command] &lt;String[]&gt;] [[-CredentialName] &lt;String[]&gt;] [-Location] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Remove-ConfigFromPSConfigFile [[-Config] &lt;String&gt;] [[-Value] &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
 <p>Removes a item from the config file.</p>
@@ -775,10 +747,13 @@
 <h3 id="example-1">EXAMPLE 1</h3>
 <div class="highlight"><pre><span></span><code>Remove-ConfigFromPSConfigFile -PSDrive ProdMods
 </code></pre></div>
+<h3 id="example-2">EXAMPLE 2</h3>
+<div class="highlight"><pre><span></span><code>Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
+</code></pre></div>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-variable">-Variable</h3>
-<p>Name of the variable to remove.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
+<h3 id="-config">-Config</h3>
+<p>Which config item to remove.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
@@ -788,63 +763,15 @@
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
-<h3 id="-psdrive">-PSDrive</h3>
-<p>Name of the PSDrive to remove.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
+<h3 id="-value">-Value</h3>
+<p>The value of the config item to filter</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
 <span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-psalias">-PSAlias</h3>
-<p>Name of the Alias to remove.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-command">-Command</h3>
-<p>Name of the Command to remove.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-credentialname">-CredentialName</h3>
-<p>Name of the Credential to remove.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-location">-Location</h3>
-<p>Set Location to blank again.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
