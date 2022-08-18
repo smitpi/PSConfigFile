@@ -162,13 +162,12 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))){
+        if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
             foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                 $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
                 if ($selfcert.NotAfter -lt (Get-Date)) {
                     Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
-                }
-                else {
+                } else {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
                     $password = $Cred.EncryptedPwd
@@ -177,7 +176,7 @@ Function Invoke-PSConfigFile {
                     $EncryptedBytes = [System.Convert]::FromBase64String($password)
                     if ($PSVersionTable.PSEdition -like 'Desktop') {
                         try {
-                            $DecryptedBytes= $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                            $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
                         } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
                     } else {
                         try {
@@ -198,11 +197,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-        foreach ($PSD in  $JSONParameter.PSDefaults) {
+        foreach ($PSD in  ($JSONParameter.PSDefaults | Where-Object {$_ -notlike $null})) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
             $PSConfigFileOutput.Add($output)
             $PSDefaultParameterValues.Remove($PSD.Name)
-            $PSDefaultParameterValues.Add($PSD.Name,$PSD.Value)
+            $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
         }
     } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
     #endregion
@@ -247,8 +246,8 @@ Function Invoke-PSConfigFile {
             if ($line -like '<e>*') { Write-Color $line.Replace('<e>', '') -Color DarkRed }
         }
     } else {
-        Write-Host '[Completed]' -NoNewline -ForegroundColor Yellow; Write-Host " Invoke-PSConfigFile " -ForegroundColor Cyan
-        Write-Host "[ConfigFile]: " -ForegroundColor Yellow -NoNewline; Write-Host "$ConfigFile" -ForegroundColor DarkRed
+        Write-Host '[Completed]' -NoNewline -ForegroundColor Yellow; Write-Host ' Invoke-PSConfigFile ' -ForegroundColor Cyan
+        Write-Host '[ConfigFile]: ' -ForegroundColor Yellow -NoNewline; Write-Host "$ConfigFile" -ForegroundColor DarkRed
     }
     
 } #end Function
