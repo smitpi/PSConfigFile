@@ -31,9 +31,11 @@ Documentation can be found at: [Github_Pages](https://smitpi.github.io/PSConfigF
 - [`Add-PSDefaultParameterToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile) -- Add PSDefaultParameterValues to the config file
 - [`Add-PSDriveToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile) -- Add PSDrive to the config file.
 - [`Add-VariableToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile) -- Adds variable to the config file.
+- [`Export-PSConfigFilePFX`](https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX) -- Export the PFX file for credentials.
+- [`Import-PSConfigFilePFX`](https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX) -- Import the PFX file for credentials
 - [`Invoke-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile) -- Executes the config from the json file.
 - [`New-PSConfigFile`](https://smitpi.github.io/PSConfigFile/New-PSConfigFile) -- Creates a new config file
 - [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a item from the config file.
 - [`Set-PSConfigFileExecution`](https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution) -- Adds functionality to add the execution to your profile or a PowerShell module
 - [`Show-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Show-PSConfigFile) -- Display what's configured in the config file.
-- [`Update-CredentialsInPSConfigFile`](https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile) -- Allows you to renew the certificate,saved passwords and export/import pfx file
+- [`Update-CredentialsInPSConfigFile`](https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile) -- Allows you to renew the certificate or saved passwords.

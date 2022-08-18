@@ -199,12 +199,12 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
         foreach ($PSD in  $JSONParameter.PSDefaults) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
             $PSConfigFileOutput.Add($output)
-            $PSDefaultParameterValues.GetEnumerator() | Where-Object {$_.name -like "*$($PSD.Name)*"} | ForEach-Object {$PSDefaultParameterValues.Remove($PSDefaultParameterValues.$_.name)}
+            $PSDefaultParameterValues.Remove($PSD.Name)
             $PSDefaultParameterValues.Add($PSD.Name,$PSD.Value)
         }
-    } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
     #endregion
 
     #region Set Location

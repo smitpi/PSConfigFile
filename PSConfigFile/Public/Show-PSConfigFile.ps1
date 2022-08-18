@@ -157,7 +157,7 @@ Function Show-PSConfigFile {
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
             foreach ($PSD in  $JSONParameter.PSDefaults) {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
             }
             #endregion

@@ -355,6 +355,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../Export-PSConfigFilePFX/" class="md-nav__link">
+        Export-PSConfigFilePFX
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Import-PSConfigFilePFX/" class="md-nav__link">
+        Import-PSConfigFilePFX
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../Invoke-PSConfigFile/" class="md-nav__link">
         Invoke-PSConfigFile
       </a>
@@ -475,33 +505,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#renew-default" class="md-nav__link">
-    Renew (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export" class="md-nav__link">
-    Export
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#import" class="md-nav__link">
-    Import
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -549,41 +552,6 @@
           <li class="md-nav__item">
   <a href="#-renewsavedpasswords" class="md-nav__link">
     -RenewSavedPasswords
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpfx" class="md-nav__link">
-    -ExportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-importpfx" class="md-nav__link">
-    -ImportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-pfxfilepath" class="md-nav__link">
-    -PFXFilePath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpath" class="md-nav__link">
-    -ExportPath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-credential" class="md-nav__link">
-    -Credential
   </a>
   
 </li>
@@ -674,33 +642,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#renew-default" class="md-nav__link">
-    Renew (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export" class="md-nav__link">
-    Export
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#import" class="md-nav__link">
-    Import
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -748,41 +689,6 @@
           <li class="md-nav__item">
   <a href="#-renewsavedpasswords" class="md-nav__link">
     -RenewSavedPasswords
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpfx" class="md-nav__link">
-    -ExportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-importpfx" class="md-nav__link">
-    -ImportPFX
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-pfxfilepath" class="md-nav__link">
-    -PFXFilePath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-exportpath" class="md-nav__link">
-    -ExportPath
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-credential" class="md-nav__link">
-    -Credential
   </a>
   
 </li>
@@ -847,30 +753,21 @@
 
 <h1 id="update-credentialsinpsconfigfile">Update-CredentialsInPSConfigFile</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Allows you to renew the certificate,saved passwords and export/import pfx file</p>
+<p>Allows you to renew the certificate or saved passwords.</p>
 <h2 id="syntax">SYNTAX</h2>
-<h3 id="renew-default">Renew (Default)</h3>
 <div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [-RenewSavedPasswords &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 </code></pre></div>
-<h3 id="export">Export</h3>
-<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-ExportPFX] [-ExportPath &lt;DirectoryInfo&gt;] [-Credential &lt;PSCredential&gt;]
- [&lt;CommonParameters&gt;]
-</code></pre></div>
-<h3 id="import">Import</h3>
-<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile [-ImportPFX] [-PFXFilePath &lt;FileInfo&gt;] [-Credential &lt;PSCredential&gt;]
- [&lt;CommonParameters&gt;]
-</code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
-<p>Allows you to renew the certificate,saved passwords and export/import pfx file</p>
+<p>Allows you to renew the certificate or saved passwords.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile -ExportPFX -ExportPath C:\Temp\
+<div class="highlight"><pre><span></span><code>Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 </code></pre></div>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-renewselfsignedcert">-RenewSelfSignedCert</h3>
 <p>Creates a new self signed certificate, and re-encrypts the passwords.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Renew</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
@@ -883,67 +780,7 @@
 <p>Re-encrypts the passwords for the current PS Edition.
 Run it in PS core and desktop to save both version.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String[]</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Renew</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-exportpfx">-ExportPFX</h3>
-<p>Select to export a pfx file, that can be installed on other machines.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-importpfx">-ImportPFX</h3>
-<p>Import the previously exported PFX file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Import</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-pfxfilepath">-PFXFilePath</h3>
-<p>path to the .pfx file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FileInfo</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Import</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$($env:temp)&quot;</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-exportpath">-ExportPath</h3>
-<p>Where to export the .pfx file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DirectoryInfo</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$($env:temp)&quot;</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-credential">-Credential</h3>
-<p>This password will be used to import or export the .pfx file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSCredential</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Export, Import</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>

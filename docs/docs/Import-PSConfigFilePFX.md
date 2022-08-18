@@ -5,56 +5,55 @@ online version:
 schema: 2.0.0
 ---
 
-# Update-CredentialsInPSConfigFile
+# Import-PSConfigFilePFX
 
 ## SYNOPSIS
-Allows you to renew the certificate or saved passwords.
+Import the PFX file for credentials
 
 ## SYNTAX
 
 ```
-Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [-RenewSavedPasswords <String[]>] [<CommonParameters>]
+Import-PSConfigFilePFX [-Path] <FileInfo> [[-Credential] <PSCredential>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Allows you to renew the certificate or saved passwords.
+Import the PFX file for credentials
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Update-CredentialsInPSConfigFile -RenewSavedPasswords All
+Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
 ```
 
 ## PARAMETERS
 
-### -RenewSelfSignedCert
-Creates a new self signed certificate, and re-encrypts the passwords.
+### -Path
+Path to the PFX file.
 
 ```yaml
-Type: SwitchParameter
+Type: FileInfo
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
-Default value: False
+Required: True
+Position: 1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RenewSavedPasswords
-Re-encrypts the passwords for the current PS Edition.
-Run it in PS core and desktop to save both version.
+### -Credential
+Credential used to create the pfx file.
 
 ```yaml
-Type: String[]
+Type: PSCredential
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: None
+Position: 2
+Default value: (Get-Credential -UserName InportPFX -Message 'For the imported pfx file')
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -66,6 +65,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### System.Object[]
 ## NOTES
 
 ## RELATED LINKS

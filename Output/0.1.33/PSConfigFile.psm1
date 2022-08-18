@@ -1,9 +1,9 @@
 ﻿#region Public Functions
 #region Add-AliasToPSConfigFile.ps1
-######## Function 1 of 13 ##################
+######## Function 1 of 15 ##################
 # Function:         Add-AliasToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -105,10 +105,10 @@ Export-ModuleMember -Function Add-AliasToPSConfigFile
 #endregion
  
 #region Add-CommandToPSConfigFile.ps1
-######## Function 2 of 13 ##################
+######## Function 2 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -218,10 +218,10 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 #endregion
  
 #region Add-CredentialToPSConfigFile.ps1
-######## Function 3 of 13 ##################
+######## Function 3 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -371,10 +371,10 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 #endregion
  
 #region Add-LocationToPSConfigFile.ps1
-######## Function 4 of 13 ##################
+######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -478,10 +478,10 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 #endregion
  
 #region Add-PSDefaultParameterToPSConfigFile.ps1
-######## Function 5 of 13 ##################
+######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
@@ -580,10 +580,10 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 #endregion
  
 #region Add-PSDriveToPSConfigFile.ps1
-######## Function 6 of 13 ##################
+######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -685,10 +685,10 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 #endregion
  
 #region Add-VariableToPSConfigFile.ps1
-######## Function 7 of 13 ##################
+######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -795,15 +795,119 @@ Register-ArgumentCompleter -CommandName Add-VariableToPSConfigFile -ParameterNam
 Export-ModuleMember -Function Add-VariableToPSConfigFile
 #endregion
  
+#region Export-PSConfigFilePFX.ps1
+######## Function 8 of 15 ##################
+# Function:         Export-PSConfigFilePFX
+# Module:           PSConfigFile
+# ModuleVersion:    0.1.33
+# Author:           Pierre Smit
+# Company:          HTPCZA Tech
+# CreatedOn:        2022/08/18 09:33:12
+# ModifiedOn:       2022/08/18 09:47:52
+# Synopsis:         Export the PFX file for credentials.
+#############################################
+ 
+<#
+.SYNOPSIS
+Export the PFX file for credentials.
+
+.DESCRIPTION
+Export the PFX file for credentials.
+
+.PARAMETER Path
+Path where the pfx will be saved.
+
+.PARAMETER Credential
+Credential used to export the pfx file.
+
+.EXAMPLE
+Export-PSConfigFilePFX -Path C:\temp -Credential $creds
+
+#>
+Function Export-PSConfigFilePFX {
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX')]
+	[OutputType([System.Object[]])]
+	PARAM(
+		[ValidateScript( { if (Test-Path $_) { $true }
+				else { New-Item -Path $_ -ItemType Directory -Force | Out-Null; $true }
+			})]
+		[Parameter(Mandatory)]
+		[System.IO.DirectoryInfo]$Path,
+		[pscredential]$Credential = (Get-Credential -UserName PFXExport -Message 'For the exported pfx file')
+	)
+
+	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
+	if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
+	else {
+		if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
+			Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
+		}
+		$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $Credential.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
+	}
+
+} #end Function
+ 
+Export-ModuleMember -Function Export-PSConfigFilePFX
+#endregion
+ 
+#region Import-PSConfigFilePFX.ps1
+######## Function 9 of 15 ##################
+# Function:         Import-PSConfigFilePFX
+# Module:           PSConfigFile
+# ModuleVersion:    0.1.33
+# Author:           Pierre Smit
+# Company:          HTPCZA Tech
+# CreatedOn:        2022/08/18 09:38:48
+# ModifiedOn:       2022/08/18 09:45:44
+# Synopsis:         Import the PFX file for credentials
+#############################################
+ 
+<#
+.SYNOPSIS
+Import the PFX file for credentials
+
+.DESCRIPTION
+Import the PFX file for credentials
+
+.PARAMETER Path
+Path to the PFX file.
+
+.PARAMETER Credential
+Credential used to create the pfx file.
+
+.EXAMPLE
+Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
+
+#>
+Function Import-PSConfigFilePFX {
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX')]
+	[OutputType([System.Object[]])]
+	PARAM(
+		[Parameter(Mandatory)]
+		[ValidateScript( { if ((Get-Item $_).Extension -like '.pfx') { $true }
+				else {throw 'Not a valid .pfx file'}	
+			})]
+		[System.IO.FileInfo]$Path,
+		[pscredential]$Credential = (Get-Credential -UserName InportPFX -Message 'For the imported pfx file')	
+	)
+
+	Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
+	Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $PFXFilePath -Password $Credential.Password 
+
+} #end Function
+ 
+Export-ModuleMember -Function Import-PSConfigFilePFX
+#endregion
+ 
 #region Invoke-PSConfigFile.ps1
-######## Function 8 of 13 ##################
+######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:28:42
+# ModifiedOn:       2022/08/18 09:25:27
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -960,12 +1064,12 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
         foreach ($PSD in  $JSONParameter.PSDefaults) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
             $PSConfigFileOutput.Add($output)
-            $PSDefaultParameterValues.GetEnumerator() | Where-Object {$_.name -like "*$($PSD.Name)*"} | ForEach-Object {$PSDefaultParameterValues.Remove($PSDefaultParameterValues.$_.name)}
+            $PSDefaultParameterValues.Remove($PSD.Name)
             $PSDefaultParameterValues.Add($PSD.Name,$PSD.Value)
         }
-    } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
     #endregion
 
     #region Set Location
@@ -1018,10 +1122,10 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 #endregion
  
 #region New-PSConfigFile.ps1
-######## Function 9 of 13 ##################
+######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1133,10 +1237,10 @@ Export-ModuleMember -Function New-PSConfigFile
 #endregion
  
 #region Remove-ConfigFromPSConfigFile.ps1
-######## Function 10 of 13 ##################
+######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1282,10 +1386,10 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 #endregion
  
 #region Set-PSConfigFileExecution.ps1
-######## Function 11 of 13 ##################
+######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1476,14 +1580,14 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 #endregion
  
 #region Show-PSConfigFile.ps1
-######## Function 12 of 13 ##################
+######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:31:20
+# ModifiedOn:       2022/08/18 09:53:55
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1602,7 +1706,7 @@ Function Show-PSConfigFile {
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
             foreach ($PSD in  $JSONParameter.PSDefaults) {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}({1}): {2,-20}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
             }
             #endregion
@@ -1641,23 +1745,23 @@ Export-ModuleMember -Function Show-PSConfigFile
 #endregion
  
 #region Update-CredentialsInPSConfigFile.ps1
-######## Function 13 of 13 ##################
+######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/09 21:15:05
-# Synopsis:         Allows you to renew the certificate,saved passwords and export/import pfx file
+# ModifiedOn:       2022/08/18 09:52:48
+# Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
 <#
 .SYNOPSIS
-Allows you to renew the certificate,saved passwords and export/import pfx file
+Allows you to renew the certificate or saved passwords.
 
 .DESCRIPTION
-Allows you to renew the certificate,saved passwords and export/import pfx file
+Allows you to renew the certificate or saved passwords.
 
 .PARAMETER RenewSelfSignedCert
 Creates a new self signed certificate, and re-encrypts the passwords.
@@ -1665,56 +1769,19 @@ Creates a new self signed certificate, and re-encrypts the passwords.
 .PARAMETER RenewSavedPasswords
 Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.
 
-.PARAMETER ExportPFX
-Select to export a pfx file, that can be installed on other machines.
-
-.PARAMETER ImportPFX
-Import the previously exported PFX file.
-
-.PARAMETER PFXFilePath
-path to the .pfx file.
-
-.PARAMETER ExportPath
-Where to export the .pfx file.
-
-.PARAMETER Credential
-This password will be used to import or export the .pfx file.
-
 .EXAMPLE
-Update-CredentialsInPSConfigFile -ExportPFX -ExportPath C:\Temp\ 
+Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
 #>
 Function Update-CredentialsInPSConfigFile {
 	[Cmdletbinding(DefaultParameterSetName = 'Renew', HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[Parameter(ParameterSetName = 'Renew')]
 		[switch]$RenewSelfSignedCert,
 
 		[Parameter(ParameterSetName = 'Renew')]
-		[string[]]$RenewSavedPasswords,
-
-		[Parameter(ParameterSetName = 'Export')]
-		[switch]$ExportPFX,
-
-		[Parameter(ParameterSetName = 'Import')]
-		[switch]$ImportPFX,
-
-		[ValidateScript( { if ((Get-Item $_).Extension -like '.pfx') { $true }
-				else {throw 'Not a valid .pfx file'}	
-			})]
-		[Parameter(ParameterSetName = 'Import')]
-		[System.IO.FileInfo]$PFXFilePath = "$($env:temp)",
-
-		[ValidateScript( { if (Test-Path $_) { $true }
-				else { New-Item -Path $_ -ItemType Directory -Force | Out-Null; $true }
-			})]
-		[Parameter(ParameterSetName = 'Export')]
-		[System.IO.DirectoryInfo]$ExportPath = "$($env:temp)",
-
-		[Parameter(ParameterSetName = 'Import')]
-		[Parameter(ParameterSetName = 'Export')]
-		[pscredential]$Credential
-		
+		[string[]]$RenewSavedPasswords
 	)
 
  try {
@@ -1820,22 +1887,6 @@ Function Update-CredentialsInPSConfigFile {
 	} 
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
-	if ($ExportPFX) {
-		if ([string]::IsNullOrEmpty($Credential)) {$Credential = Get-Credential -UserName PFXExport -Message 'For the exported pfx file'}
-		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
-		else {
-			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
-				Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
-			}
-			$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $Credential.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
-		}
-	} 
-	if ($ImportPFX) {
-		if ([string]::IsNullOrEmpty($Credential)) {$Credential = Get-Credential -UserName PFXImport -Message 'For the imported pfx file'}
-		Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
-		Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $PFXFilePath -Password $Credential.Password 
-	}
 } #end Function
 
 

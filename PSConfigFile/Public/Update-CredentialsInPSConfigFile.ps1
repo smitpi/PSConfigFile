@@ -36,10 +36,10 @@ Created [28/07/2022_20:29] Initial Script Creating
 
 <#
 .SYNOPSIS
-Allows you to renew the certificate,saved passwords and export/import pfx file
+Allows you to renew the certificate or saved passwords.
 
 .DESCRIPTION
-Allows you to renew the certificate,saved passwords and export/import pfx file
+Allows you to renew the certificate or saved passwords.
 
 .PARAMETER RenewSelfSignedCert
 Creates a new self signed certificate, and re-encrypts the passwords.
@@ -47,56 +47,19 @@ Creates a new self signed certificate, and re-encrypts the passwords.
 .PARAMETER RenewSavedPasswords
 Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.
 
-.PARAMETER ExportPFX
-Select to export a pfx file, that can be installed on other machines.
-
-.PARAMETER ImportPFX
-Import the previously exported PFX file.
-
-.PARAMETER PFXFilePath
-path to the .pfx file.
-
-.PARAMETER ExportPath
-Where to export the .pfx file.
-
-.PARAMETER Credential
-This password will be used to import or export the .pfx file.
-
 .EXAMPLE
-Update-CredentialsInPSConfigFile -ExportPFX -ExportPath C:\Temp\ 
+Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
 #>
 Function Update-CredentialsInPSConfigFile {
 	[Cmdletbinding(DefaultParameterSetName = 'Renew', HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[Parameter(ParameterSetName = 'Renew')]
 		[switch]$RenewSelfSignedCert,
 
 		[Parameter(ParameterSetName = 'Renew')]
-		[string[]]$RenewSavedPasswords,
-
-		[Parameter(ParameterSetName = 'Export')]
-		[switch]$ExportPFX,
-
-		[Parameter(ParameterSetName = 'Import')]
-		[switch]$ImportPFX,
-
-		[ValidateScript( { if ((Get-Item $_).Extension -like '.pfx') { $true }
-				else {throw 'Not a valid .pfx file'}	
-			})]
-		[Parameter(ParameterSetName = 'Import')]
-		[System.IO.FileInfo]$PFXFilePath = "$($env:temp)",
-
-		[ValidateScript( { if (Test-Path $_) { $true }
-				else { New-Item -Path $_ -ItemType Directory -Force | Out-Null; $true }
-			})]
-		[Parameter(ParameterSetName = 'Export')]
-		[System.IO.DirectoryInfo]$ExportPath = "$($env:temp)",
-
-		[Parameter(ParameterSetName = 'Import')]
-		[Parameter(ParameterSetName = 'Export')]
-		[pscredential]$Credential
-		
+		[string[]]$RenewSavedPasswords
 	)
 
  try {
@@ -202,22 +165,6 @@ Function Update-CredentialsInPSConfigFile {
 	} 
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
-	if ($ExportPFX) {
-		if ([string]::IsNullOrEmpty($Credential)) {$Credential = Get-Credential -UserName PFXExport -Message 'For the exported pfx file'}
-		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-		if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
-		else {
-			if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
-				Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
-			}
-			$selfcert | Export-PfxCertificate -NoProperties -NoClobber -Force -CryptoAlgorithmOption AES256_SHA256 -ChainOption EndEntityCertOnly -Password $Credential.Password -FilePath (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')
-		}
-	} 
-	if ($ImportPFX) {
-		if ([string]::IsNullOrEmpty($Credential)) {$Credential = Get-Credential -UserName PFXImport -Message 'For the imported pfx file'}
-		Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
-		Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $PFXFilePath -Password $Credential.Password 
-	}
 } #end Function
 
 
