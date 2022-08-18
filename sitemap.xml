@@ -41,6 +41,16 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX/</loc>
+         <lastmod>2022-08-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX/</loc>
+         <lastmod>2022-08-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile/</loc>
          <lastmod>2022-08-18</lastmod>
          <changefreq>daily</changefreq>
