@@ -1616,7 +1616,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/19 17:22:42
+# ModifiedOn:       2022/08/19 23:43:37
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1715,7 +1715,7 @@ Function Update-CredentialsInPSConfigFile {
 			Userdata    = $Userdata
 			PSDrive     = $Json.PSDrive
 			PSFunction  = $Json.PSFunction
-			PSCreds     = $RenewCreds
+			PSCreds     = ($RenewCreds  | Where-Object {$_ -notlike $null})
 			PSDefaults  = $Json.PSDefaults
 			SetLocation = $Json.SetLocation
 			SetVariable = $Json.SetVariable
