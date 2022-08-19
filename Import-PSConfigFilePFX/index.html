@@ -250,21 +250,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../Add-AliasToPSConfigFile/" class="md-nav__link">
-        Add-AliasToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../Add-CommandToPSConfigFile/" class="md-nav__link">
         Add-CommandToPSConfigFile
       </a>
@@ -282,6 +267,21 @@
     <li class="md-nav__item">
       <a href="../Add-CredentialToPSConfigFile/" class="md-nav__link">
         Add-CredentialToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Add-FunctionToPSConfigFile/" class="md-nav__link">
+        Add-FunctionToPSConfigFile
       </a>
     </li>
   
@@ -462,6 +462,13 @@
           <li class="md-nav__item">
   <a href="#-credential" class="md-nav__link">
     -Credential
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-force" class="md-nav__link">
+    -Force
   </a>
   
 </li>
@@ -707,6 +714,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-force" class="md-nav__link">
+    -Force
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#commonparameters" class="md-nav__link">
     CommonParameters
   </a>
@@ -781,14 +795,15 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Import the PFX file for credentials</p>
 <h2 id="syntax">SYNTAX</h2>
-<div class="highlight"><pre><span></span><code>Import-PSConfigFilePFX [-Path] &lt;FileInfo&gt; [[-Credential] &lt;PSCredential&gt;] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Import-PSConfigFilePFX [-Path] &lt;FileInfo&gt; [[-Credential] &lt;PSCredential&gt;] [-Force] [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
 <p>Import the PFX file for credentials</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
+<div class="highlight"><pre><span></span><code>$creds = Get-Credential
 </code></pre></div>
+<p>Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds</p>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-path">-Path</h3>
 <p>Path to the PFX file.</p>
@@ -811,6 +826,18 @@
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(Get-Credential -UserName InportPFX -Message &#39;For the imported pfx file&#39;)</span><span class="w"></span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+</code></pre></div>
+<h3 id="-force">-Force</h3>
+<p>Will override existing certificates.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>

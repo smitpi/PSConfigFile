@@ -305,21 +305,6 @@
   
   
     <li class="md-nav__item">
-      <a href="Add-AliasToPSConfigFile/" class="md-nav__link">
-        Add-AliasToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="Add-CommandToPSConfigFile/" class="md-nav__link">
         Add-CommandToPSConfigFile
       </a>
@@ -337,6 +322,21 @@
     <li class="md-nav__item">
       <a href="Add-CredentialToPSConfigFile/" class="md-nav__link">
         Add-CredentialToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="Add-FunctionToPSConfigFile/" class="md-nav__link">
+        Add-FunctionToPSConfigFile
       </a>
     </li>
   
@@ -589,7 +589,7 @@
 
 <h1 id="psconfigfile">PSConfigFile</h1>
 <h2 id="description">Description</h2>
-<p>Creates a Config file with Commands, Variables, PSDrives, Credentials, Aliases\Shortcuts and a Default Starting location. You can then execute this config file when your profile is loaded, or when a specific module is imported, or you can run it manually. This way you can quickly and easily switch between "environment setups" with these default values</p>
+<p>Creates a Config file with Variables, PSDrives, Credentials, Shortcuts(Functions), PSDefaultParameters and a Starting location. You can then execute this config file when your profile is loaded, or you can run it manually at any time. And all of these variables, psdrives credentials ext. is available in your session. This way you can quickly and easily switch between "environment setups"</p>
 <h2 id="getting-started">Getting Started</h2>
 <ul>
 <li>Install from PowerShell Gallery <a href="https://www.powershellgallery.com/packages/PSConfigFile">PS Gallery</a>
@@ -609,9 +609,9 @@ Documentation can be found at: <a href="https://smitpi.github.io/PSConfigFile">G
 </ul>
 <h2 id="functions">Functions</h2>
 <ul>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile"><code>Add-AliasToPSConfigFile</code></a> -- Creates Shortcuts (Aliases) to commands or script blocks</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile"><code>Add-CommandToPSConfigFile</code></a> -- Adds a command or script block to the config file, to be executed every time the invoke function is called.</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile"><code>Add-CredentialToPSConfigFile</code></a> -- Creates a self signed cert, then uses it to securely save a credential to the config file.</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile"><code>Add-FunctionToPSConfigFile</code></a> -- Creates Shortcuts (Functions) to commands or script blocks</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile"><code>Add-LocationToPSConfigFile</code></a> -- Adds default location to the config file.</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile"><code>Add-PSDefaultParameterToPSConfigFile</code></a> -- Add PSDefaultParameterValues to the config file</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile"><code>Add-PSDriveToPSConfigFile</code></a> -- Add PSDrive to the config file.</li>
@@ -621,7 +621,7 @@ Documentation can be found at: <a href="https://smitpi.github.io/PSConfigFile">G
 <li><a href="https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile"><code>Invoke-PSConfigFile</code></a> -- Executes the config from the json file.</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/New-PSConfigFile"><code>New-PSConfigFile</code></a> -- Creates a new config file</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile"><code>Remove-ConfigFromPSConfigFile</code></a> -- Removes a item from the config file.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution"><code>Set-PSConfigFileExecution</code></a> -- Adds functionality to add the execution to your profile or a PowerShell module</li>
+<li><a href="https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution"><code>Set-PSConfigFileExecution</code></a> -- Adds functionality to add the execution to your profile.</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Show-PSConfigFile"><code>Show-PSConfigFile</code></a> -- Display what's configured in the config file.</li>
 <li><a href="https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile"><code>Update-CredentialsInPSConfigFile</code></a> -- Allows you to renew the certificate or saved passwords.</li>
 </ul>
@@ -641,13 +641,13 @@ Documentation can be found at: <a href="https://smitpi.github.io/PSConfigFile">G
       
       
         
-        <a href="Add-AliasToPSConfigFile/" class="md-footer__link md-footer__link--next" aria-label="Next: Add-AliasToPSConfigFile" rel="next">
+        <a href="Add-CommandToPSConfigFile/" class="md-footer__link md-footer__link--next" aria-label="Next: Add-CommandToPSConfigFile" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Add-AliasToPSConfigFile
+              Add-CommandToPSConfigFile
             </div>
           </div>
           <div class="md-footer__button md-icon">
