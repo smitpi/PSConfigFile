@@ -79,7 +79,7 @@ Function Import-PSConfigFilePFX {
 		if ($Force) {$CheckExisting | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}}
 		else {
 			Write-Warning 'Certificate already exists, use -Force to override the existing certificate'
-			exit
+			return
 		}
 	}
 	Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $Path -Password $Credential.Password 
