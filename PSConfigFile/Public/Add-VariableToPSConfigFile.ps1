@@ -109,13 +109,13 @@ Function Add-VariableToPSConfigFile {
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
             $VarObject.Add([PSCustomObject]@{
                     Name = $InputVar.Name 
-                    Variable = $InputVar.Value
+                    Variable = ($InputVar | Select-Object Name,Value,Description)
                 })
         } else {
             $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
                     Name     = $InputVar.Name 
-                    Variable = $InputVar.Value
+                    Variable = ($InputVar | Select-Object Name,Value,Description)
             })
         }
 

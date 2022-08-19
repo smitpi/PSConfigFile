@@ -665,7 +665,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 22:17:26
+# ModifiedOn:       2022/08/19 23:27:37
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -727,13 +727,13 @@ Function Add-VariableToPSConfigFile {
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
             $VarObject.Add([PSCustomObject]@{
                     Name = $InputVar.Name 
-                    Variable = $InputVar.Value
+                    Variable = ($InputVar | Select-Object Name,Value,Description)
                 })
         } else {
             $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
                     Name     = $InputVar.Name 
-                    Variable = $InputVar.Value
+                    Variable = ($InputVar | Select-Object Name,Value,Description)
             })
         }
 
@@ -888,7 +888,7 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 21:28:06
+# ModifiedOn:       2022/08/19 23:27:33
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -926,6 +926,7 @@ Function Invoke-PSConfigFile {
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile).Version.ToString())")
         $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
         if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
@@ -948,7 +949,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
         $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-25}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
     } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
@@ -959,10 +960,10 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
         foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.Variable)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.Variable.Value)
             $PSConfigFileOutput.Add($output)
             try {
-                New-Variable -Name $SetVariable.name -Value $SetVariable.Variable -Force -Scope global -ErrorAction Stop
+                New-Variable -Name $SetVariable.name -Value $SetVariable.Variable.Value -Force -Scope global -ErrorAction Stop
             } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
