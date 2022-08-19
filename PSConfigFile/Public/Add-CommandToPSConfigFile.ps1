@@ -87,7 +87,6 @@ Function Add-CommandToPSConfigFile {
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    ## TODO Allow user to modify the order
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $userdata = [PSCustomObject]@{
         Owner             = $json.Userdata.Owner
@@ -114,8 +113,10 @@ Function Add-CommandToPSConfigFile {
             "[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
         }
     } else {
-        $Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
-        [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
+        try {
+            $Index = $Json.Execute | Get-Member -MemberType NoteProperty -ErrorAction Stop | Sort-Object -Property Name | Select-Object -Last 1
+            [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
+        } catch {$NewTaskIndex = 0}
         $NewScriptBlockName = '[' + $($NewTaskIndex.ToString()) + ']-' + $ScriptBlockName
         $members = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name
         foreach ($mem in $members) {

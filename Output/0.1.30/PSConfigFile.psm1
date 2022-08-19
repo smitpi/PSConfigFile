@@ -7,7 +7,7 @@
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:27:37
+# ModifiedOn:       2022/08/19 19:35:02
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -46,7 +46,6 @@ Function Add-CommandToPSConfigFile {
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    ## TODO Allow user to modify the order
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $userdata = [PSCustomObject]@{
         Owner             = $json.Userdata.Owner
@@ -73,8 +72,10 @@ Function Add-CommandToPSConfigFile {
             "[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
         }
     } else {
-        $Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
-        [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
+        try {
+            $Index = $Json.Execute | Get-Member -MemberType NoteProperty -ErrorAction Stop | Sort-Object -Property Name | Select-Object -Last 1
+            [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
+        } catch {$NewTaskIndex = 0}
         $NewScriptBlockName = '[' + $($NewTaskIndex.ToString()) + ']-' + $ScriptBlockName
         $members = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name
         foreach ($mem in $members) {
