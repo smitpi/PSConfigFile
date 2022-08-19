@@ -230,7 +230,6 @@ Function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
             $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
             $tmp = [scriptblock]::Create($_.value)
-            $tmp.invoke()
             #$tmp.invoke() 
             Invoke-Command $tmp -OutVariable output
             $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($output | Out-String)")
