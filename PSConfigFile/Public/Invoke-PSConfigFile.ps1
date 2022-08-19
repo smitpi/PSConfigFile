@@ -231,6 +231,9 @@ Function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
             $tmp = [scriptblock]::Create($_.value)
             $tmp.invoke()
+            #$tmp.invoke() 
+            Invoke-Command $tmp -OutVariable output
+            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($output | Out-String)")
         }
     } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
     #endregion
