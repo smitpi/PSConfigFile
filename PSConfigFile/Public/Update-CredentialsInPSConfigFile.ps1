@@ -52,13 +52,10 @@ Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
 #>
 Function Update-CredentialsInPSConfigFile {
-	[Cmdletbinding(DefaultParameterSetName = 'Renew', HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
-		[Parameter(ParameterSetName = 'Renew')]
 		[switch]$RenewSelfSignedCert,
-
-		[Parameter(ParameterSetName = 'Renew')]
 		[string[]]$RenewSavedPasswords
 	)
 
@@ -174,6 +171,5 @@ $scriptblock = {
 	$var = @('All')
 	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
 	$var
-	#Get-Variable | Where-Object {$_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
 }
 Register-ArgumentCompleter -CommandName Update-CredentialsInPSConfigFile -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock

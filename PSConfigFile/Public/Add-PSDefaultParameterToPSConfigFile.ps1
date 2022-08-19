@@ -60,11 +60,14 @@ Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLau
 
 #>
 Function Add-PSDefaultParameterToPSConfigFile {
-	[Cmdletbinding(DefaultParameterSetName = 'Set1', HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
 	[OutputType([System.Object[]])]
 	PARAM(
+		[Parameter(Position = 0, Mandatory = $true, HelpMessage = "Name of a function to add, You can use wildcards to apply to more functions.")]
 		[string]$Function,
+		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
 		[string]$Parameter,
+		[Parameter(Position = 2, Mandatory = $true, HelpMessage = 'The Value to add.')]
 		[string]$Value
 	)
 

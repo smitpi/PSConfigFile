@@ -109,37 +109,37 @@ Function Remove-ConfigFromPSConfigFile {
     $userdataModAction = "Removed Config:`n"
 
     if ($Config -like "Variable") {
-        $userdataModAction += "Remove Variable $($Value)`n"
+        $userdataModAction += "Removed Variable $($Value)`n"
         $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
     } else {$SetVariable = $JsonConfig.setvariable}
 
     if ($Config -like "PSDrive") {
-        $userdataModAction += "Remove PSDrive $($Value)`n"
+        $userdataModAction += "Removed PSDrive $($Value)`n"
         $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
     if ($Config -like "Alias") {
-        $userdataModAction += "Remove Alias $($Value)`n"
+        $userdataModAction += "Removed Alias $($Value)`n"
         $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
     } else {$SetPSAlias = $JsonConfig.PSAlias}
 
     if ($Config -like "Command") { 
-        $userdataModAction += "Remove Command $($Value)`n"
+        $userdataModAction += "Removed Command $($Value)`n"
         $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
     if ($Config -like "Credential") {
-        $userdataModAction += "Remove Credential $($Value)`n"
+        $userdataModAction += "Removed Credential $($Value)`n"
         $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
     if ($Config -like "PSDefaults") {
-        $userdataModAction += "Remove PSDefaults $($Value)`n"
+        $userdataModAction += "Removed PSDefaults $($Value)`n"
         $SetPSDefaults = $JsonConfig.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDefaults = $JsonConfig.PSDefaults}
 
     if ($Config -like 'Location') {
-        $userdataModAction += "Remove Location`n"
+        $userdataModAction += "Removed Location`n"
         $SetLocation = @{}
     } else {$SetLocation = $JsonConfig.SetLocation}
     
@@ -172,6 +172,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     try {
         $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
+        Write-Output "($userdataModAction | Out-String).Trim()"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
 } #end Function

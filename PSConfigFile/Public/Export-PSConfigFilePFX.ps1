@@ -55,6 +55,7 @@ Path where the pfx will be saved.
 Credential used to export the pfx file.
 
 .EXAMPLE
+$creds = Get-Credential
 Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 
 #>
@@ -71,7 +72,7 @@ Function Export-PSConfigFilePFX {
 	)
 
 	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-	if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
+	if (-not($selfcert)) { Write-Warning 'Certificate does not exist, nothing to export'}
 	else {
 		if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
 			Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
