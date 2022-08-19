@@ -49,35 +49,6 @@ Removes a item from the config file.
 .DESCRIPTION
 Removes a item from the config file.
 
-.PARAMETER Variable
-Name of the variable to remove.
-
-.PARAMETER PSDrive
-Name of the PSDrive to remove.
-
-.PARAMETER PSFunction
-Name of the Function to remove.
-
-.PARAMETER Command
-Name of the Command to remove.
-
-.PARAMETER CredentialName
-Name of the Credential to remove.
-
-.PARAMETER Location
-Set Location to blank again.
-
-.EXAMPLE
-Remove-ConfigFromPSConfigFile -PSDrive ProdMods
-
-#>
-<#
-.SYNOPSIS
-Removes a item from the config file.
-
-.DESCRIPTION
-Removes a item from the config file.
-
 .PARAMETER Config
 Which config item to remove.
 

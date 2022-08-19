@@ -92,7 +92,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = "Add PSDefaultParameter $($Name)"
+			ModifiedAction = "Add PSDefaultParameter $($Function)"
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}

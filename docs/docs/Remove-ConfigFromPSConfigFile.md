@@ -23,11 +23,6 @@ Removes a item from the config file.
 
 ### EXAMPLE 1
 ```
-Remove-ConfigFromPSConfigFile -PSDrive ProdMods
-```
-
-### EXAMPLE 2
-```
 Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
 ```
 

@@ -1075,13 +1075,6 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Remove-ConfigFromPSConfigFile -PSDrive ProdMods</dev:code>
-        <dev:remarks>
-          <maml:para></maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
         <dev:code>Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods</dev:code>
         <dev:remarks>
           <maml:para></maml:para>

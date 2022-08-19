@@ -40,19 +40,6 @@ Created [21/05/2022_03:47] Initial Script Creating
 
 #> 
 
-
-<#
-.SYNOPSIS
-Creates a self signed cert, then uses it to securely save a credential to the config file.
-
-.DESCRIPTION
-Creates a self signed cert, then uses it to securely save a credential to the config file.
-
-.EXAMPLE
-Add-CredentialToPSConfigFile
-
-#>
-
 <#
 .SYNOPSIS
 Creates a self signed cert, then uses it to securely save a credential to the config file.
