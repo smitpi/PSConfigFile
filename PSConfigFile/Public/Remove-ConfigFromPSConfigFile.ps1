@@ -53,7 +53,7 @@ Removes a item from the config file.
 Which config item to remove.
 
 .PARAMETER Value
-The value of the config item to filter
+The value of the config item to filter out.
 
 .EXAMPLE
 Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
@@ -77,7 +77,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     [System.Collections.Generic.List[pscustomobject]]$JsonConfig = @()
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
-    $userdataModAction = "Removed Config:`n"
+    $userdataModAction = "Removed Config: "
 
     if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"

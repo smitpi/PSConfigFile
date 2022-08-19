@@ -44,7 +44,7 @@ Accept wildcard characters: False
 ```
 
 ### -Value
-The value of the config item to filter
+The value of the config item to filter out.
 
 ```yaml
 Type: String
