@@ -143,7 +143,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     try {
         $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
-        Write-Output "($userdataModAction | Out-String).Trim()"
+        Write-Output "$(($userdataModAction | Out-String).Trim())"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
 } #end Function
