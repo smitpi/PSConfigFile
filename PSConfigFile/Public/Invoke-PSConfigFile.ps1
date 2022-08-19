@@ -224,13 +224,12 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-        $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+        foreach ($execute in  ($JSONParameter.execute | Where-Object {$_ -notlike $null})) {
             $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
             $PSConfigFileOutput.Add($output)
             $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
-            $tmp = [scriptblock]::Create($_.value)
-            #$tmp.invoke() 
+            $tmp = [scriptblock]::Create($execute.ScriptBlock)
             Invoke-Command $tmp -OutVariable output
             $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($output | Out-String)")
         }
