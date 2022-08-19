@@ -94,30 +94,27 @@ Function Add-PSDriveToPSConfigFile {
     }
 
     $Update = @()
-    $SetPSDrive = @{}
+    [System.Collections.generic.List[PSObject]]$PSDriveObject = @()
     $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
     if ($null -eq $InputDrive) { Write-Error 'Unknown psdrive'; break }
 
     if ($Json.PSDrive.psobject.Properties.name -like 'Default' -and
         $Json.PSDrive.psobject.Properties.value -like 'Default') {
-        $SetPSDrive = @{
-            $InputDrive.Name = $InputDrive
-        }
+        $PSDriveObject.Add([PSCustomObject]@{
+                Name =  $InputDrive.Name
+                PSDrive = $InputDrive
+            })
     } else {
-        $members = $Json.PSDrive | Get-Member -MemberType NoteProperty
-        foreach ($mem in $members) {
-            $SetPSDrive += @{
-                $mem.Name = $json.PSDrive.$($mem.Name)
-            }
-        }
-        $SetPSDrive += @{
-            $InputDrive.Name = $InputDrive
-        }
+        $Json.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $PSDriveObject.Add([PSCustomObject]@{
+                Name    = $InputDrive.Name
+                PSDrive = $InputDrive
+            })
     }
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $SetPSDrive
+        PSDrive     = $PSDriveObject
         PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults

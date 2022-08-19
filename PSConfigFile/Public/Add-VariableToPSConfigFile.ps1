@@ -100,26 +100,23 @@ Function Add-VariableToPSConfigFile {
 
     foreach ($VariableName in $VariableNames) {
         $Update = @()
-        $SetVariable = @{}
+        [System.Collections.generic.List[PSObject]]$VarObject = @()
         $InputVar = Get-Variable -Name $VariableName
         $inputtype = $InputVar.Value.GetType()
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
         if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
-            $SetVariable = @{
-                $InputVar.Name = $InputVar.Value
-            }
+            $VarObject.Add([PSCustomObject]@{
+                    Name = $InputVar.Name 
+                    Variable = $InputVar.Value
+                })
         } else {
-            $members = $Json.SetVariable | Get-Member -MemberType NoteProperty
-            foreach ($mem in $members) {
-                $SetVariable += @{
-                    $mem.Name = $json.SetVariable.$($mem.Name)
-                }
-            }
-            $SetVariable += @{
-                $InputVar.Name = $InputVar.Value
-            }
+            $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $VarObject.Add([PSCustomObject]@{
+                    Name     = $InputVar.Name 
+                    Variable = $InputVar.Value
+            })
         }
 
         $Update = [psobject]@{
@@ -129,7 +126,7 @@ Function Add-VariableToPSConfigFile {
             PSCreds     = $Json.PSCreds
             PSDefaults  = $Json.PSDefaults
             SetLocation = $Json.SetLocation
-            SetVariable = $SetVariable
+            SetVariable = $VarObject
             Execute     = $Json.Execute
         }
         try {

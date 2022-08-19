@@ -112,11 +112,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+        foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.Variable)
             $PSConfigFileOutput.Add($output)
             try {
-                New-Variable -Name $_.name -Value $_.value -Force -Scope global -ErrorAction Stop
+                New-Variable -Name $SetVariable.name -Value $SetVariable.Variable -Force -Scope global -ErrorAction Stop
             } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
@@ -133,11 +133,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
+        foreach ($SetPSDrive in  ($JSONParameter.PSDrive | Where-Object {$_ -notlike $null})) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.PSDrive.root)
             $PSConfigFileOutput.Add($output)
-            if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
-                New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+            if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
+                New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.PSDrive.root -Scope Global | Out-Null
             } else { Write-Warning 'Warning: PSDrive - Already exists'; $PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
         }
     } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
@@ -147,11 +147,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-        $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+        foreach ($SetPSFunction in  ($JSONParameter.PSFunction | Where-Object {$_ -notlike $null})) {
             $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
             $PSConfigFileOutput.Add($output)
-            $command = "function global:$($_.name) {$($_.value)}"
+            $command = "function global:$($SetPSFunction.name) {$($SetPSFunction.command)}"
             $tmp = [scriptblock]::Create($command)
             $tmp.invoke()
         }

@@ -81,17 +81,17 @@ Function Remove-ConfigFromPSConfigFile {
 
     if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"
-        $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
+        $SetVariable = $JsonConfig.SetVariable | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetVariable = $JsonConfig.setvariable}
 
     if ($Config -like 'PSDrive') {
         $userdataModAction += "Removed PSDrive $($Value)`n"
-        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
+        $SetPSDrive = $JsonConfig.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
     if ($Config -like 'Function') {
         $userdataModAction += "Removed Function $($Value)`n"
-        $JsonConfig.PSFunction.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSFunction += @{$_.name = $_.value}}
+        $SetPSFunction = $JsonConfig.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSFunction = $JsonConfig.PSFunction}
 
     if ($Config -like 'Command') { 

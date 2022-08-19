@@ -255,7 +255,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:23:57
+# ModifiedOn:       2022/08/19 20:30:53
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -313,29 +313,26 @@ Function Add-FunctionToPSConfigFile {
     }
 
     $Update = @()
-    $SetFunction = @{}
-
+    [System.Collections.generic.List[PSObject]]$FunctionObject = @()
+        
     if ($Json.PSFunction.psobject.Properties.name -like 'Default' -and
         $Json.PSFunction.psobject.Properties.value -like 'Default') {
-        $SetFunction = @{
-            $FunctionName = $CommandToRun
-        }
+        $FunctionObject.Add([PSCustomObject]@{
+                Name = $FunctionName 
+                Command = $CommandToRun
+            })
     } else {
-        $members = $Json.PSFunction | Get-Member -MemberType NoteProperty
-        foreach ($mem in $members) {
-            $SetFunction += @{
-                $mem.Name = $json.PSFunction.$($mem.Name)
-            }
-        }
-        $SetFunction += @{
-            $FunctionName = $CommandToRun
-        }
+        $Json.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
+        $FunctionObject.Add([PSCustomObject]@{
+                Name    = $FunctionName 
+                Command = $CommandToRun
+            })
     }
 
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $Json.PSDrive
-        PSFunction  = $SetFunction
+        PSFunction  = $FunctionObject
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -569,7 +566,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:22:50
+# ModifiedOn:       2022/08/19 20:35:55
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -621,30 +618,27 @@ Function Add-PSDriveToPSConfigFile {
     }
 
     $Update = @()
-    $SetPSDrive = @{}
+    [System.Collections.generic.List[PSObject]]$PSDriveObject = @()
     $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
     if ($null -eq $InputDrive) { Write-Error 'Unknown psdrive'; break }
 
     if ($Json.PSDrive.psobject.Properties.name -like 'Default' -and
         $Json.PSDrive.psobject.Properties.value -like 'Default') {
-        $SetPSDrive = @{
-            $InputDrive.Name = $InputDrive
-        }
+        $PSDriveObject.Add([PSCustomObject]@{
+                Name =  $InputDrive.Name
+                PSDrive = $InputDrive
+            })
     } else {
-        $members = $Json.PSDrive | Get-Member -MemberType NoteProperty
-        foreach ($mem in $members) {
-            $SetPSDrive += @{
-                $mem.Name = $json.PSDrive.$($mem.Name)
-            }
-        }
-        $SetPSDrive += @{
-            $InputDrive.Name = $InputDrive
-        }
+        $Json.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $PSDriveObject.Add([PSCustomObject]@{
+                Name    = $InputDrive.Name
+                PSDrive = $InputDrive
+            })
     }
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $SetPSDrive
+        PSDrive     = $PSDriveObject
         PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
@@ -671,7 +665,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:28:50
+# ModifiedOn:       2022/08/19 20:31:54
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -724,26 +718,23 @@ Function Add-VariableToPSConfigFile {
 
     foreach ($VariableName in $VariableNames) {
         $Update = @()
-        $SetVariable = @{}
+        [System.Collections.generic.List[PSObject]]$VarObject = @()
         $InputVar = Get-Variable -Name $VariableName
         $inputtype = $InputVar.Value.GetType()
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
         if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
-            $SetVariable = @{
-                $InputVar.Name = $InputVar.Value
-            }
+            $VarObject.Add([PSCustomObject]@{
+                    Name = $InputVar.Name 
+                    Variable = $InputVar.Value
+                })
         } else {
-            $members = $Json.SetVariable | Get-Member -MemberType NoteProperty
-            foreach ($mem in $members) {
-                $SetVariable += @{
-                    $mem.Name = $json.SetVariable.$($mem.Name)
-                }
-            }
-            $SetVariable += @{
-                $InputVar.Name = $InputVar.Value
-            }
+            $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $VarObject.Add([PSCustomObject]@{
+                    Name     = $InputVar.Name 
+                    Variable = $InputVar.Value
+            })
         }
 
         $Update = [psobject]@{
@@ -753,7 +744,7 @@ Function Add-VariableToPSConfigFile {
             PSCreds     = $Json.PSCreds
             PSDefaults  = $Json.PSDefaults
             SetLocation = $Json.SetLocation
-            SetVariable = $SetVariable
+            SetVariable = $VarObject
             Execute     = $Json.Execute
         }
         try {
@@ -897,7 +888,7 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 20:02:07
+# ModifiedOn:       2022/08/19 20:43:52
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -967,11 +958,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-        $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+        foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.Variable)
             $PSConfigFileOutput.Add($output)
             try {
-                New-Variable -Name $_.name -Value $_.value -Force -Scope global -ErrorAction Stop
+                New-Variable -Name $SetVariable.name -Value $SetVariable.Variable -Force -Scope global -ErrorAction Stop
             } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
@@ -988,11 +979,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
+        foreach ($SetPSDrive in  ($JSONParameter.PSDrive | Where-Object {$_ -notlike $null})) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.PSDrive.root)
             $PSConfigFileOutput.Add($output)
-            if (-not(Get-PSDrive -Name $_.name -ErrorAction SilentlyContinue)) {
-                New-PSDrive -Name $_.name -PSProvider FileSystem -Root $_.value.root -Scope Global | Out-Null
+            if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
+                New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.PSDrive.root -Scope Global | Out-Null
             } else { Write-Warning 'Warning: PSDrive - Already exists'; $PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
         }
     } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
@@ -1002,11 +993,11 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-        $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+        foreach ($SetPSFunction in  ($JSONParameter.PSFunction | Where-Object {$_ -notlike $null})) {
             $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
             $PSConfigFileOutput.Add($output)
-            $command = "function global:$($_.name) {$($_.value)}"
+            $command = "function global:$($SetPSFunction.name) {$($SetPSFunction.command)}"
             $tmp = [scriptblock]::Create($command)
             $tmp.invoke()
         }
@@ -1234,7 +1225,7 @@ Export-ModuleMember -Function New-PSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/19 20:07:53
+# ModifiedOn:       2022/08/19 20:46:00
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1277,17 +1268,17 @@ Function Remove-ConfigFromPSConfigFile {
 
     if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"
-        $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
+        $SetVariable = $JsonConfig.SetVariable | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetVariable = $JsonConfig.setvariable}
 
     if ($Config -like 'PSDrive') {
         $userdataModAction += "Removed PSDrive $($Value)`n"
-        $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
+        $SetPSDrive = $JsonConfig.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
     if ($Config -like 'Function') {
         $userdataModAction += "Removed Function $($Value)`n"
-        $JsonConfig.PSFunction.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSFunction += @{$_.name = $_.value}}
+        $SetPSFunction = $JsonConfig.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSFunction = $JsonConfig.PSFunction}
 
     if ($Config -like 'Command') { 

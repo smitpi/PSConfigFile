@@ -98,29 +98,26 @@ Function Add-FunctionToPSConfigFile {
     }
 
     $Update = @()
-    $SetFunction = @{}
-
+    [System.Collections.generic.List[PSObject]]$FunctionObject = @()
+        
     if ($Json.PSFunction.psobject.Properties.name -like 'Default' -and
         $Json.PSFunction.psobject.Properties.value -like 'Default') {
-        $SetFunction = @{
-            $FunctionName = $CommandToRun
-        }
+        $FunctionObject.Add([PSCustomObject]@{
+                Name = $FunctionName 
+                Command = $CommandToRun
+            })
     } else {
-        $members = $Json.PSFunction | Get-Member -MemberType NoteProperty
-        foreach ($mem in $members) {
-            $SetFunction += @{
-                $mem.Name = $json.PSFunction.$($mem.Name)
-            }
-        }
-        $SetFunction += @{
-            $FunctionName = $CommandToRun
-        }
+        $Json.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
+        $FunctionObject.Add([PSCustomObject]@{
+                Name    = $FunctionName 
+                Command = $CommandToRun
+            })
     }
 
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $Json.PSDrive
-        PSFunction  = $SetFunction
+        PSFunction  = $FunctionObject
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
