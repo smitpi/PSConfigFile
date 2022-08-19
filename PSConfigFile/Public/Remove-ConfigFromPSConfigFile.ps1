@@ -77,7 +77,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     [System.Collections.Generic.List[pscustomobject]]$JsonConfig = @()
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
-    $userdataModAction = "Removed Config: "
+    $userdataModAction = 'Removed Config: '
 
     if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"
@@ -96,7 +96,7 @@ Function Remove-ConfigFromPSConfigFile {
 
     if ($Config -like 'Command') { 
         $userdataModAction += "Removed Command $($Value)`n"
-        $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
+        $SetExecute = $JsonConfig.Execute | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetExecute = $JsonConfig.Execute}
 
     if ($Config -like 'Credential') {
