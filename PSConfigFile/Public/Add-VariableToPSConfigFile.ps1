@@ -126,7 +126,7 @@ Function Add-VariableToPSConfigFile {
             PSCreds     = $Json.PSCreds
             PSDefaults  = $Json.PSDefaults
             SetLocation = $Json.SetLocation
-            SetVariable = $VarObject
+            SetVariable = $VarObject 
             Execute     = $Json.Execute
         }
         try {

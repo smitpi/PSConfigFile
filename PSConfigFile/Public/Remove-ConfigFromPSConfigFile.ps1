@@ -133,13 +133,13 @@ Function Remove-ConfigFromPSConfigFile {
     $Update = @()
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $SetPSDrive
-        PSFunction  = $SetPSFunction
-        PSCreds     = $SetCreds
-        PSDefaults  = $SetPSDefaults
-        SetLocation = $SetLocation
-        SetVariable = $SetVariable
-        Execute     = $SetExecute
+        PSDrive     = ($SetPSDrive  | Where-Object {$_ -notlike $null})
+        PSFunction  = ($SetPSFunction  | Where-Object {$_ -notlike $null})
+        PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
+        PSDefaults  = ($SetPSDefaults  | Where-Object {$_ -notlike $null})
+        SetLocation = ($SetLocation  | Where-Object {$_ -notlike $null})
+        SetVariable = ($SetVariable  | Where-Object {$_ -notlike $null})
+        Execute     = ($SetExecute  | Where-Object {$_ -notlike $null})
     }
     try {
         $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
