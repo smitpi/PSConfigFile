@@ -134,11 +134,11 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
         foreach ($SetPSDrive in  ($JSONParameter.PSDrive | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.PSDrive.root)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
             $PSConfigFileOutput.Add($output)
             if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
-                New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.PSDrive.root -Scope Global | Out-Null
-            } else { Write-Warning 'Warning: PSDrive - Already exists'; $PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
+                New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.root -Scope Global | Out-Null
+            } else {$PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
         }
     } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
     #endregion

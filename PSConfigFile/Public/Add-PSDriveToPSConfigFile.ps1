@@ -102,13 +102,13 @@ Function Add-PSDriveToPSConfigFile {
         $Json.PSDrive.psobject.Properties.value -like 'Default') {
         $PSDriveObject.Add([PSCustomObject]@{
                 Name =  $InputDrive.Name
-                PSDrive = $InputDrive
+                Root = $InputDrive.Root
             })
     } else {
         $Json.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
         $PSDriveObject.Add([PSCustomObject]@{
                 Name    = $InputDrive.Name
-                PSDrive = $InputDrive
+                Root = $InputDrive.Root
             })
     }
 
