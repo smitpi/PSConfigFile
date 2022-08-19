@@ -115,31 +115,30 @@ Function Add-CommandToPSConfigFile {
                 Name        = $ScriptBlockName
                 ScriptBlock = $ScriptBlock
             })
+    } else {
+        $Json.Execute | ForEach-Object {$ExecuteObject.Add($_)}
+        $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
+        $ExecuteObject.Add([PSCustomObject]@{
+                IndexID     = ($IndexID + 1 )
+                Name        = $ScriptBlockName
+                ScriptBlock = $ScriptBlock
+            })
     }
-} else {
-    $Json.Execute | ForEach-Object {$ExecuteObject.Add($_)}
-    $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
-    $ExecuteObject.Add([PSCustomObject]@{
-            IndexID     = ($IndexID + 1 )
-            Name        = $ScriptBlockName
-            ScriptBlock = $ScriptBlock
-        })
-}
-$Update = [psobject]@{
-    Userdata    = $Userdata
-    PSDrive     = $Json.PSDrive
-    PSFunction  = $Json.PSFunction
-    PSCreds     = $Json.PSCreds
-    PSDefaults  = $Json.PSDefaults
-    SetLocation = $Json.SetLocation
-    SetVariable = $Json.SetVariable
-    Execute     = $ExecuteObject
-}
-try {
-    $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
-    Write-Output 'Command added'
-    Write-Output "ConfigFile: $($confile.FullName)"
-} catch { Write-Error "Error: `n $_" }
+    $Update = [psobject]@{
+        Userdata    = $Userdata
+        PSDrive     = $Json.PSDrive
+        PSFunction  = $Json.PSFunction
+        PSCreds     = $Json.PSCreds
+        PSDefaults  = $Json.PSDefaults
+        SetLocation = $Json.SetLocation
+        SetVariable = $Json.SetVariable
+        Execute     = $ExecuteObject
+    }
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'Command added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    } catch { Write-Error "Error: `n $_" }
 
 
 
