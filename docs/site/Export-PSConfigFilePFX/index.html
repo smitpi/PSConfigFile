@@ -250,21 +250,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../Add-AliasToPSConfigFile/" class="md-nav__link">
-        Add-AliasToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../Add-CommandToPSConfigFile/" class="md-nav__link">
         Add-CommandToPSConfigFile
       </a>
@@ -282,6 +267,21 @@
     <li class="md-nav__item">
       <a href="../Add-CredentialToPSConfigFile/" class="md-nav__link">
         Add-CredentialToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Add-FunctionToPSConfigFile/" class="md-nav__link">
+        Add-FunctionToPSConfigFile
       </a>
     </li>
   
@@ -787,8 +787,9 @@
 <p>Export the PFX file for credentials.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>Export-PSConfigFilePFX -Path C:\temp -Credential $creds
+<div class="highlight"><pre><span></span><code>$creds = Get-Credential
 </code></pre></div>
+<p>Export-PSConfigFilePFX -Path C:\temp -Credential $creds</p>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-path">-Path</h3>
 <p>Path where the pfx will be saved.</p>

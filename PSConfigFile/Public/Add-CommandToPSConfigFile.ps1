@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS powershell ps
+.TAGS PowerShell ps
 
 .LICENSEURI
 
@@ -30,7 +30,7 @@ Created [04/10/2021_19:05] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:31] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Alias Script
+Updated [13/11/2021_16:30] Added Function Script
 
 .PRIVATEDATA
 
@@ -80,8 +80,7 @@ Function Add-CommandToPSConfigFile {
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -114,8 +113,7 @@ Function Add-CommandToPSConfigFile {
         $Execute += @{
             "[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
         }
-    }
-    else {
+    } else {
         $Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
         [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
         $NewScriptBlockName = '[' + $($NewTaskIndex.ToString()) + ']-' + $ScriptBlockName
@@ -132,7 +130,7 @@ Function Add-CommandToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $Json.PSDrive
-        PSAlias     = $Json.PSAlias
+        PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -143,8 +141,7 @@ Function Add-CommandToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'Command added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 
 
 

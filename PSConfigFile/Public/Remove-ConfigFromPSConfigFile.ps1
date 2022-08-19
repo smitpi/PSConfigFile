@@ -55,8 +55,8 @@ Name of the variable to remove.
 .PARAMETER PSDrive
 Name of the PSDrive to remove.
 
-.PARAMETER PSAlias
-Name of the Alias to remove.
+.PARAMETER PSFunction
+Name of the Function to remove.
 
 .PARAMETER Command
 Name of the Command to remove.
@@ -91,7 +91,7 @@ Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
 Function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]
     PARAM(
-        [ValidateSet('Variable', 'PSDrive', 'Alias', 'Command', 'Credential', 'PSDefaults', 'Location')]
+        [ValidateSet('Variable', 'PSDrive', 'Function', 'Command', 'Credential', 'PSDefaults', 'Location')]
         [string]$Config,
         [string]$Value
     )
@@ -108,32 +108,32 @@ Function Remove-ConfigFromPSConfigFile {
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
     $userdataModAction = "Removed Config:`n"
 
-    if ($Config -like "Variable") {
+    if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"
         $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
     } else {$SetVariable = $JsonConfig.setvariable}
 
-    if ($Config -like "PSDrive") {
+    if ($Config -like 'PSDrive') {
         $userdataModAction += "Removed PSDrive $($Value)`n"
         $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
-    if ($Config -like "Alias") {
-        $userdataModAction += "Removed Alias $($Value)`n"
-        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
-    } else {$SetPSAlias = $JsonConfig.PSAlias}
+    if ($Config -like 'Function') {
+        $userdataModAction += "Removed Function $($Value)`n"
+        $JsonConfig.PSFunction.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSFunction += @{$_.name = $_.value}}
+    } else {$SetPSFunction = $JsonConfig.PSFunction}
 
-    if ($Config -like "Command") { 
+    if ($Config -like 'Command') { 
         $userdataModAction += "Removed Command $($Value)`n"
         $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
-    if ($Config -like "Credential") {
+    if ($Config -like 'Credential') {
         $userdataModAction += "Removed Credential $($Value)`n"
         $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
-    if ($Config -like "PSDefaults") {
+    if ($Config -like 'PSDefaults') {
         $userdataModAction += "Removed PSDefaults $($Value)`n"
         $SetPSDefaults = $JsonConfig.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDefaults = $JsonConfig.PSDefaults}
@@ -163,7 +163,7 @@ Function Remove-ConfigFromPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $SetPSDrive
-        PSAlias     = $SetPSAlias
+        PSFunction  = $SetPSFunction
         PSCreds     = $SetCreds
         PSDefaults  = $SetPSDefaults
         SetLocation = $SetLocation

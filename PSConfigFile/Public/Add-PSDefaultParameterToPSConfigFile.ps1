@@ -63,7 +63,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
 	[OutputType([System.Object[]])]
 	PARAM(
-		[Parameter(Position = 0, Mandatory = $true, HelpMessage = "Name of a function to add, You can use wildcards to apply to more functions.")]
+		[Parameter(Position = 0, Mandatory = $true, HelpMessage = 'Name of a function to add, You can use wildcards to apply to more functions.')]
 		[string]$Function,
 		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
 		[string]$Parameter,
@@ -71,7 +71,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		[string]$Value
 	)
 
-try {
+	try {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
@@ -101,7 +101,7 @@ try {
 	if ($Json.PSDefaults.psobject.Properties.name -like 'Default' -and
 		$Json.PSDefaults.psobject.Properties.value -like 'Default') {
 		
-	[void]$PSDefaultObject.Add([PSCustomObject]@{
+		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
 			})
@@ -115,7 +115,7 @@ try {
 	$Update = [psobject]@{
 		Userdata    = $Userdata
 		PSDrive     = $Json.PSDrive
-		PSAlias     = $Json.PSAlias
+		PSFunction  = $Json.PSFunction
 		PSCreds     = $Json.PSCreds
 		PSDefaults  = $PSDefaultObject
 		SetLocation = $Json.SetLocation

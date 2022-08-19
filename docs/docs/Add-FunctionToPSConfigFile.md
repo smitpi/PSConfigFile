@@ -5,30 +5,30 @@ online version:
 schema: 2.0.0
 ---
 
-# Add-AliasToPSConfigFile
+# Add-FunctionToPSConfigFile
 
 ## SYNOPSIS
-Creates Shortcuts (Aliases) to commands or script blocks
+Creates Shortcuts (Functions) to commands or script blocks
 
 ## SYNTAX
 
 ```
-Add-AliasToPSConfigFile [[-AliasName] <String>] [[-CommandToRun] <String>] [<CommonParameters>]
+Add-FunctionToPSConfigFile [[-FunctionName] <String>] [[-CommandToRun] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates Shortcuts (Aliases) to commands or script blocks
+Creates Shortcuts (Functions) to commands or script blocks
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Add-AliasToPSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
+Add-FunctionToPSConfigFile -FunctionName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
 ```
 
 ## PARAMETERS
 
-### -AliasName
+### -FunctionName
 Name to use for the command
 
 ```yaml

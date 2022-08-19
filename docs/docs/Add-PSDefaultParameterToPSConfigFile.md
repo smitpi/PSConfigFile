@@ -13,7 +13,7 @@ Add PSDefaultParameterValues to the config file
 ## SYNTAX
 
 ```
-Add-PSDefaultParameterToPSConfigFile [[-Function] <String>] [[-Parameter] <String>] [[-Value] <String>]
+Add-PSDefaultParameterToPSConfigFile [-Function] <String> [-Parameter] <String> [-Value] <String>
  [<CommonParameters>]
 ```
 
@@ -37,7 +37,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 1
 Default value: None
 Accept pipeline input: False
@@ -52,7 +52,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -67,7 +67,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 3
 Default value: None
 Accept pipeline input: False

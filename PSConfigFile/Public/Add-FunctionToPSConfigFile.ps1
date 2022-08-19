@@ -27,7 +27,7 @@
 
 .RELEASENOTES
 Created [13/11/2021_15:18] Initial Script Creating
-Updated [13/11/2021_16:30] Added Alias Script
+Updated [13/11/2021_16:30] Added Function Script
 Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
 #>
@@ -39,33 +39,33 @@ Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecutio
 <#
 
 .DESCRIPTION
-Add alias to the config file.
+Add Function to the config file.
 
 #>
 
 
 <#
 .SYNOPSIS
-Creates Shortcuts (Aliases) to commands or script blocks
+Creates Shortcuts (Functions) to commands or script blocks
 
 .DESCRIPTION
-Creates Shortcuts (Aliases) to commands or script blocks
+Creates Shortcuts (Functions) to commands or script blocks
 
-.PARAMETER AliasName
+.PARAMETER FunctionName
 Name to use for the command
 
 .PARAMETER CommandToRun
 Command to run in a string format
 
 .EXAMPLE
-Add-AliasToPSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
+Add-FunctionToPSConfigFile -FunctionName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
 
 #>
-Function Add-AliasToPSConfigFile {
-    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile')]
+Function Add-FunctionToPSConfigFile {
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile')]
     PARAM(
         [ValidateNotNullOrEmpty()]
-        [string]$AliasName,
+        [string]$FunctionName,
         [ValidateNotNullOrEmpty()]
         [string]$CommandToRun
     )
@@ -91,36 +91,36 @@ Function Add-AliasToPSConfigFile {
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Alias $($AliasName)"
+            ModifiedAction = "Add Function $($FunctionName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
     $Update = @()
-    $SetAlias = @{}
+    $SetFunction = @{}
 
-    if ($Json.PSAlias.psobject.Properties.name -like 'Default' -and
-        $Json.PSAlias.psobject.Properties.value -like 'Default') {
-        $SetAlias = @{
-            $AliasName = $CommandToRun
+    if ($Json.PSFunction.psobject.Properties.name -like 'Default' -and
+        $Json.PSFunction.psobject.Properties.value -like 'Default') {
+        $SetFunction = @{
+            $FunctionName = $CommandToRun
         }
     } else {
-        $members = $Json.PSAlias | Get-Member -MemberType NoteProperty
+        $members = $Json.PSFunction | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
-            $SetAlias += @{
-                $mem.Name = $json.PSAlias.$($mem.Name)
+            $SetFunction += @{
+                $mem.Name = $json.PSFunction.$($mem.Name)
             }
         }
-        $SetAlias += @{
-            $AliasName = $CommandToRun
+        $SetFunction += @{
+            $FunctionName = $CommandToRun
         }
     }
 
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $Json.PSDrive
-        PSAlias     = $SetAlias
+        PSFunction  = $SetFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -129,7 +129,7 @@ Function Add-AliasToPSConfigFile {
     }
     try {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
-        Write-Output 'Alias added'
+        Write-Output 'Function added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
 } #end Function

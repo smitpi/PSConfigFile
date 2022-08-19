@@ -30,7 +30,7 @@ Created [25/09/2021_02:52] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Alias Script
+Updated [13/11/2021_16:30] Added Function Script
 
 .PRIVATEDATA
 
@@ -71,8 +71,8 @@ Function New-PSConfigFile {
     param (
         [parameter(Mandatory)]
         [ValidateScript( {if (Test-Path $_) {$true}
-                         else {new-item -Path $_ -ItemType Directory -Force |out-null }
-        })]
+                else {New-Item -Path $_ -ItemType Directory -Force | Out-Null }
+            })]
         [System.IO.DirectoryInfo]$ConfigDir
     )
 
@@ -107,7 +107,7 @@ Function New-PSConfigFile {
         $PSDrive = New-Object PSObject -Property @{
             Default = 'Default'
         }
-        $PSAlias = New-Object PSObject -Property @{
+        $PSFunction = New-Object PSObject -Property @{
             Default = 'Default'
         }
         $PSCreds = New-Object PSObject -Property @{
@@ -120,7 +120,7 @@ Function New-PSConfigFile {
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
-            PSAlias     = $PSAlias
+            PSFunction  = $PSFunction
             PSCreds     = $PSCreds
             PSDefaults  = $PSDefaults
             SetLocation = $SetLocation
@@ -138,7 +138,7 @@ Function New-PSConfigFile {
 
             $data = DafaultSettings
             $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         } else {
 
             Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
@@ -146,7 +146,7 @@ Function New-PSConfigFile {
 
             $data = DafaultSettings
             $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-           Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         }
     }
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput

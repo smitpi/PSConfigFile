@@ -1,118 +1,13 @@
 ﻿#region Public Functions
-#region Add-AliasToPSConfigFile.ps1
-######## Function 1 of 15 ##################
-# Function:         Add-AliasToPSConfigFile
-# Module:           PSConfigFile
-# ModuleVersion:    0.1.35
-# Author:           Pierre Smit
-# Company:          HTPCZA Tech
-# CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:08:33
-# Synopsis:         Creates Shortcuts (Aliases) to commands or script blocks
-#############################################
- 
-<#
-.SYNOPSIS
-Creates Shortcuts (Aliases) to commands or script blocks
-
-.DESCRIPTION
-Creates Shortcuts (Aliases) to commands or script blocks
-
-.PARAMETER AliasName
-Name to use for the command
-
-.PARAMETER CommandToRun
-Command to run in a string format
-
-.EXAMPLE
-Add-AliasToPSConfigFile -AliasName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
-
-#>
-Function Add-AliasToPSConfigFile {
-    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-AliasToPSConfigFile')]
-    PARAM(
-        [ValidateNotNullOrEmpty()]
-        [string]$AliasName,
-        [ValidateNotNullOrEmpty()]
-        [string]$CommandToRun
-    )
-
-    try {
-        $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
-    }
-
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
-    $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
-        ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Alias $($AliasName)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
-        }
-    }
-
-    $Update = @()
-    $SetAlias = @{}
-
-    if ($Json.PSAlias.psobject.Properties.name -like 'Default' -and
-        $Json.PSAlias.psobject.Properties.value -like 'Default') {
-        $SetAlias = @{
-            $AliasName = $CommandToRun
-        }
-    } else {
-        $members = $Json.PSAlias | Get-Member -MemberType NoteProperty
-        foreach ($mem in $members) {
-            $SetAlias += @{
-                $mem.Name = $json.PSAlias.$($mem.Name)
-            }
-        }
-        $SetAlias += @{
-            $AliasName = $CommandToRun
-        }
-    }
-
-    $Update = [psobject]@{
-        Userdata    = $userdata
-        PSDrive     = $Json.PSDrive
-        PSAlias     = $SetAlias
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
-    }
-    try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
-        Write-Output 'Alias added'
-        Write-Output "ConfigFile: $($confile.FullName)"
-    } catch { Write-Error "Error: `n $_" }
-} #end Function
- 
-Export-ModuleMember -Function Add-AliasToPSConfigFile
-#endregion
- 
 #region Add-CommandToPSConfigFile.ps1
-######## Function 2 of 15 ##################
+######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:08:24
+# ModifiedOn:       2022/08/19 17:27:37
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -144,8 +39,7 @@ Function Add-CommandToPSConfigFile {
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -178,8 +72,7 @@ Function Add-CommandToPSConfigFile {
         $Execute += @{
             "[0]-$ScriptBlockName" = $($ScriptBlock.ToString())
         }
-    }
-    else {
+    } else {
         $Index = $Json.Execute | Get-Member -MemberType NoteProperty | Sort-Object -Property Name | Select-Object -Last 1
         [int]$NewTaskIndex = [int]($Index | ForEach-Object { $_.name.split('-')[0].replace('[', '').replace(']', '') }) + 1
         $NewScriptBlockName = '[' + $($NewTaskIndex.ToString()) + ']-' + $ScriptBlockName
@@ -196,7 +89,7 @@ Function Add-CommandToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $Json.PSDrive
-        PSAlias     = $Json.PSAlias
+        PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -207,8 +100,7 @@ Function Add-CommandToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'Command added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 
 
 
@@ -218,14 +110,14 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 #endregion
  
 #region Add-CredentialToPSConfigFile.ps1
-######## Function 3 of 15 ##################
+######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/08/18 08:07:32
+# ModifiedOn:       2022/08/19 17:22:54
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -353,7 +245,7 @@ Function Add-CredentialToPSConfigFile {
 	$Update = [psobject]@{
 		Userdata    = $Userdata
 		PSDrive     = $Json.PSDrive
-		PSAlias     = $Json.PSAlias
+		PSFunction  = $Json.PSFunction
 		PSCreds     = $SetCreds
 		PSDefaults  = $Json.PSDefaults
 		SetLocation = $Json.SetLocation
@@ -370,15 +262,120 @@ Function Add-CredentialToPSConfigFile {
 Export-ModuleMember -Function Add-CredentialToPSConfigFile
 #endregion
  
+#region Add-FunctionToPSConfigFile.ps1
+######## Function 3 of 15 ##################
+# Function:         Add-FunctionToPSConfigFile
+# Module:           PSConfigFile
+# ModuleVersion:    0.1.30
+# Author:           Pierre Smit
+# Company:          HTPCZA Tech
+# CreatedOn:        2022/03/20 13:17:05
+# ModifiedOn:       2022/08/19 17:23:57
+# Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
+#############################################
+ 
+<#
+.SYNOPSIS
+Creates Shortcuts (Functions) to commands or script blocks
+
+.DESCRIPTION
+Creates Shortcuts (Functions) to commands or script blocks
+
+.PARAMETER FunctionName
+Name to use for the command
+
+.PARAMETER CommandToRun
+Command to run in a string format
+
+.EXAMPLE
+Add-FunctionToPSConfigFile -FunctionName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
+
+#>
+Function Add-FunctionToPSConfigFile {
+    [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile')]
+    PARAM(
+        [ValidateNotNullOrEmpty()]
+        [string]$FunctionName,
+        [ValidateNotNullOrEmpty()]
+        [string]$CommandToRun
+    )
+
+    try {
+        $confile = Get-Item $PSConfigFile -ErrorAction stop
+    } catch {
+        Add-Type -AssemblyName System.Windows.Forms
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $null = $FileBrowser.ShowDialog()
+        $confile = Get-Item $FileBrowser.FileName
+    }
+
+    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $userdata = [PSCustomObject]@{
+        Owner             = $json.Userdata.Owner
+        CreatedOn         = $json.Userdata.CreatedOn
+        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
+        Path              = $json.Userdata.Path
+        Hostname          = $json.Userdata.Hostname
+        PSEdition         = $json.Userdata.PSEdition
+        OS                = $json.Userdata.OS
+        ModifiedData      = [PSCustomObject]@{
+            ModifiedDate   = (Get-Date -Format u)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+            ModifiedAction = "Add Function $($FunctionName)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
+        }
+    }
+
+    $Update = @()
+    $SetFunction = @{}
+
+    if ($Json.PSFunction.psobject.Properties.name -like 'Default' -and
+        $Json.PSFunction.psobject.Properties.value -like 'Default') {
+        $SetFunction = @{
+            $FunctionName = $CommandToRun
+        }
+    } else {
+        $members = $Json.PSFunction | Get-Member -MemberType NoteProperty
+        foreach ($mem in $members) {
+            $SetFunction += @{
+                $mem.Name = $json.PSFunction.$($mem.Name)
+            }
+        }
+        $SetFunction += @{
+            $FunctionName = $CommandToRun
+        }
+    }
+
+    $Update = [psobject]@{
+        Userdata    = $userdata
+        PSDrive     = $Json.PSDrive
+        PSFunction  = $SetFunction
+        PSCreds     = $Json.PSCreds
+        PSDefaults  = $Json.PSDefaults
+        SetLocation = $Json.SetLocation
+        SetVariable = $Json.SetVariable
+        Execute     = $Json.Execute
+    }
+    try {
+        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        Write-Output 'Function added'
+        Write-Output "ConfigFile: $($confile.FullName)"
+    } catch { Write-Error "Error: `n $_" }
+} #end Function
+ 
+Export-ModuleMember -Function Add-FunctionToPSConfigFile
+#endregion
+ 
 #region Add-LocationToPSConfigFile.ps1
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:08:17
+# ModifiedOn:       2022/08/19 17:22:53
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -414,8 +411,7 @@ Function Add-LocationToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -429,8 +425,7 @@ Function Add-LocationToPSConfigFile {
         if ($LocationType -like 'Folder') {
             [string]$AddPath = (Get-Item $path).FullName
         }
-    }
-    catch { throw 'Could not find path' }
+    } catch { throw 'Could not find path' }
 
     $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
     $userdata = [PSCustomObject]@{
@@ -458,7 +453,7 @@ Function Add-LocationToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $Json.PSDrive
-        PSAlias     = $Json.PSAlias
+        PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $SetLocation
@@ -469,8 +464,7 @@ Function Add-LocationToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'Location added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 
 } #end Function
  
@@ -481,11 +475,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/18 08:40:16
+# ModifiedOn:       2022/08/19 17:22:52
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -510,15 +504,18 @@ Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLau
 
 #>
 Function Add-PSDefaultParameterToPSConfigFile {
-	[Cmdletbinding(DefaultParameterSetName = 'Set1', HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
 	[OutputType([System.Object[]])]
 	PARAM(
+		[Parameter(Position = 0, Mandatory = $true, HelpMessage = 'Name of a function to add, You can use wildcards to apply to more functions.')]
 		[string]$Function,
+		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
 		[string]$Parameter,
+		[Parameter(Position = 2, Mandatory = $true, HelpMessage = 'The Value to add.')]
 		[string]$Value
 	)
 
-try {
+	try {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
@@ -548,7 +545,7 @@ try {
 	if ($Json.PSDefaults.psobject.Properties.name -like 'Default' -and
 		$Json.PSDefaults.psobject.Properties.value -like 'Default') {
 		
-	[void]$PSDefaultObject.Add([PSCustomObject]@{
+		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
 			})
@@ -562,7 +559,7 @@ try {
 	$Update = [psobject]@{
 		Userdata    = $Userdata
 		PSDrive     = $Json.PSDrive
-		PSAlias     = $Json.PSAlias
+		PSFunction  = $Json.PSFunction
 		PSCreds     = $Json.PSCreds
 		PSDefaults  = $PSDefaultObject
 		SetLocation = $Json.SetLocation
@@ -583,11 +580,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:08:01
+# ModifiedOn:       2022/08/19 17:22:50
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -613,8 +610,7 @@ Function Add-PSDriveToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -649,8 +645,7 @@ Function Add-PSDriveToPSConfigFile {
         $SetPSDrive = @{
             $InputDrive.Name = $InputDrive
         }
-    }
-    else {
+    } else {
         $members = $Json.PSDrive | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
             $SetPSDrive += @{
@@ -665,7 +660,7 @@ Function Add-PSDriveToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $SetPSDrive
-        PSAlias     = $Json.PSAlias
+        PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -676,8 +671,7 @@ Function Add-PSDriveToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'PSDrive added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 } #end Function
 
  
@@ -688,11 +682,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:07:52
+# ModifiedOn:       2022/08/19 17:28:50
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -770,7 +764,7 @@ Function Add-VariableToPSConfigFile {
         $Update = [psobject]@{
             Userdata    = $Userdata
             PSDrive     = $Json.PSDrive
-            PSAlias     = $Json.PSAlias
+            PSFunction  = $Json.PSFunction
             PSCreds     = $Json.PSCreds
             PSDefaults  = $Json.PSDefaults
             SetLocation = $Json.SetLocation
@@ -799,11 +793,11 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
-# ModifiedOn:       2022/08/18 09:47:52
+# ModifiedOn:       2022/08/19 17:02:16
 # Synopsis:         Export the PFX file for credentials.
 #############################################
  
@@ -821,6 +815,7 @@ Path where the pfx will be saved.
 Credential used to export the pfx file.
 
 .EXAMPLE
+$creds = Get-Credential
 Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 
 #>
@@ -837,7 +832,7 @@ Function Export-PSConfigFilePFX {
 	)
 
 	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
-	if (-not($selfcert)) { Write-Error 'Certificate does not exist, nothing to export'}
+	if (-not($selfcert)) { Write-Warning 'Certificate does not exist, nothing to export'}
 	else {
 		if (Test-Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx')) {
 			Rename-Item -Path (Join-Path -Path $ExportPath -ChildPath '\PSConfigFileCert.pfx') -NewName "PSConfigFileCert-$(Get-Date -Format yyyy.MM.dd-HH.mm).pfx"
@@ -854,11 +849,11 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
-# ModifiedOn:       2022/08/18 09:45:44
+# ModifiedOn:       2022/08/19 17:01:13
 # Synopsis:         Import the PFX file for credentials
 #############################################
  
@@ -875,7 +870,11 @@ Path to the PFX file.
 .PARAMETER Credential
 Credential used to create the pfx file.
 
+.PARAMETER Force
+Will override existing certificates.
+
 .EXAMPLE
+$creds = Get-Credential
 Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
 
 #>
@@ -888,12 +887,18 @@ Function Import-PSConfigFilePFX {
 				else {throw 'Not a valid .pfx file'}	
 			})]
 		[System.IO.FileInfo]$Path,
-		[pscredential]$Credential = (Get-Credential -UserName InportPFX -Message 'For the imported pfx file')	
+		[pscredential]$Credential = (Get-Credential -UserName InportPFX -Message 'For the imported pfx file'),
+		[switch]$Force = $false
 	)
-
-	Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}
+	$CheckExisting = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue 
+	if (-not([string]::IsNullOrEmpty($CheckExisting))) {
+		if ($Force) {$CheckExisting | ForEach-Object {Remove-Item Cert:\CurrentUser\My\$($_.Thumbprint) -Force}}
+		else {
+			Write-Warning "Certificate already exists, use -Force to override the existing certificate"
+			exit
+		}
+	}
 	Import-PfxCertificate -Exportable -CertStoreLocation Cert:\CurrentUser\My -FilePath $PFXFilePath -Password $Credential.Password 
-
 } #end Function
  
 Export-ModuleMember -Function Import-PSConfigFilePFX
@@ -903,11 +908,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 10:10:04
+# ModifiedOn:       2022/08/19 17:23:47
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -1008,11 +1013,11 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
     #endregion
 
-    #region Set Alias
+    #region Set Function
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-        $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+        $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
@@ -1020,7 +1025,7 @@ Function Invoke-PSConfigFile {
             $tmp = [scriptblock]::Create($command)
             $tmp.invoke()
         }
-    } catch {Write-Warning "Error Alias: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Alias: Message:$($_.Exception.Message)")}
+    } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Function: Message:$($_.Exception.Message)")}
     #endregion
 
     #region Creds
@@ -1124,11 +1129,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 08:01:05
+# ModifiedOn:       2022/08/19 17:22:46
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1151,8 +1156,8 @@ Function New-PSConfigFile {
     param (
         [parameter(Mandatory)]
         [ValidateScript( {if (Test-Path $_) {$true}
-                         else {new-item -Path $_ -ItemType Directory -Force |out-null }
-        })]
+                else {New-Item -Path $_ -ItemType Directory -Force | Out-Null }
+            })]
         [System.IO.DirectoryInfo]$ConfigDir
     )
 
@@ -1187,7 +1192,7 @@ Function New-PSConfigFile {
         $PSDrive = New-Object PSObject -Property @{
             Default = 'Default'
         }
-        $PSAlias = New-Object PSObject -Property @{
+        $PSFunction = New-Object PSObject -Property @{
             Default = 'Default'
         }
         $PSCreds = New-Object PSObject -Property @{
@@ -1200,7 +1205,7 @@ Function New-PSConfigFile {
         New-Object PSObject -Property @{
             Userdata    = $Userdata
             PSDrive     = $PSDrive
-            PSAlias     = $PSAlias
+            PSFunction  = $PSFunction
             PSCreds     = $PSCreds
             PSDefaults  = $PSDefaults
             SetLocation = $SetLocation
@@ -1218,7 +1223,7 @@ Function New-PSConfigFile {
 
             $data = DafaultSettings
             $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         } else {
 
             Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
@@ -1226,7 +1231,7 @@ Function New-PSConfigFile {
 
             $data = DafaultSettings
             $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-           Write-Host "[Created] " -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
         }
     }
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
@@ -1239,11 +1244,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/18 08:52:28
+# ModifiedOn:       2022/08/19 17:22:44
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1260,8 +1265,8 @@ Name of the variable to remove.
 .PARAMETER PSDrive
 Name of the PSDrive to remove.
 
-.PARAMETER PSAlias
-Name of the Alias to remove.
+.PARAMETER PSFunction
+Name of the Function to remove.
 
 .PARAMETER Command
 Name of the Command to remove.
@@ -1296,7 +1301,7 @@ Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
 Function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]
     PARAM(
-        [ValidateSet('Variable', 'PSDrive', 'Alias', 'Command', 'Credential', 'PSDefaults', 'Location')]
+        [ValidateSet('Variable', 'PSDrive', 'Function', 'Command', 'Credential', 'PSDefaults', 'Location')]
         [string]$Config,
         [string]$Value
     )
@@ -1313,38 +1318,38 @@ Function Remove-ConfigFromPSConfigFile {
     $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
     $userdataModAction = "Removed Config:`n"
 
-    if ($Config -like "Variable") {
-        $userdataModAction += "Remove Variable $($Value)`n"
+    if ($Config -like 'Variable') {
+        $userdataModAction += "Removed Variable $($Value)`n"
         $JsonConfig.SetVariable.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetVariable += @{$_.name = $_.value}}
     } else {$SetVariable = $JsonConfig.setvariable}
 
-    if ($Config -like "PSDrive") {
-        $userdataModAction += "Remove PSDrive $($Value)`n"
+    if ($Config -like 'PSDrive') {
+        $userdataModAction += "Removed PSDrive $($Value)`n"
         $JsonConfig.PSDrive.PSObject.properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSDrive += @{$_.name = $_.value}}
     } else {$SetPSDrive = $JsonConfig.PSDrive}
 
-    if ($Config -like "Alias") {
-        $userdataModAction += "Remove Alias $($Value)`n"
-        $JsonConfig.PSAlias.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSAlias += @{$_.name = $_.value}}
-    } else {$SetPSAlias = $JsonConfig.PSAlias}
+    if ($Config -like 'Function') {
+        $userdataModAction += "Removed Function $($Value)`n"
+        $JsonConfig.PSFunction.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetPSFunction += @{$_.name = $_.value}}
+    } else {$SetPSFunction = $JsonConfig.PSFunction}
 
-    if ($Config -like "Command") { 
-        $userdataModAction += "Remove Command $($Value)`n"
+    if ($Config -like 'Command') { 
+        $userdataModAction += "Removed Command $($Value)`n"
         $JsonConfig.Execute.PSObject.Properties | Where-Object {$_.name -notlike "*$Value*"} | ForEach-Object {$SetExecute += @{$_.name = $_.value}}
     } else {$SetExecute = $JsonConfig.Execute}
 
-    if ($Config -like "Credential") {
-        $userdataModAction += "Remove Credential $($Value)`n"
+    if ($Config -like 'Credential') {
+        $userdataModAction += "Removed Credential $($Value)`n"
         $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetCreds = $JsonConfig.PSCreds}
 
-    if ($Config -like "PSDefaults") {
-        $userdataModAction += "Remove PSDefaults $($Value)`n"
+    if ($Config -like 'PSDefaults') {
+        $userdataModAction += "Removed PSDefaults $($Value)`n"
         $SetPSDefaults = $JsonConfig.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDefaults = $JsonConfig.PSDefaults}
 
     if ($Config -like 'Location') {
-        $userdataModAction += "Remove Location`n"
+        $userdataModAction += "Removed Location`n"
         $SetLocation = @{}
     } else {$SetLocation = $JsonConfig.SetLocation}
     
@@ -1368,7 +1373,7 @@ Function Remove-ConfigFromPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $SetPSDrive
-        PSAlias     = $SetPSAlias
+        PSFunction  = $SetPSFunction
         PSCreds     = $SetCreds
         PSDefaults  = $SetPSDefaults
         SetLocation = $SetLocation
@@ -1377,6 +1382,7 @@ Function Remove-ConfigFromPSConfigFile {
     }
     try {
         $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
+        Write-Output "($userdataModAction | Out-String).Trim()"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -1388,33 +1394,29 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/03/23 13:01:33
-# Synopsis:         Adds functionality to add the execution to your profile or a PowerShell module
+# ModifiedOn:       2022/08/19 16:50:32
+# Synopsis:         Adds functionality to add the execution to your profile.
 #############################################
  
 <#
 .SYNOPSIS
-Adds functionality to add the execution to your profile or a PowerShell module
+Adds functionality to add the execution to your profile.
 
 .DESCRIPTION
-Adds functionality to add the execution to your profile or a PowerShell module
+Adds functionality to add the execution to your profile.
 
 .PARAMETER PSProfile
 Enable or disable loading of config when your ps profile is loaded.
 
-.PARAMETER PSModule
-Enable or disable loading of config when a specific module is loaded.
-
-.PARAMETER ModuleName
-Name of the module to be updated.
-If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.
+.PARAMETER DisplayOutput
+Will add the DisplayOutput parameter when setting the invoke command in the profile.
 
 .EXAMPLE
-Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts
+Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
 
 #>
 Function Set-PSConfigFileExecution {
@@ -1422,22 +1424,13 @@ Function Set-PSConfigFileExecution {
     param (
         [Parameter(ParameterSetName = 'Profile')]
         [validateSet('AddScript', 'RemoveScript')]
-        [string]$PSProfile = 'Ignore',
-        [Parameter(ParameterSetName = 'Module')]
-        [validateSet('AddScript', 'RemoveScript')]
-        [string]$PSModule = 'Ignore',
-        [Parameter(ParameterSetName = 'Module')]
-        [ValidateScript( {
-                $IsAdmin = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-                if ($IsAdmin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -and ([bool](Get-Module $_) -or ([bool](Get-Module $_ -ListAvailable)))) { $True }
-                else { Throw 'Invalid Module name and you must be running an elevated prompt to use this fuction.' } })]
-        [string]$ModuleName
+        [string]$PSProfile = 'AddScript',
+        [switch]$DisplayOutput
     )
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -1448,129 +1441,50 @@ Function Set-PSConfigFileExecution {
         $module = Get-Module PSConfigFile
         if (![bool]$module) { $module = Get-Module PSConfigFile -ListAvailable }
 
-        $string = @"
+        if ($DisplayOutput) {
+            $ToAppend = @"
+#PSConfigFile
+`$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
+Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
+Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`"  -DisplayOutput #PSConfigFile
+"@
+        } else {
+            $ToAppend = @"
 #PSConfigFile
 `$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
 "@
-
-        if ($PSModule -like 'AddScript') {
-            try {
-                $ModModules = Get-Module $ModuleName
-                if (-not($ModModules)) { $ModModules = Get-Module $ModuleName -ListAvailable }
-                if (-not($ModModules)) { throw 'Module not found' }
-
-                foreach ($ModModule in $ModModules) {
-
-                    if (-not(Test-Path -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile'))) { $PSConfigFilePath = New-Item -Path $ModModule.ModuleBase -Name PSConfigFile -ItemType Directory }
-                    else { $PSConfigFilePath = Get-Item (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile') }
-
-                    if (-not(Test-Path (Join-Path $PSConfigFilePath.FullName -ChildPath 'PSConfigFile_ScriptToProcess.ps1'))) {
-                        $string | Set-Content -Path (Join-Path $PSConfigFilePath.FullName -ChildPath 'PSConfigFile_ScriptToProcess.ps1') -Force
-                    }
-
-                    $ModModuleManifest = Test-ModuleManifest -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath "\$($ModModule.Name).psd1")
-                    [System.Collections.ArrayList]$newScriptsToProcess = @()
-                    foreach ($Scripts in $ModModuleManifest.Scripts) {
-                        $ScriptPath = Get-Item $Scripts
-                        [void]$newScriptsToProcess.Add("$(($ScriptPath.Directory).Name)\$($ScriptPath.Name)")
-                    }
-
-
-                    [void]$newScriptsToProcess.Add('PSConfigFile\PSConfigFile_ScriptToProcess.ps1')
-                    Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess $newScriptsToProcess
-                    Write-Color '[Updated]', 'Modulename: ', $ModuleName -Color Cyan, Gray, Yellow
-                }
-            }
-            catch { Write-Error "Unable to update Module Manifest: `n $_" }
-
         }
-        if ($PSModule -like 'RemoveScript') {
-            try {
-                $ModModules = Get-Module $ModuleName
-                if (-not($ModModules)) { $ModModules = Get-Module $ModuleName -ListAvailable }
-                if (-not($ModModules)) { throw 'Module not found' }
 
-                foreach ($ModModule in $ModModules) {
-                    $ModModuleManifest = Test-ModuleManifest -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath "\$($ModModule.Name).psd1")
-                    [System.Collections.ArrayList]$newScriptsToProcess = @()
-                    foreach ($Scripts in ($ModModuleManifest.Scripts | Where-Object { $_ -notlike '*PSConfigFile*' })) {
-                        $ScriptPath = Get-Item $Scripts
-                        [void]$newScriptsToProcess.Add("$(($ScriptPath.Directory).Name)\$($ScriptPath.Name)")
-                    }
 
-                    if ($null -like $newScriptsToProcess ) {
-                        $null = New-Item -Path $ModModule.ModuleBase -Name 'empty.ps1' -ItemType File -Value '# Because Update-ModuleManifest cant have empty ScriptsToProcess values'
-                        Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess 'empty.ps1'
-                    }
-                    else {
-                        Update-ModuleManifest -Path $ModModuleManifest.Path -ScriptsToProcess $newScriptsToProcess
-                    }
-                    if (Test-Path -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile')) { Remove-Item -Path (Join-Path -Path $ModModule.ModuleBase -ChildPath '\PSConfigFile') -Recurse -Force }
-                    Write-Color '[Removed]', 'Modulename: ', $ModuleName -Color Cyan, Gray, Yellow
-                }
-            }
-            catch { Write-Error "Unable to update Module Manifest: `n $_" }
-        }
         if ($PSProfile -like 'AddScript') {
 
-            if ((Test-Path (Get-Item $profile).DirectoryName) -eq $false ) {
-                Write-Warning 'Profile does not exist, creating file.'
-                New-Item -ItemType File -Path $Profile -Force
+            $PersonalPowerShell = [IO.Path]::Combine("$([Environment]::GetFolderPath('MyDocuments'))", 'PowerShell')
+            $PersonalWindowsPowerShell = [IO.Path]::Combine("$([Environment]::GetFolderPath('MyDocuments'))", 'WindowsPowerShell')
+	
+            $Files = Get-ChildItem -Path "$($PersonalPowerShell)\*profile*"
+            $files += Get-ChildItem -Path "$($PersonalWindowsPowerShell)\*profile*"
+            foreach ($file in $files) {	
+                $tmp = Get-Content -Path $file.FullName | Where-Object { $_ -notlike '*PSConfigFile*'}
+                $tmp | Set-Content -Path $file.FullName -Force
+                Add-Content -Value $ToAppend -Path $file.FullName -Force -Encoding utf8
+                Write-Host '[Updated]' -NoNewline -ForegroundColor Yellow; Write-Host ' Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
             }
-            $psfolder = (Get-Item $profile).DirectoryName
-
-            $ps = Join-Path $psfolder \Microsoft.PowerShell_profile.ps1
-            $ise = Join-Path $psfolder \Microsoft.PowerShellISE_profile.ps1
-            $vs = Join-Path $psfolder \Microsoft.VSCode_profile.ps1
-
-            if (Test-Path $ps) {
-                $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $ps
-                Write-Color '[Updated]', 'Profile: ', $ps -Color Cyan, Gray, Yellow
-            }
-            if (Test-Path $ise) {
-                $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $ise
-                Write-Color '[Updated]', 'Profile: ', $ise -Color Cyan, Gray, Yellow
-            }
-            if (Test-Path $vs) {
-                $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori + $string) -Path $vs
-                Write-Color '[Updated]', 'Profile: ', $vs -Color Cyan, Gray, Yellow
-            }
-
         }
         if ($PSProfile -like 'RemoveScript') {
-            if ((Test-Path (Get-Item $profile).DirectoryName) -eq $false ) {
-                Write-Warning 'Profile does not exist, creating file.'
-                New-Item -ItemType File -Path $Profile -Force
+            $PersonalPowerShell = [IO.Path]::Combine("$([Environment]::GetFolderPath('MyDocuments'))", 'PowerShell')
+            $PersonalWindowsPowerShell = [IO.Path]::Combine("$([Environment]::GetFolderPath('MyDocuments'))", 'WindowsPowerShell')
+	
+            $Files = Get-ChildItem -Path "$($PersonalPowerShell)\*profile*"
+            $files += Get-ChildItem -Path "$($PersonalWindowsPowerShell)\*profile*"
+            foreach ($file in $files) {	
+                $tmp = Get-Content -Path $file.FullName | Where-Object { $_ -notlike '*PSConfigFile*'}
+                $tmp | Set-Content -Path $file.FullName -Force
+                Write-Host '[Updated]' -NoNewline -ForegroundColor Yellow; Write-Host ' Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
             }
-            $psfolder = (Get-Item $profile).DirectoryName
-
-            $ps = Join-Path $psfolder \Microsoft.PowerShell_profile.ps1
-            $ise = Join-Path $psfolder \Microsoft.PowerShellISE_profile.ps1
-            $vs = Join-Path $psfolder \Microsoft.VSCode_profile.ps1
-
-            if (Test-Path $ps) {
-                $ori = Get-Content $ps | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $ps
-                Write-Color '[Removed]', 'Profile: ', $ps -Color Cyan, Gray, Yellow
-            }
-            if (Test-Path $ise) {
-                $ori = Get-Content $ise | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $ise
-                Write-Color '[Removed]', 'Profile: ', $ise -Color Cyan, Gray, Yellow
-            }
-            if (Test-Path $vs) {
-                $ori = Get-Content $vs | Where-Object { $_ -notlike '*#PSConfigFile*' }
-                Set-Content -Value ($ori) -Path $vs
-                Write-Color '[Removed]', 'Profile: ', $vs -Color Cyan, Gray, Yellow
-            }
-
-
         }
+
     }
 } #end Function
 
@@ -1582,11 +1496,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/18 09:53:55
+# ModifiedOn:       2022/08/19 17:23:49
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1680,10 +1594,10 @@ Function Show-PSConfigFile {
                 $outputfile.Add($output)
             }
 
-            # Set Alias
+            # Set Function
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+            $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
@@ -1747,11 +1661,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.30
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/18 10:04:39
+# ModifiedOn:       2022/08/19 17:22:42
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1773,13 +1687,10 @@ Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
 #>
 Function Update-CredentialsInPSConfigFile {
-	[Cmdletbinding(DefaultParameterSetName = 'Renew', HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
+	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
-		[Parameter(ParameterSetName = 'Renew')]
 		[switch]$RenewSelfSignedCert,
-
-		[Parameter(ParameterSetName = 'Renew')]
 		[string[]]$RenewSavedPasswords
 	)
 
@@ -1852,7 +1763,7 @@ Function Update-CredentialsInPSConfigFile {
 		$Update = [psobject]@{
 			Userdata    = $Userdata
 			PSDrive     = $Json.PSDrive
-			PSAlias     = $Json.PSAlias
+			PSFunction  = $Json.PSFunction
 			PSCreds     = $RenewCreds
 			PSDefaults  = $Json.PSDefaults
 			SetLocation = $Json.SetLocation
@@ -1895,7 +1806,6 @@ $scriptblock = {
 	$var = @('All')
 	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
 	$var
-	#Get-Variable | Where-Object {$_.value -like "System.Management.Automation.PSCredential"} | ForEach-Object {"$($_.name)"}
 }
 Register-ArgumentCompleter -CommandName Update-CredentialsInPSConfigFile -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
  

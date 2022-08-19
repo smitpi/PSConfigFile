@@ -23,8 +23,10 @@ Export the PFX file for credentials.
 
 ### EXAMPLE 1
 ```
-Export-PSConfigFilePFX -Path C:\temp -Credential $creds
+$creds = Get-Credential
 ```
+
+Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 
 ## PARAMETERS
 

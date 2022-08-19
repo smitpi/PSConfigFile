@@ -250,21 +250,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../Add-AliasToPSConfigFile/" class="md-nav__link">
-        Add-AliasToPSConfigFile
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../Add-CommandToPSConfigFile/" class="md-nav__link">
         Add-CommandToPSConfigFile
       </a>
@@ -282,6 +267,21 @@
     <li class="md-nav__item">
       <a href="../Add-CredentialToPSConfigFile/" class="md-nav__link">
         Add-CredentialToPSConfigFile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Add-FunctionToPSConfigFile/" class="md-nav__link">
+        Add-FunctionToPSConfigFile
       </a>
     </li>
   
@@ -475,26 +475,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#profile-default" class="md-nav__link">
-    Profile (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#module" class="md-nav__link">
-    Module
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -540,15 +520,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#-psmodule" class="md-nav__link">
-    -PSModule
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-modulename" class="md-nav__link">
-    -ModuleName
+  <a href="#-displayoutput" class="md-nav__link">
+    -DisplayOutput
   </a>
   
 </li>
@@ -683,26 +656,6 @@
     SYNTAX
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#profile-default" class="md-nav__link">
-    Profile (Default)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#module" class="md-nav__link">
-    Module
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -748,15 +701,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#-psmodule" class="md-nav__link">
-    -PSModule
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-modulename" class="md-nav__link">
-    -ModuleName
+  <a href="#-displayoutput" class="md-nav__link">
+    -DisplayOutput
   </a>
   
 </li>
@@ -835,55 +781,38 @@
 
 <h1 id="set-psconfigfileexecution">Set-PSConfigFileExecution</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Adds functionality to add the execution to your profile or a PowerShell module</p>
+<p>Adds functionality to add the execution to your profile.</p>
 <h2 id="syntax">SYNTAX</h2>
-<h3 id="profile-default">Profile (Default)</h3>
-<div class="highlight"><pre><span></span><code>Set-PSConfigFileExecution [-PSProfile &lt;String&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
-</code></pre></div>
-<h3 id="module">Module</h3>
-<div class="highlight"><pre><span></span><code>Set-PSConfigFileExecution [-PSModule &lt;String&gt;] [-ModuleName &lt;String&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Set-PSConfigFileExecution [-PSProfile &lt;String&gt;] [-DisplayOutput] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
-<p>Adds functionality to add the execution to your profile or a PowerShell module</p>
+<p>Adds functionality to add the execution to your profile.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts
+<div class="highlight"><pre><span></span><code>Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
 </code></pre></div>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-psprofile">-PSProfile</h3>
 <p>Enable or disable loading of config when your ps profile is loaded.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Profile</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ignore</span><span class="w"></span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AddScript</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
-<h3 id="-psmodule">-PSModule</h3>
-<p>Enable or disable loading of config when a specific module is loaded.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Module</span><span class="w"></span>
+<h3 id="-displayoutput">-DisplayOutput</h3>
+<p>Will add the DisplayOutput parameter when setting the invoke command in the profile.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
 <span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
 
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ignore</span><span class="w"></span>
-<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-</code></pre></div>
-<h3 id="-modulename">-ModuleName</h3>
-<p>Name of the module to be updated.
-If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span><span class="w"></span>
-<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Module</span><span class="w"></span>
-<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
-
-<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
-<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span><span class="w"></span>
-<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>

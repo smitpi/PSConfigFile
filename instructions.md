@@ -1,7 +1,7 @@
 # PSConfigFile
  
 ## Description
-Creates a Config file with Commands, Variables, PSDrives, Credentials, Aliases\Shortcuts and a Default Starting location. You can then execute this config file when your profile is loaded, or when a specific module is imported, or you can run it manually. This way you can quickly and easily switch between "environment setups" with these default values
+Creates a Config file with Variables, PSDrives, Credentials, Shortcuts(Functions), PSDefaultParameters and a Starting location. You can then execute this config file when your profile is loaded, or you can run it manually at any time. And all of these variables, psdrives credentials ext. is available in your session. This way you can quickly and easily switch between "environment setups"
  
 ## Getting Started
 - Install from PowerShell Gallery [PS Gallery](https://www.powershellgallery.com/packages/PSConfigFile)

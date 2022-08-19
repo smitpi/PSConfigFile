@@ -28,7 +28,7 @@
 .RELEASENOTES
 Created [14/10/2021_13:56] Initial Script Creating
 Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Alias Script
+Updated [13/11/2021_16:30] Added Function Script
 
 .PRIVATEDATA
 
@@ -68,8 +68,7 @@ Function Add-PSDriveToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    }
-    catch {
+    } catch {
         Add-Type -AssemblyName System.Windows.Forms
         $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
         $null = $FileBrowser.ShowDialog()
@@ -104,8 +103,7 @@ Function Add-PSDriveToPSConfigFile {
         $SetPSDrive = @{
             $InputDrive.Name = $InputDrive
         }
-    }
-    else {
+    } else {
         $members = $Json.PSDrive | Get-Member -MemberType NoteProperty
         foreach ($mem in $members) {
             $SetPSDrive += @{
@@ -120,7 +118,7 @@ Function Add-PSDriveToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $SetPSDrive
-        PSAlias     = $Json.PSAlias
+        PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -131,7 +129,6 @@ Function Add-PSDriveToPSConfigFile {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
         Write-Output 'PSDrive added'
         Write-Output "ConfigFile: $($confile.FullName)"
-    }
-    catch { Write-Error "Error: `n $_" }
+    } catch { Write-Error "Error: `n $_" }
 } #end Function
 

@@ -128,7 +128,7 @@ Function Update-CredentialsInPSConfigFile {
 		$Update = [psobject]@{
 			Userdata    = $Userdata
 			PSDrive     = $Json.PSDrive
-			PSAlias     = $Json.PSAlias
+			PSFunction  = $Json.PSFunction
 			PSCreds     = $RenewCreds
 			PSDefaults  = $Json.PSDefaults
 			SetLocation = $Json.SetLocation

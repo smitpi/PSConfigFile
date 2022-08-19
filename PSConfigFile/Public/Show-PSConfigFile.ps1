@@ -132,10 +132,10 @@ Function Show-PSConfigFile {
                 $outputfile.Add($output)
             }
 
-            # Set Alias
+            # Set Function
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-            $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+            $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }

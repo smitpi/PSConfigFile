@@ -8,28 +8,22 @@ schema: 2.0.0
 # Set-PSConfigFileExecution
 
 ## SYNOPSIS
-Adds functionality to add the execution to your profile or a PowerShell module
+Adds functionality to add the execution to your profile.
 
 ## SYNTAX
 
-### Profile (Default)
 ```
-Set-PSConfigFileExecution [-PSProfile <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### Module
-```
-Set-PSConfigFileExecution [-PSModule <String>] [-ModuleName <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Set-PSConfigFileExecution [-PSProfile <String>] [-DisplayOutput] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Adds functionality to add the execution to your profile or a PowerShell module
+Adds functionality to add the execution to your profile.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Set-PSConfigFileExecution -PSProfile AddScript -PSModule AddScript -ModuleName LabScripts
+Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
 ```
 
 ## PARAMETERS
@@ -39,43 +33,27 @@ Enable or disable loading of config when your ps profile is loaded.
 
 ```yaml
 Type: String
-Parameter Sets: Profile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: Named
-Default value: Ignore
+Default value: AddScript
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PSModule
-Enable or disable loading of config when a specific module is loaded.
+### -DisplayOutput
+Will add the DisplayOutput parameter when setting the invoke command in the profile.
 
 ```yaml
-Type: String
-Parameter Sets: Module
+Type: SwitchParameter
+Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: Named
-Default value: Ignore
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ModuleName
-Name of the module to be updated.
-If the module is not in the standard folders ($env:PSModulePath), then import it into your session first.
-
-```yaml
-Type: String
-Parameter Sets: Module
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

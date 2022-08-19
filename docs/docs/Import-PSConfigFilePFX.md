@@ -13,7 +13,7 @@ Import the PFX file for credentials
 ## SYNTAX
 
 ```
-Import-PSConfigFilePFX [-Path] <FileInfo> [[-Credential] <PSCredential>] [<CommonParameters>]
+Import-PSConfigFilePFX [-Path] <FileInfo> [[-Credential] <PSCredential>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -23,8 +23,10 @@ Import the PFX file for credentials
 
 ### EXAMPLE 1
 ```
-Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
+$creds = Get-Credential
 ```
+
+Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
 
 ## PARAMETERS
 
@@ -54,6 +56,21 @@ Aliases:
 Required: False
 Position: 2
 Default value: (Get-Credential -UserName InportPFX -Message 'For the imported pfx file')
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Will override existing certificates.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

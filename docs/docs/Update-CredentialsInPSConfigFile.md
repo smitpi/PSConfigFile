@@ -13,7 +13,8 @@ Allows you to renew the certificate or saved passwords.
 ## SYNTAX
 
 ```
-Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [-RenewSavedPasswords <String[]>] [<CommonParameters>]
+Update-CredentialsInPSConfigFile [-RenewSelfSignedCert] [[-RenewSavedPasswords] <String[]>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,7 +54,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

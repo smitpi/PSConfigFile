@@ -29,7 +29,7 @@ Created [25/09/2021_08:15] Initial Script Creating
 Updated [05/10/2021_08:30] Spit into more functions
 Updated [08/10/2021_20:51] Getting ready to upload
 Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Alias Script
+Updated [13/11/2021_16:30] Added Function Script
 
 .PRIVATEDATA
 
@@ -143,11 +143,11 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
     #endregion
 
-    #region Set Alias
+    #region Set Function
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Aliases: ")
-        $JSONParameter.PSAlias.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+        $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
@@ -155,7 +155,7 @@ Function Invoke-PSConfigFile {
             $tmp = [scriptblock]::Create($command)
             $tmp.invoke()
         }
-    } catch {Write-Warning "Error Alias: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Alias: Message:$($_.Exception.Message)")}
+    } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Function: Message:$($_.Exception.Message)")}
     #endregion
 
     #region Creds
