@@ -132,7 +132,7 @@ Function Add-CommandToPSConfigFile {
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
-        Execute     = $ExecuteObject
+        Execute     = ($ExecuteObject  | Where-Object {$_ -notlike $null})
     }
     try {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force

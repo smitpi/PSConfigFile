@@ -117,7 +117,7 @@ Function Add-FunctionToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $Json.PSDrive
-        PSFunction  = $FunctionObject
+        PSFunction  = ($FunctionObject  | Where-Object {$_ -notlike $null})
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation

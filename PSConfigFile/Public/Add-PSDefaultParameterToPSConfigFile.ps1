@@ -117,7 +117,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		PSDrive     = $Json.PSDrive
 		PSFunction  = $Json.PSFunction
 		PSCreds     = $Json.PSCreds
-		PSDefaults  = $PSDefaultObject
+		PSDefaults  = ($PSDefaultObject  | Where-Object {$_ -notlike $null})
 		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable
 		Execute     = $Json.Execute

@@ -153,7 +153,7 @@ Function Add-CredentialToPSConfigFile {
 		Userdata    = $Userdata
 		PSDrive     = $Json.PSDrive
 		PSFunction  = $Json.PSFunction
-		PSCreds     = $SetCreds
+		PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
 		PSDefaults  = $Json.PSDefaults
 		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable

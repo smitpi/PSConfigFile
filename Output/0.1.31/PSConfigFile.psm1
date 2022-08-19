@@ -7,7 +7,7 @@
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 19:55:51
+# ModifiedOn:       2022/08/19 23:40:50
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -91,7 +91,7 @@ Function Add-CommandToPSConfigFile {
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
         SetVariable = $Json.SetVariable
-        Execute     = $ExecuteObject
+        Execute     = ($ExecuteObject  | Where-Object {$_ -notlike $null})
     }
     try {
         $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
@@ -114,7 +114,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/08/19 17:54:53
+# ModifiedOn:       2022/08/19 23:38:06
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -231,7 +231,7 @@ Function Add-CredentialToPSConfigFile {
 		Userdata    = $Userdata
 		PSDrive     = $Json.PSDrive
 		PSFunction  = $Json.PSFunction
-		PSCreds     = $SetCreds
+		PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
 		PSDefaults  = $Json.PSDefaults
 		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable
@@ -255,7 +255,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 20:30:53
+# ModifiedOn:       2022/08/19 23:40:21
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -332,7 +332,7 @@ Function Add-FunctionToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $Json.PSDrive
-        PSFunction  = $FunctionObject
+        PSFunction  = ($FunctionObject  | Where-Object {$_ -notlike $null})
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
         SetLocation = $Json.SetLocation
@@ -461,7 +461,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/19 17:52:13
+# ModifiedOn:       2022/08/19 23:39:40
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -543,7 +543,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		PSDrive     = $Json.PSDrive
 		PSFunction  = $Json.PSFunction
 		PSCreds     = $Json.PSCreds
-		PSDefaults  = $PSDefaultObject
+		PSDefaults  = ($PSDefaultObject  | Where-Object {$_ -notlike $null})
 		SetLocation = $Json.SetLocation
 		SetVariable = $Json.SetVariable
 		Execute     = $Json.Execute
@@ -665,7 +665,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 23:27:37
+# ModifiedOn:       2022/08/19 23:39:02
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -744,7 +744,7 @@ Function Add-VariableToPSConfigFile {
             PSCreds     = $Json.PSCreds
             PSDefaults  = $Json.PSDefaults
             SetLocation = $Json.SetLocation
-            SetVariable = $VarObject 
+            SetVariable = ($VarObject  | Where-Object {$_ -notlike $null})
             Execute     = $Json.Execute
         }
         try {
