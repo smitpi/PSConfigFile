@@ -114,7 +114,7 @@ Function Add-PSDriveToPSConfigFile {
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $PSDriveObject
+        PSDrive     = ($PSDriveObject  | Where-Object {$_ -notlike $null})
         PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
