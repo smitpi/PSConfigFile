@@ -108,14 +108,12 @@ Function Add-VariableToPSConfigFile {
         if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
             $VarObject.Add([PSCustomObject]@{
-                    Name = $InputVar.Name 
-                    Variable = ($InputVar | Select-Object Name,Value,Description)
+                $InputVar.Name  = $InputVar.Value
                 })
         } else {
             $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                    Name     = $InputVar.Name 
-                    Variable = ($InputVar | Select-Object Name,Value,Description)
+                    $InputVar.Name.ToString() = (Get-Variable -Name $VariableName -ValueOnly)
             })
         }
 
@@ -130,7 +128,7 @@ Function Add-VariableToPSConfigFile {
             Execute     = $Json.Execute
         }
         try {
-            $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+            $Update | ConvertTo-Json| Set-Content -Path $confile.FullName -Force
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }

@@ -3,7 +3,7 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -110,7 +110,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -251,7 +251,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -353,7 +353,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -457,7 +457,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
@@ -562,11 +562,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 21:23:01
+# ModifiedOn:       2022/08/20 14:20:18
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -638,7 +638,7 @@ Function Add-PSDriveToPSConfigFile {
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $PSDriveObject
+        PSDrive     = ($PSDriveObject  | Where-Object {$_ -notlike $null})
         PSFunction  = $Json.PSFunction
         PSCreds     = $Json.PSCreds
         PSDefaults  = $Json.PSDefaults
@@ -661,11 +661,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 23:39:02
+# ModifiedOn:       2022/08/26 07:12:10
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -726,14 +726,12 @@ Function Add-VariableToPSConfigFile {
         if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
             $Json.SetVariable.psobject.Properties.value -like 'Default') {
             $VarObject.Add([PSCustomObject]@{
-                    Name = $InputVar.Name 
-                    Variable = ($InputVar | Select-Object Name,Value,Description)
+                $InputVar.Name  = $InputVar.Value
                 })
         } else {
             $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                    Name     = $InputVar.Name 
-                    Variable = ($InputVar | Select-Object Name,Value,Description)
+                    $InputVar.Name.ToString() = (Get-Variable -Name $VariableName -ValueOnly)
             })
         }
 
@@ -748,7 +746,7 @@ Function Add-VariableToPSConfigFile {
             Execute     = $Json.Execute
         }
         try {
-            $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+            $Update | ConvertTo-Json| Set-Content -Path $confile.FullName -Force
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }
@@ -769,7 +767,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -825,7 +823,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -884,11 +882,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 23:27:33
+# ModifiedOn:       2022/08/26 07:27:35
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -960,10 +958,11 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
         foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.Variable.Value)
+            $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
             $PSConfigFileOutput.Add($output)
             try {
-                New-Variable -Name $SetVariable.name -Value $SetVariable.Variable.Value -Force -Scope global -ErrorAction Stop
+                New-Variable -Name $($VarMember.name) -Value $($SetVariable.$($VarMember.name)) -Force -Scope global -ErrorAction Stop
             } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
@@ -973,7 +972,6 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add($output)
         New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
     } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
-
     #endregion
 
     #region Set PsDrives
@@ -1045,10 +1043,12 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
         foreach ($PSD in  ($JSONParameter.PSDefaults | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
-            $PSConfigFileOutput.Add($output)
             $PSDefaultParameterValues.Remove($PSD.Name)
             $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
+        }
+        foreach ($Defaults in $PSDefaultParameterValues.GetEnumerator()) {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
+            $PSConfigFileOutput.Add($output)
         }
     } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
     #endregion
@@ -1107,7 +1107,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1222,7 +1222,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1345,7 +1345,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1447,7 +1447,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1612,7 +1612,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31
+# ModuleVersion:    0.1.32
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
