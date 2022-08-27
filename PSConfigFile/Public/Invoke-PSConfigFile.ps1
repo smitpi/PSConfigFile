@@ -201,7 +201,7 @@ Function Invoke-PSConfigFile {
             $PSDefaultParameterValues.remove("$($PSD.Name)")
         }
         foreach ($PSD in $SortDefaults) {
-            $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
+            $PSDefaultParameterValues.Add("$($PSD.Name)", "$($PSD.Value)")
         }
         foreach ($Defaults in ($PSDefaultParameterValues.GetEnumerator()| Sort-Object -Property Name)) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
