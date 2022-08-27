@@ -152,13 +152,11 @@ Function Show-PSConfigFile {
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
                 foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
                     $outputfile.Add($output)
-                }
             }
             #endregion
 
@@ -173,7 +171,7 @@ Function Show-PSConfigFile {
 
             #region Set Location
             try {
-                if ($XMLData.SetLocation.Default -notlike 'Default' -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+                if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
                     $outputfile.Add('<h>  ')
                     $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))

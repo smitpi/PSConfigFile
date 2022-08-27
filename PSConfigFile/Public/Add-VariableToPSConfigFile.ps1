@@ -106,14 +106,14 @@ Function Add-VariableToPSConfigFile {
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
         if ([string]::IsNullOrEmpty($XMLData.SetVariable)) {
-                $VarObject.Add([PSCustomObject]@{
+            $VarObject.Add([PSCustomObject]@{
                     $InputVar.Name.ToString() = $InputVar.Value
-            })        
+                })        
         } else {
             $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                $InputVar.Name.ToString() = $InputVar.Value
-            })
+                    $InputVar.Name.ToString() = $InputVar.Value
+                })
         }
 
         $Update = [psobject]@{
@@ -127,7 +127,8 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }

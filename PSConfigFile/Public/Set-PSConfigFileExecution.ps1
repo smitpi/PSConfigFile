@@ -84,17 +84,21 @@ Function Set-PSConfigFileExecution {
 
         if ($DisplayOutput) {
             $ToAppend = @"
+
 #PSConfigFile
 `$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`"  -DisplayOutput #PSConfigFile
+
 "@
         } else {
             $ToAppend = @"
+
 #PSConfigFile
 `$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
+
 "@
         }
 

@@ -133,16 +133,17 @@ Function Remove-ConfigFromPSConfigFile {
     $Update = @()
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = ($SetPSDrive  | Where-Object {$_ -notlike $null})
-        PSFunction  = ($SetPSFunction  | Where-Object {$_ -notlike $null})
-        PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
-        PSDefaults  = ($SetPSDefaults  | Where-Object {$_ -notlike $null})
-        SetLocation = ($SetLocation  | Where-Object {$_ -notlike $null})
-        SetVariable = ($SetVariable  | Where-Object {$_ -notlike $null})
-        Execute     = ($SetExecute  | Where-Object {$_ -notlike $null})
+        PSDrive     = ($SetPSDrive | Where-Object {$_ -notlike $null})
+        PSFunction  = ($SetPSFunction | Where-Object {$_ -notlike $null})
+        PSCreds     = ($SetCreds | Where-Object {$_ -notlike $null})
+        PSDefaults  = ($SetPSDefaults | Where-Object {$_ -notlike $null})
+        SetLocation = ($SetLocation | Where-Object {$_ -notlike $null})
+        SetVariable = ($SetVariable | Where-Object {$_ -notlike $null})
+        Execute     = ($SetExecute | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output "$(($userdataModAction | Out-String).Trim())"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }

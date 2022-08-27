@@ -3,11 +3,11 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:48:34
+# ModifiedOn:       2022/08/27 16:50:10
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -94,7 +94,8 @@ Function Add-CommandToPSConfigFile {
         Execute     = ($ExecuteObject | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output 'Command added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -110,11 +111,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/08/27 14:50:18
+# ModifiedOn:       2022/08/27 16:10:04
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -237,8 +238,9 @@ Function Add-CredentialToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
-		Write-Output 'Credential added'
+		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
+		write-Output 'Credential added'
 		Write-Output "ConfigFile: $($confile.FullName)"
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -250,11 +252,11 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:51:03
+# ModifiedOn:       2022/08/27 16:07:46
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -316,7 +318,7 @@ Function Add-FunctionToPSConfigFile {
         
     if ([string]::IsNullOrEmpty($XMLData.PSFunction)) {
         $FunctionObject.Add([PSCustomObject]@{
-                Name = $FunctionName 
+                Name    = $FunctionName 
                 Command = $CommandToRun
             })
     } else {
@@ -330,7 +332,7 @@ Function Add-FunctionToPSConfigFile {
     $Update = [psobject]@{
         Userdata    = $userdata
         PSDrive     = $XMLData.PSDrive
-        PSFunction  = ($FunctionObject  | Where-Object {$_ -notlike $null})
+        PSFunction  = ($FunctionObject | Where-Object {$_ -notlike $null})
         PSCreds     = $XMLData.PSCreds
         PSDefaults  = $XMLData.PSDefaults
         SetLocation = $XMLData.SetLocation
@@ -338,7 +340,8 @@ Function Add-FunctionToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output 'Function added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -351,11 +354,11 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:12:32
+# ModifiedOn:       2022/08/27 16:10:19
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -441,7 +444,8 @@ Function Add-LocationToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output 'Location added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -455,11 +459,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/27 14:52:24
+# ModifiedOn:       2022/08/27 16:10:35
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -545,7 +549,8 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 		Write-Output 'PSDefaults Added'
 		Write-Output "ConfigFile: $($confile.FullName)"
 	} catch { Write-Error "Error: `n $_" }
@@ -558,11 +563,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:52:52
+# ModifiedOn:       2022/08/27 16:10:47
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -642,7 +647,8 @@ Function Add-PSDriveToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output 'PSDrive added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -656,11 +662,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:54:34
+# ModifiedOn:       2022/08/27 16:11:09
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -719,14 +725,14 @@ Function Add-VariableToPSConfigFile {
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
         if ([string]::IsNullOrEmpty($XMLData.SetVariable)) {
-                $VarObject.Add([PSCustomObject]@{
+            $VarObject.Add([PSCustomObject]@{
                     $InputVar.Name.ToString() = $InputVar.Value
-            })        
+                })        
         } else {
             $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                $InputVar.Name.ToString() = $InputVar.Value
-            })
+                    $InputVar.Name.ToString() = $InputVar.Value
+                })
         }
 
         $Update = [psobject]@{
@@ -740,7 +746,8 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }
@@ -761,7 +768,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -817,7 +824,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -876,11 +883,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:33:51
+# ModifiedOn:       2022/08/27 17:35:27
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -1001,32 +1008,30 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
-            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
-                $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-                if ($selfcert.NotAfter -lt (Get-Date)) {
-                    Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
-                } else {
-                    $credname = $Cred.Name
-                    $username = $Cred.UserName
-                    $password = $Cred.EncryptedPwd
-                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
-                    $PSConfigFileOutput.Add($output)
-                    $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                    if ($PSVersionTable.PSEdition -like 'Desktop') {
-                        try {
-                            $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                        } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
-                    } else {
-                        try {
-                            $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                        } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
-                    }
+        foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+            if ($selfcert.NotAfter -lt (Get-Date)) {
+                Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
+            } else {
+                $credname = $Cred.Name
+                $username = $Cred.UserName
+                $password = $Cred.EncryptedPwd
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
+                $PSConfigFileOutput.Add($output)
+                $EncryptedBytes = [System.Convert]::FromBase64String($password)
+                if ($PSVersionTable.PSEdition -like 'Desktop') {
                     try {
-                        $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                        New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
-                    } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
+                } else {
+                    try {
+                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
                 }
+                try {
+                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
+                    New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
+                } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
             }
         }
     } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
@@ -1036,11 +1041,14 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-        foreach ($PSD in  ($XMLData.PSDefaults | Where-Object {$_ -notlike $null})) {
-            $PSDefaultParameterValues.Remove($PSD.Name)
+        $SortDefaults = ($XMLData.PSDefaults | Where-Object {$_ -notlike $null}) | Sort-Object -Property Name
+        foreach ($PSD in $SortDefaults) {
+            $PSDefaultParameterValues.remove("$($PSD.Name)")
+        }
+        foreach ($PSD in $SortDefaults) {
             $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
         }
-        foreach ($Defaults in $PSDefaultParameterValues.GetEnumerator()) {
+        foreach ($Defaults in ($PSDefaultParameterValues.GetEnumerator()| Sort-Object -Property Name)) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
             $PSConfigFileOutput.Add($output)
         }
@@ -1049,7 +1057,7 @@ Function Invoke-PSConfigFile {
 
     #region Set Location
     try {
-        if ($XMLData.SetLocation.Default -notlike "Default" -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+        if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
@@ -1101,7 +1109,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1203,11 +1211,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/27 15:04:12
+# ModifiedOn:       2022/08/27 16:13:27
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1302,16 +1310,17 @@ Function Remove-ConfigFromPSConfigFile {
     $Update = @()
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = ($SetPSDrive  | Where-Object {$_ -notlike $null})
-        PSFunction  = ($SetPSFunction  | Where-Object {$_ -notlike $null})
-        PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
-        PSDefaults  = ($SetPSDefaults  | Where-Object {$_ -notlike $null})
-        SetLocation = ($SetLocation  | Where-Object {$_ -notlike $null})
-        SetVariable = ($SetVariable  | Where-Object {$_ -notlike $null})
-        Execute     = ($SetExecute  | Where-Object {$_ -notlike $null})
+        PSDrive     = ($SetPSDrive | Where-Object {$_ -notlike $null})
+        PSFunction  = ($SetPSFunction | Where-Object {$_ -notlike $null})
+        PSCreds     = ($SetCreds | Where-Object {$_ -notlike $null})
+        PSDefaults  = ($SetPSDefaults | Where-Object {$_ -notlike $null})
+        SetLocation = ($SetLocation | Where-Object {$_ -notlike $null})
+        SetVariable = ($SetVariable | Where-Object {$_ -notlike $null})
+        Execute     = ($SetExecute | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Output "$(($userdataModAction | Out-String).Trim())"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -1326,11 +1335,11 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 13:49:13
+# ModifiedOn:       2022/08/27 16:14:27
 # Synopsis:         Adds functionality to add the execution to your profile.
 #############################################
  
@@ -1375,17 +1384,21 @@ Function Set-PSConfigFileExecution {
 
         if ($DisplayOutput) {
             $ToAppend = @"
+
 #PSConfigFile
 `$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`"  -DisplayOutput #PSConfigFile
+
 "@
         } else {
             $ToAppend = @"
+
 #PSConfigFile
 `$PSConfigFileModule = Get-ChildItem `"$((Join-Path ((Get-Item $Module.ModuleBase).Parent).FullName '\*\PSConfigFile.psm1'))`" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 #PSConfigFile
 Import-Module `$PSConfigFileModule.FullName -Force #PSConfigFile
 Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
+
 "@
         }
 
@@ -1428,11 +1441,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 15:22:18
+# ModifiedOn:       2022/08/27 16:15:22
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1546,13 +1559,11 @@ Function Show-PSConfigFile {
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
                 foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
                     $outputfile.Add($output)
-                }
             }
             #endregion
 
@@ -1567,7 +1578,7 @@ Function Show-PSConfigFile {
 
             #region Set Location
             try {
-                if ($XMLData.SetLocation.Default -notlike 'Default' -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+                if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
                     $outputfile.Add('<h>  ')
                     $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
@@ -1608,11 +1619,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.33
+# ModuleVersion:    0.1.35
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/27 15:23:40
+# ModifiedOn:       2022/08/27 16:15:53
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1718,7 +1729,8 @@ Function Update-CredentialsInPSConfigFile {
 			Execute     = $XMLData.Execute
 		}
 		try {
-			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
+			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 			Write-Output 'Credentials Updated'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }
