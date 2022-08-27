@@ -75,20 +75,20 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
 	}
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$userdata = [PSCustomObject]@{
-		Owner             = $json.Userdata.Owner
-		CreatedOn         = $json.Userdata.CreatedOn
-		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-		Path              = $json.Userdata.Path
-		Hostname          = $json.Userdata.Hostname
-		PSEdition         = $json.Userdata.PSEdition
-		OS                = $json.Userdata.OS
+		Owner             = $XMLData.Userdata.Owner
+		CreatedOn         = $XMLData.Userdata.CreatedOn
+		PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+		Path              = $XMLData.Userdata.Path
+		Hostname          = $XMLData.Userdata.Hostname
+		PSEdition         = $XMLData.Userdata.PSEdition
+		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -98,15 +98,13 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		}
 	}
 	[System.Collections.generic.List[PSObject]]$PSDefaultObject = @()
-	if ($Json.PSDefaults.psobject.Properties.name -like 'Default' -and
-		$Json.PSDefaults.psobject.Properties.value -like 'Default') {
-		
+	if ([string]::IsNullOrEmpty($XMLData.PSDefaults)) {
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
 			})
 	} else {
-		$Json.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
+		$XMLData.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
@@ -114,16 +112,16 @@ Function Add-PSDefaultParameterToPSConfigFile {
 	}
 	$Update = [psobject]@{
 		Userdata    = $Userdata
-		PSDrive     = $Json.PSDrive
-		PSFunction  = $Json.PSFunction
-		PSCreds     = $Json.PSCreds
+		PSDrive     = $XMLData.PSDrive
+		PSFunction  = $XMLData.PSFunction
+		PSCreds     = $XMLData.PSCreds
 		PSDefaults  = ($PSDefaultObject  | Where-Object {$_ -notlike $null})
-		SetLocation = $Json.SetLocation
-		SetVariable = $Json.SetVariable
-		Execute     = $Json.Execute
+		SetLocation = $XMLData.SetLocation
+		SetVariable = $XMLData.SetVariable
+		Execute     = $XMLData.Execute
 	}
 	try {
-		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
 		Write-Output 'PSDefaults Added'
 		Write-Output "ConfigFile: $($confile.FullName)"
 	} catch { Write-Error "Error: `n $_" }

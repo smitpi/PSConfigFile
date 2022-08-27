@@ -23,7 +23,7 @@ Executes the config from the json file.
 
 ### EXAMPLE 1
 ```
-Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSCustomConfig.json
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
 ```
 
 ## PARAMETERS

@@ -82,20 +82,21 @@ Function Add-CommandToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
+
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -108,15 +109,14 @@ Function Add-CommandToPSConfigFile {
     $Update = @()
     [System.Collections.generic.List[PSObject]]$ExecuteObject = @()
     
-    if ($Json.Execute.psobject.Properties.name -like 'Default' -and
-        $Json.Execute.psobject.Properties.value -like 'Default') {
+    if ([string]::IsNullOrEmpty($XMLData.Execute)) {
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = 0
                 Name        = $ScriptBlockName
                 ScriptBlock = $ScriptBlock
             })
     } else {
-        $Json.Execute | ForEach-Object {$ExecuteObject.Add($_)}
+        $XMLData.Execute | ForEach-Object {$ExecuteObject.Add($_)}
         $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = ($IndexID + 1 )
@@ -126,16 +126,16 @@ Function Add-CommandToPSConfigFile {
     }
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $Json.PSDrive
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = ($ExecuteObject  | Where-Object {$_ -notlike $null})
+        PSDrive     = $XMLData.PSDrive
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
+        SetLocation = $XMLData.SetLocation
+        SetVariable = $XMLData.SetVariable
+        Execute     = ($ExecuteObject | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'Command added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }

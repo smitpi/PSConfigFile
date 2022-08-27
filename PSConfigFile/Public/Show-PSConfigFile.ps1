@@ -71,7 +71,7 @@ Function Show-PSConfigFile {
         try {
             if ([string]::IsNullOrEmpty($OtherConfigFile)) {
                 Add-Type -AssemblyName System.Windows.Forms
-                $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+                $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
                 $null = $FileBrowser.ShowDialog()
                 $confile = Get-Item $FileBrowser.FileName
             } else {
@@ -79,25 +79,26 @@ Function Show-PSConfigFile {
                     $confile = Get-Item $OtherConfigFile -ErrorAction stop
                 } catch {
                     Add-Type -AssemblyName System.Windows.Forms
-                    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+                    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
                     $null = $FileBrowser.ShowDialog()
                     $confile = Get-Item $FileBrowser.FileName
                 }
             }
-
+            #region Import xml
             $outputfile = [System.Collections.Generic.List[string]]::new()
             $outputfile.Add('')
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
-            if ([string]::IsNullOrEmpty($JSONParameter)) { Write-Error 'Valid Parameters file not found'; break }
+            $XMLData = Import-Clixml -Path $confile.FullName
+            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
             $outputfile.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+            #endregion
 
             #region User Data
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-            $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+            $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
@@ -106,45 +107,53 @@ Function Show-PSConfigFile {
             #region User Data Modified
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-            $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+            $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
             #endregion
 
-            #Set Variables
+            #region Set Variables
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
+                $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
                 $outputfile.Add($output)
             }
             $PSConfigFilePathoutput = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
             $outputfile.Add($PSConfigFilePathoutput)
             $PSConfigFileoutput = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
             $outputfile.Add($PSConfigFileoutput)
+            #endregion
 
-            # Set PsDrives
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
-                $outputfile.Add($output)
-            }
+            #region Set PsDrives
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+                foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+            #endregion
 
-            # Set Function
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-            $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            #region Set Function
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+                foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error Function: Message:$($_.Exception.Message)")}
+            #endregion
 
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
-                foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+            if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
+                foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
@@ -156,27 +165,33 @@ Function Show-PSConfigFile {
             #region Set PSDefaults
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-            foreach ($PSD in  $JSONParameter.PSDefaults) {
+            foreach ($PSD in  $XMLData.PSDefaults) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
             }
             #endregion
 
-            # Execute Commands
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            #region Set Location
+            try {
+                if ($XMLData.SetLocation.Default -notlike 'Default' -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+                    $outputfile.Add('<h>  ')
+                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+            #endregion
 
-            # Set Location
-            if ([bool]$JSONParameter.SetLocation.WorkerDir -like $true) {
+            #region Execute Commands
+            try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
-                $outputfile.Add($output)
-            }
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+                foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
+            #endregion
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")

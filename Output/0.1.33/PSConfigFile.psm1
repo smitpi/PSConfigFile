@@ -3,11 +3,11 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 23:40:50
+# ModifiedOn:       2022/08/27 14:48:34
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -41,20 +41,21 @@ Function Add-CommandToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
+
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -67,15 +68,14 @@ Function Add-CommandToPSConfigFile {
     $Update = @()
     [System.Collections.generic.List[PSObject]]$ExecuteObject = @()
     
-    if ($Json.Execute.psobject.Properties.name -like 'Default' -and
-        $Json.Execute.psobject.Properties.value -like 'Default') {
+    if ([string]::IsNullOrEmpty($XMLData.Execute)) {
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = 0
                 Name        = $ScriptBlockName
                 ScriptBlock = $ScriptBlock
             })
     } else {
-        $Json.Execute | ForEach-Object {$ExecuteObject.Add($_)}
+        $XMLData.Execute | ForEach-Object {$ExecuteObject.Add($_)}
         $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = ($IndexID + 1 )
@@ -85,16 +85,16 @@ Function Add-CommandToPSConfigFile {
     }
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $Json.PSDrive
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = ($ExecuteObject  | Where-Object {$_ -notlike $null})
+        PSDrive     = $XMLData.PSDrive
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
+        SetLocation = $XMLData.SetLocation
+        SetVariable = $XMLData.SetVariable
+        Execute     = ($ExecuteObject | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'Command added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -110,11 +110,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/08/19 23:38:06
+# ModifiedOn:       2022/08/27 14:50:18
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -149,20 +149,20 @@ Function Add-CredentialToPSConfigFile {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
 	}
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$userdata = [PSCustomObject]@{
-		Owner             = $json.Userdata.Owner
-		CreatedOn         = $json.Userdata.CreatedOn
-		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-		Path              = $json.Userdata.Path
-		Hostname          = $json.Userdata.Hostname
-		PSEdition         = $json.Userdata.PSEdition
-		OS                = $json.Userdata.OS
+		Owner             = $XMLData.Userdata.Owner
+		CreatedOn         = $XMLData.Userdata.CreatedOn
+		PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+		Path              = $XMLData.Userdata.Path
+		Hostname          = $XMLData.Userdata.Hostname
+		PSEdition         = $XMLData.Userdata.PSEdition
+		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -208,8 +208,7 @@ Function Add-CredentialToPSConfigFile {
 	$Update = @()
 	[System.Collections.ArrayList]$SetCreds = @()
 		
-	if ($Json.PSCreds.psobject.Properties.name -like 'Default' -and
-		$Json.PSCreds.psobject.Properties.value -like 'Default') {
+	if ([string]::IsNullOrEmpty($XMLData.PSCreds)) {
 				
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
@@ -218,7 +217,7 @@ Function Add-CredentialToPSConfigFile {
 				EncryptedPwd = $EncryptedPwd
 			})
 	} else {
-		$Json.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
+		$XMLData.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
@@ -229,16 +228,16 @@ Function Add-CredentialToPSConfigFile {
 
 	$Update = [psobject]@{
 		Userdata    = $Userdata
-		PSDrive     = $Json.PSDrive
-		PSFunction  = $Json.PSFunction
+		PSDrive     = $XMLData.PSDrive
+		PSFunction  = $XMLData.PSFunction
 		PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
-		PSDefaults  = $Json.PSDefaults
-		SetLocation = $Json.SetLocation
-		SetVariable = $Json.SetVariable
-		Execute     = $Json.Execute
+		PSDefaults  = $XMLData.PSDefaults
+		SetLocation = $XMLData.SetLocation
+		SetVariable = $XMLData.SetVariable
+		Execute     = $XMLData.Execute
 	}
 	try {
-		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
 		Write-Output 'Credential added'
 		Write-Output "ConfigFile: $($confile.FullName)"
 	} catch { Write-Error "Error: `n $_" }
@@ -251,11 +250,11 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 23:40:21
+# ModifiedOn:       2022/08/27 14:51:03
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -289,20 +288,20 @@ Function Add-FunctionToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -315,14 +314,13 @@ Function Add-FunctionToPSConfigFile {
     $Update = @()
     [System.Collections.generic.List[PSObject]]$FunctionObject = @()
         
-    if ($Json.PSFunction.psobject.Properties.name -like 'Default' -and
-        $Json.PSFunction.psobject.Properties.value -like 'Default') {
+    if ([string]::IsNullOrEmpty($XMLData.PSFunction)) {
         $FunctionObject.Add([PSCustomObject]@{
                 Name = $FunctionName 
                 Command = $CommandToRun
             })
     } else {
-        $Json.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
+        $XMLData.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
         $FunctionObject.Add([PSCustomObject]@{
                 Name    = $FunctionName 
                 Command = $CommandToRun
@@ -331,16 +329,16 @@ Function Add-FunctionToPSConfigFile {
 
     $Update = [psobject]@{
         Userdata    = $userdata
-        PSDrive     = $Json.PSDrive
+        PSDrive     = $XMLData.PSDrive
         PSFunction  = ($FunctionObject  | Where-Object {$_ -notlike $null})
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
+        SetLocation = $XMLData.SetLocation
+        SetVariable = $XMLData.SetVariable
+        Execute     = $XMLData.Execute
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'Function added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -353,11 +351,11 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:22:53
+# ModifiedOn:       2022/08/27 14:12:32
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -395,29 +393,29 @@ Function Add-LocationToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
     try {
         if ($LocationType -like 'PSDrive') {
-            $check = Get-PSDrive $Path -ErrorAction Stop
+            Get-PSDrive $Path -ErrorAction Stop | Out-Null
             [string]$AddPath = "$($path)"
         }
         if ($LocationType -like 'Folder') {
-            [string]$AddPath = (Get-Item $path).FullName
+            [string]$AddPath = (Get-Item $path -ErrorAction Stop).FullName
         }
     } catch { throw 'Could not find path' }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -434,16 +432,16 @@ Function Add-LocationToPSConfigFile {
     }
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $Json.PSDrive
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
+        PSDrive     = $XMLData.PSDrive
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
         SetLocation = $SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
+        SetVariable = $XMLData.SetVariable
+        Execute     = $XMLData.Execute
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'Location added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -457,11 +455,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/19 23:39:40
+# ModifiedOn:       2022/08/27 14:52:24
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -501,20 +499,20 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
 	}
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$userdata = [PSCustomObject]@{
-		Owner             = $json.Userdata.Owner
-		CreatedOn         = $json.Userdata.CreatedOn
-		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-		Path              = $json.Userdata.Path
-		Hostname          = $json.Userdata.Hostname
-		PSEdition         = $json.Userdata.PSEdition
-		OS                = $json.Userdata.OS
+		Owner             = $XMLData.Userdata.Owner
+		CreatedOn         = $XMLData.Userdata.CreatedOn
+		PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+		Path              = $XMLData.Userdata.Path
+		Hostname          = $XMLData.Userdata.Hostname
+		PSEdition         = $XMLData.Userdata.PSEdition
+		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -524,15 +522,13 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		}
 	}
 	[System.Collections.generic.List[PSObject]]$PSDefaultObject = @()
-	if ($Json.PSDefaults.psobject.Properties.name -like 'Default' -and
-		$Json.PSDefaults.psobject.Properties.value -like 'Default') {
-		
+	if ([string]::IsNullOrEmpty($XMLData.PSDefaults)) {
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
 			})
 	} else {
-		$Json.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
+		$XMLData.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
@@ -540,16 +536,16 @@ Function Add-PSDefaultParameterToPSConfigFile {
 	}
 	$Update = [psobject]@{
 		Userdata    = $Userdata
-		PSDrive     = $Json.PSDrive
-		PSFunction  = $Json.PSFunction
-		PSCreds     = $Json.PSCreds
+		PSDrive     = $XMLData.PSDrive
+		PSFunction  = $XMLData.PSFunction
+		PSCreds     = $XMLData.PSCreds
 		PSDefaults  = ($PSDefaultObject  | Where-Object {$_ -notlike $null})
-		SetLocation = $Json.SetLocation
-		SetVariable = $Json.SetVariable
-		Execute     = $Json.Execute
+		SetLocation = $XMLData.SetLocation
+		SetVariable = $XMLData.SetVariable
+		Execute     = $XMLData.Execute
 	}
 	try {
-		$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
 		Write-Output 'PSDefaults Added'
 		Write-Output "ConfigFile: $($confile.FullName)"
 	} catch { Write-Error "Error: `n $_" }
@@ -562,11 +558,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/20 14:20:18
+# ModifiedOn:       2022/08/27 14:52:52
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -594,20 +590,20 @@ Function Add-PSDriveToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -622,32 +618,31 @@ Function Add-PSDriveToPSConfigFile {
     $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
     if ($null -eq $InputDrive) { Write-Error 'Unknown psdrive'; break }
 
-    if ($Json.PSDrive.psobject.Properties.name -like 'Default' -and
-        $Json.PSDrive.psobject.Properties.value -like 'Default') {
+    if ([string]::IsNullOrEmpty($XMLData.PSDrive)) {
         $PSDriveObject.Add([PSCustomObject]@{
-                Name =  $InputDrive.Name
+                Name = $InputDrive.Name
                 Root = $InputDrive.Root
             })
     } else {
-        $Json.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $XMLData.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
         $PSDriveObject.Add([PSCustomObject]@{
-                Name    = $InputDrive.Name
+                Name = $InputDrive.Name
                 Root = $InputDrive.Root
             })
     }
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = ($PSDriveObject  | Where-Object {$_ -notlike $null})
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
+        PSDrive     = ($PSDriveObject | Where-Object {$_ -notlike $null})
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
+        SetLocation = $XMLData.SetLocation
+        SetVariable = $XMLData.SetVariable
+        Execute     = $XMLData.Execute
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'PSDrive added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -661,11 +656,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/26 07:12:10
+# ModifiedOn:       2022/08/27 14:54:34
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -693,20 +688,20 @@ Function Add-VariableToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -723,30 +718,29 @@ Function Add-VariableToPSConfigFile {
         $inputtype = $InputVar.Value.GetType()
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
-        if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
-            $Json.SetVariable.psobject.Properties.value -like 'Default') {
-            $VarObject.Add([PSCustomObject]@{
-                $InputVar.Name  = $InputVar.Value
-                })
+        if ([string]::IsNullOrEmpty($XMLData.SetVariable)) {
+                $VarObject.Add([PSCustomObject]@{
+                    $InputVar.Name.ToString() = $InputVar.Value
+            })        
         } else {
-            $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                    $InputVar.Name.ToString() = (Get-Variable -Name $VariableName -ValueOnly)
+                $InputVar.Name.ToString() = $InputVar.Value
             })
         }
 
         $Update = [psobject]@{
             Userdata    = $Userdata
-            PSDrive     = $Json.PSDrive
-            PSFunction  = $Json.PSFunction
-            PSCreds     = $Json.PSCreds
-            PSDefaults  = $Json.PSDefaults
-            SetLocation = $Json.SetLocation
-            SetVariable = ($VarObject  | Where-Object {$_ -notlike $null})
-            Execute     = $Json.Execute
+            PSDrive     = $XMLData.PSDrive
+            PSFunction  = $XMLData.PSFunction
+            PSCreds     = $XMLData.PSCreds
+            PSDefaults  = $XMLData.PSDefaults
+            SetLocation = $XMLData.SetLocation
+            SetVariable = ($VarObject | Where-Object {$_ -notlike $null})
+            Execute     = $XMLData.Execute
         }
         try {
-            $Update | ConvertTo-Json| Set-Content -Path $confile.FullName -Force
+            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }
@@ -767,7 +761,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -823,7 +817,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -882,11 +876,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/26 07:27:35
+# ModifiedOn:       2022/08/27 14:33:51
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -904,14 +898,14 @@ Path to the the config file that was created by New-PSConfigFile
 By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSCustomConfig.json
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
 
 #>
 Function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
     param (
         [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
+        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.xml') })]
         [System.IO.FileInfo]$ConfigFile,
         [switch]$DisplayOutput = $false
     )
@@ -925,8 +919,8 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile).Version.ToString())")
-        $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
-        if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
+        $XMLData = Import-Clixml -Path $confile.FullName
+        if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
     } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
     #endregion
@@ -935,7 +929,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-        $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+        $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
@@ -946,7 +940,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-        $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+        $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-25}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
@@ -957,7 +951,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-        foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
+        foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
             $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
             $PSConfigFileOutput.Add($output)
@@ -978,7 +972,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        foreach ($SetPSDrive in  ($JSONParameter.PSDrive | Where-Object {$_ -notlike $null})) {
+        foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
             $PSConfigFileOutput.Add($output)
             if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
@@ -992,7 +986,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-        foreach ($SetPSFunction in  ($JSONParameter.PSFunction | Where-Object {$_ -notlike $null})) {
+        foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
             $PSConfigFileOutput.Add($output)
@@ -1007,8 +1001,8 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
-            foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+        if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
+            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                 $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
                 if ($selfcert.NotAfter -lt (Get-Date)) {
                     Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
@@ -1042,7 +1036,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-        foreach ($PSD in  ($JSONParameter.PSDefaults | Where-Object {$_ -notlike $null})) {
+        foreach ($PSD in  ($XMLData.PSDefaults | Where-Object {$_ -notlike $null})) {
             $PSDefaultParameterValues.Remove($PSD.Name)
             $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
         }
@@ -1055,13 +1049,13 @@ Function Invoke-PSConfigFile {
 
     #region Set Location
     try {
-        if ($null -notlike $JSONParameter.SetLocation) {
+        if ($XMLData.SetLocation.Default -notlike "Default" -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
             $PSConfigFileOutput.Add($output)
-            if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
-            elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
+            if ([bool](Get-PSDrive $($XMLData.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($XMLData.SetLocation.WorkerDir):" }
+            elseif (Test-Path $($XMLData.SetLocation.WorkerDir)) { Set-Location $($XMLData.SetLocation.WorkerDir) }
             else { Write-Error '<e>No valid location found.' }
         }
     } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
@@ -1071,7 +1065,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-        foreach ($execute in  ($JSONParameter.execute | Where-Object {$_ -notlike $null})) {
+        foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
             $PSConfigFileOutput.Add($output)
@@ -1107,11 +1101,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:22:46
+# ModifiedOn:       2022/08/27 14:41:52
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1145,7 +1139,7 @@ Function New-PSConfigFile {
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
                 CreatedOn         = (Get-Date -Format u)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
-                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
+                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
@@ -1161,24 +1155,12 @@ Function New-PSConfigFile {
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
         
         $SetLocation = New-Object PSObject -Property @{}
-        $SetVariable = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $Execute = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSDrive = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSFunction = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSCreds = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSDefaults = New-Object PSObject -Property @{
-            Default = 'Default'
-        }   
+        $SetVariable = New-Object PSObject -Property @{}
+        $Execute = New-Object PSObject -Property @{}
+        $PSDrive = New-Object PSObject -Property @{}
+        $PSFunction = New-Object PSObject -Property @{}
+        $PSCreds = New-Object PSObject -Property @{}
+        $PSDefaults = New-Object PSObject -Property @{}   
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
@@ -1195,24 +1177,23 @@ Function New-PSConfigFile {
 
     $Fullpath = Get-Item $ConfigDir
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
-        $check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -ErrorAction SilentlyContinue
+        $check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -ErrorAction SilentlyContinue
         if (-not($check)) {
             Write-Output 'Config File does not exit, creating default settings.'
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            $data | Export-Clixml -Depth 10 -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -Force -NoClobber -Encoding utf8
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSConfigFile.xml))" -ForegroundColor DarkRed
         } else {
-
-            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
-            Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
+            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSConfigFile_$(Get-Date -Format ddMMyyyy_HHmm).xml"
+            Rename-Item (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -NewName "PSConfigFile_$(Get-Date -Format ddMMyyyy_HHmm).xml"
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            $data | Export-Clixml -Depth 10 -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -Force -NoClobber -Encoding utf8
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSConfigFile.xml))" -ForegroundColor DarkRed
         }
     }
-    Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
+    Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -DisplayOutput
 }
  
 Export-ModuleMember -Function New-PSConfigFile
@@ -1222,11 +1203,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/19 22:17:28
+# ModifiedOn:       2022/08/27 15:04:12
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1259,57 +1240,57 @@ Function Remove-ConfigFromPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
-    [System.Collections.Generic.List[pscustomobject]]$JsonConfig = @()
-    $JsonConfig.Add((Get-Content $confile.FullName | ConvertFrom-Json))
+    [System.Collections.Generic.List[pscustomobject]]$XMLData = @()
+    $XMLData.Add((Import-Clixml -Path $confile.FullName))
     $userdataModAction = 'Removed Config: '
 
     if ($Config -like 'Variable') {
         $userdataModAction += "Removed Variable $($Value)`n"
-        $SetVariable = $JsonConfig.SetVariable | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetVariable = $JsonConfig.setvariable}
+        $SetVariable = $XMLData.setvariable | Where-Object {$_ -notlike "*$($Value)*"}
+    } else {$SetVariable = $XMLData.setvariable}
 
     if ($Config -like 'PSDrive') {
         $userdataModAction += "Removed PSDrive $($Value)`n"
-        $SetPSDrive = $JsonConfig.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSDrive = $JsonConfig.PSDrive}
+        $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetPSDrive = $XMLData.PSDrive}
 
     if ($Config -like 'Function') {
         $userdataModAction += "Removed Function $($Value)`n"
-        $SetPSFunction = $JsonConfig.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSFunction = $JsonConfig.PSFunction}
+        $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetPSFunction = $XMLData.PSFunction}
 
     if ($Config -like 'Command') { 
         $userdataModAction += "Removed Command $($Value)`n"
-        $SetExecute = $JsonConfig.Execute | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetExecute = $JsonConfig.Execute}
+        $SetExecute = $XMLData.Execute | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetExecute = $XMLData.Execute}
 
     if ($Config -like 'Credential') {
         $userdataModAction += "Removed Credential $($Value)`n"
-        $SetCreds = $JsonConfig.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetCreds = $JsonConfig.PSCreds}
+        $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetCreds = $XMLData.PSCreds}
 
     if ($Config -like 'PSDefaults') {
         $userdataModAction += "Removed PSDefaults $($Value)`n"
-        $SetPSDefaults = $JsonConfig.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSDefaults = $JsonConfig.PSDefaults}
+        $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
+    } else {$SetPSDefaults = $XMLData.PSDefaults}
 
     if ($Config -like 'Location') {
         $userdataModAction += "Removed Location`n"
         $SetLocation = @{}
-    } else {$SetLocation = $JsonConfig.SetLocation}
+    } else {$SetLocation = $XMLData.SetLocation}
     
     $userdata = [PSCustomObject]@{
-        Owner             = $JsonConfig.Userdata.Owner
-        CreatedOn         = $JsonConfig.Userdata.CreatedOn
-        PSExecutionPolicy = $JsonConfig.Userdata.PSExecutionPolicy
-        Path              = $JsonConfig.Userdata.Path
-        Hostname          = $JsonConfig.Userdata.Hostname
-        PSEdition         = $JsonConfig.Userdata.PSEdition
-        OS                = $JsonConfig.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -1330,7 +1311,7 @@ Function Remove-ConfigFromPSConfigFile {
         Execute     = ($SetExecute  | Where-Object {$_ -notlike $null})
     }
     try {
-        $Update | ConvertTo-Json | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output "$(($userdataModAction | Out-String).Trim())"
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }
@@ -1345,11 +1326,11 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 16:50:32
+# ModifiedOn:       2022/08/27 13:49:13
 # Synopsis:         Adds functionality to add the execution to your profile.
 #############################################
  
@@ -1383,7 +1364,7 @@ Function Set-PSConfigFileExecution {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
@@ -1447,11 +1428,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/19 17:23:49
+# ModifiedOn:       2022/08/27 15:22:18
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1484,7 +1465,7 @@ Function Show-PSConfigFile {
         try {
             if ([string]::IsNullOrEmpty($OtherConfigFile)) {
                 Add-Type -AssemblyName System.Windows.Forms
-                $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+                $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
                 $null = $FileBrowser.ShowDialog()
                 $confile = Get-Item $FileBrowser.FileName
             } else {
@@ -1492,25 +1473,26 @@ Function Show-PSConfigFile {
                     $confile = Get-Item $OtherConfigFile -ErrorAction stop
                 } catch {
                     Add-Type -AssemblyName System.Windows.Forms
-                    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+                    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
                     $null = $FileBrowser.ShowDialog()
                     $confile = Get-Item $FileBrowser.FileName
                 }
             }
-
+            #region Import xml
             $outputfile = [System.Collections.Generic.List[string]]::new()
             $outputfile.Add('')
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
-            if ([string]::IsNullOrEmpty($JSONParameter)) { Write-Error 'Valid Parameters file not found'; break }
+            $XMLData = Import-Clixml -Path $confile.FullName
+            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
             $outputfile.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+            #endregion
 
             #region User Data
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-            $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+            $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
@@ -1519,45 +1501,53 @@ Function Show-PSConfigFile {
             #region User Data Modified
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-            $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+            $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
                 $outputfile.Add($output)
             }
             #endregion
 
-            #Set Variables
+            #region Set Variables
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-            $JSONParameter.SetVariable.PSObject.Properties | Sort-Object -Property name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
+                $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
                 $outputfile.Add($output)
             }
             $PSConfigFilePathoutput = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
             $outputfile.Add($PSConfigFilePathoutput)
             $PSConfigFileoutput = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
             $outputfile.Add($PSConfigFileoutput)
+            #endregion
 
-            # Set PsDrives
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-            $JSONParameter.PSDrive.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value.root)
-                $outputfile.Add($output)
-            }
+            #region Set PsDrives
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+                foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+            #endregion
 
-            # Set Function
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-            $JSONParameter.PSFunction.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            #region Set Function
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+                foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error Function: Message:$($_.Exception.Message)")}
+            #endregion
 
             #region Creds
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-            if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
-                foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+            if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
+                foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
@@ -1569,27 +1559,33 @@ Function Show-PSConfigFile {
             #region Set PSDefaults
             $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-            foreach ($PSD in  $JSONParameter.PSDefaults) {
+            foreach ($PSD in  $XMLData.PSDefaults) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
             }
             #endregion
 
-            # Execute Commands
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-            $JSONParameter.execute.PSObject.Properties | Select-Object name, value | Sort-Object -Property Name | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            #region Set Location
+            try {
+                if ($XMLData.SetLocation.Default -notlike 'Default' -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+                    $outputfile.Add('<h>  ')
+                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+            #endregion
 
-            # Set Location
-            if ([bool]$JSONParameter.SetLocation.WorkerDir -like $true) {
+            #region Execute Commands
+            try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
-                $outputfile.Add($output)
-            }
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+                foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
+            #endregion
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
@@ -1612,11 +1608,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.32
+# ModuleVersion:    0.1.33
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/19 23:43:37
+# ModifiedOn:       2022/08/27 15:23:40
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1649,20 +1645,20 @@ Function Update-CredentialsInPSConfigFile {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
 	}
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$userdata = [PSCustomObject]@{
-		Owner             = $json.Userdata.Owner
-		CreatedOn         = $json.Userdata.CreatedOn
-		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-		Path              = $json.Userdata.Path
-		Hostname          = $json.Userdata.Hostname
-		PSEdition         = $json.Userdata.PSEdition
-		OS                = $json.Userdata.OS
+		Owner             = $XMLData.Userdata.Owner
+		CreatedOn         = $XMLData.Userdata.CreatedOn
+		PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+		Path              = $XMLData.Userdata.Path
+		Hostname          = $XMLData.Userdata.Hostname
+		PSEdition         = $XMLData.Userdata.PSEdition
+		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -1679,11 +1675,11 @@ Function Update-CredentialsInPSConfigFile {
 		$Update = @()
 		[System.Collections.ArrayList]$RenewCreds = @()
 
-		foreach ($OtherCred in ($Json.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
+		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
 			[void]$RenewCreds.Add($OtherCred)
 		}
         
-		$UniqueCreds = $Json.PSCreds | Sort-Object -Property Name -Unique
+		$UniqueCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique
 		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
 		else {
 			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
@@ -1713,16 +1709,16 @@ Function Update-CredentialsInPSConfigFile {
 		}
 		$Update = [psobject]@{
 			Userdata    = $Userdata
-			PSDrive     = $Json.PSDrive
-			PSFunction  = $Json.PSFunction
-			PSCreds     = ($RenewCreds  | Where-Object {$_ -notlike $null})
-			PSDefaults  = $Json.PSDefaults
-			SetLocation = $Json.SetLocation
-			SetVariable = $Json.SetVariable
-			Execute     = $Json.Execute
+			PSDrive     = $XMLData.PSDrive
+			PSFunction  = $XMLData.PSFunction
+			PSCreds     = ($RenewCreds | Where-Object {$_ -notlike $null})
+			PSDefaults  = $XMLData.PSDefaults
+			SetLocation = $XMLData.SetLocation
+			SetVariable = $XMLData.SetVariable
+			Execute     = $XMLData.Execute
 		}
 		try {
-			$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
 			Write-Output 'Credentials Updated'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }

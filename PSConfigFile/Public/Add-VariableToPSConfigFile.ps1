@@ -75,20 +75,20 @@ Function Add-VariableToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -105,30 +105,29 @@ Function Add-VariableToPSConfigFile {
         $inputtype = $InputVar.Value.GetType()
         if ($inputtype.Name -like 'PSCredential' -or $inputtype.Name -like 'SecureString') { Write-Error 'PSCredential or SecureString not allowed'; break }
 
-        if ($Json.SetVariable.psobject.Properties.name -like 'Default' -and
-            $Json.SetVariable.psobject.Properties.value -like 'Default') {
-            $VarObject.Add([PSCustomObject]@{
-                $InputVar.Name  = $InputVar.Value
-                })
+        if ([string]::IsNullOrEmpty($XMLData.SetVariable)) {
+                $VarObject.Add([PSCustomObject]@{
+                    $InputVar.Name.ToString() = $InputVar.Value
+            })        
         } else {
-            $Json.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                    $InputVar.Name.ToString() = (Get-Variable -Name $VariableName -ValueOnly)
+                $InputVar.Name.ToString() = $InputVar.Value
             })
         }
 
         $Update = [psobject]@{
             Userdata    = $Userdata
-            PSDrive     = $Json.PSDrive
-            PSFunction  = $Json.PSFunction
-            PSCreds     = $Json.PSCreds
-            PSDefaults  = $Json.PSDefaults
-            SetLocation = $Json.SetLocation
-            SetVariable = ($VarObject  | Where-Object {$_ -notlike $null})
-            Execute     = $Json.Execute
+            PSDrive     = $XMLData.PSDrive
+            PSFunction  = $XMLData.PSFunction
+            PSCreds     = $XMLData.PSCreds
+            PSDefaults  = $XMLData.PSDefaults
+            SetLocation = $XMLData.SetLocation
+            SetVariable = ($VarObject | Where-Object {$_ -notlike $null})
+            Execute     = $XMLData.Execute
         }
         try {
-            $Update | ConvertTo-Json| Set-Content -Path $confile.FullName -Force
+            $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
             Write-Output 'Variable added'
             Write-Output "ConfigFile: $($confile.FullName)"
         } catch { Write-Error "Error: `n $_" }

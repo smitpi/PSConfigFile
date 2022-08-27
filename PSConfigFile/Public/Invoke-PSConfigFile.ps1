@@ -60,14 +60,14 @@ Path to the the config file that was created by New-PSConfigFile
 By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSCustomConfig.json
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
 
 #>
 Function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
     param (
         [parameter(Mandatory)]
-        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.json') })]
+        [ValidateScript( { (Test-Path $_) -and ((Get-Item $_).Extension -eq '.xml') })]
         [System.IO.FileInfo]$ConfigFile,
         [switch]$DisplayOutput = $false
     )
@@ -81,8 +81,8 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile).Version.ToString())")
-        $JSONParameter = (Get-Content $confile.FullName | Where-Object { $_ -notlike "*`"Default`"*" }) | ConvertFrom-Json
-        if ($null -eq $JSONParameter) { Write-Error 'Valid Parameters file not found'; break }
+        $XMLData = Import-Clixml -Path $confile.FullName
+        if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
     } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
     #endregion
@@ -91,7 +91,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-        $JSONParameter.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+        $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
@@ -102,7 +102,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-        $JSONParameter.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+        $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-25}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
@@ -113,7 +113,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
-        foreach ($SetVariable in  ($JSONParameter.SetVariable | Where-Object {$_ -notlike $null})) {
+        foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
             $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
             $PSConfigFileOutput.Add($output)
@@ -134,7 +134,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        foreach ($SetPSDrive in  ($JSONParameter.PSDrive | Where-Object {$_ -notlike $null})) {
+        foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
             $PSConfigFileOutput.Add($output)
             if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
@@ -148,7 +148,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
-        foreach ($SetPSFunction in  ($JSONParameter.PSFunction | Where-Object {$_ -notlike $null})) {
+        foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
             $PSConfigFileOutput.Add($output)
@@ -163,8 +163,8 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        if (-not([string]::IsNullOrEmpty($JSONParameter.PSCreds[0]))) {
-            foreach ($Cred in ($JSONParameter.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+        if (-not([string]::IsNullOrEmpty($XMLData.PSCreds[0]))) {
+            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                 $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
                 if ($selfcert.NotAfter -lt (Get-Date)) {
                     Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
@@ -198,7 +198,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
-        foreach ($PSD in  ($JSONParameter.PSDefaults | Where-Object {$_ -notlike $null})) {
+        foreach ($PSD in  ($XMLData.PSDefaults | Where-Object {$_ -notlike $null})) {
             $PSDefaultParameterValues.Remove($PSD.Name)
             $PSDefaultParameterValues.Add($PSD.Name, $PSD.Value)
         }
@@ -211,13 +211,13 @@ Function Invoke-PSConfigFile {
 
     #region Set Location
     try {
-        if ($null -notlike $JSONParameter.SetLocation) {
+        if ($XMLData.SetLocation.Default -notlike "Default" -and [string]::IsNullOrEmpty($XMLData.SetLocation)) {
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($JSONParameter.SetLocation.WorkerDir))
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
             $PSConfigFileOutput.Add($output)
-            if ([bool](Get-PSDrive $($JSONParameter.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($JSONParameter.SetLocation.WorkerDir):" }
-            elseif (Test-Path $($JSONParameter.SetLocation.WorkerDir)) { Set-Location $($JSONParameter.SetLocation.WorkerDir) }
+            if ([bool](Get-PSDrive $($XMLData.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($XMLData.SetLocation.WorkerDir):" }
+            elseif (Test-Path $($XMLData.SetLocation.WorkerDir)) { Set-Location $($XMLData.SetLocation.WorkerDir) }
             else { Write-Error '<e>No valid location found.' }
         }
     } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
@@ -227,7 +227,7 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
-        foreach ($execute in  ($JSONParameter.execute | Where-Object {$_ -notlike $null})) {
+        foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
             $PSConfigFileOutput.Add($output)

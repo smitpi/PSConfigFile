@@ -63,20 +63,20 @@ Function Update-CredentialsInPSConfigFile {
 		$confile = Get-Item $PSConfigFile -ErrorAction stop
 	} catch {
 		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+		$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
 		$null = $FileBrowser.ShowDialog()
 		$confile = Get-Item $FileBrowser.FileName
 	}
 
-	$Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$userdata = [PSCustomObject]@{
-		Owner             = $json.Userdata.Owner
-		CreatedOn         = $json.Userdata.CreatedOn
-		PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-		Path              = $json.Userdata.Path
-		Hostname          = $json.Userdata.Hostname
-		PSEdition         = $json.Userdata.PSEdition
-		OS                = $json.Userdata.OS
+		Owner             = $XMLData.Userdata.Owner
+		CreatedOn         = $XMLData.Userdata.CreatedOn
+		PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+		Path              = $XMLData.Userdata.Path
+		Hostname          = $XMLData.Userdata.Hostname
+		PSEdition         = $XMLData.Userdata.PSEdition
+		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = (Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -93,11 +93,11 @@ Function Update-CredentialsInPSConfigFile {
 		$Update = @()
 		[System.Collections.ArrayList]$RenewCreds = @()
 
-		foreach ($OtherCred in ($Json.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
+		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
 			[void]$RenewCreds.Add($OtherCred)
 		}
         
-		$UniqueCreds = $Json.PSCreds | Sort-Object -Property Name -Unique
+		$UniqueCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique
 		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
 		else {
 			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
@@ -127,16 +127,16 @@ Function Update-CredentialsInPSConfigFile {
 		}
 		$Update = [psobject]@{
 			Userdata    = $Userdata
-			PSDrive     = $Json.PSDrive
-			PSFunction  = $Json.PSFunction
-			PSCreds     = ($RenewCreds  | Where-Object {$_ -notlike $null})
-			PSDefaults  = $Json.PSDefaults
-			SetLocation = $Json.SetLocation
-			SetVariable = $Json.SetVariable
-			Execute     = $Json.Execute
+			PSDrive     = $XMLData.PSDrive
+			PSFunction  = $XMLData.PSFunction
+			PSCreds     = ($RenewCreds | Where-Object {$_ -notlike $null})
+			PSDefaults  = $XMLData.PSDefaults
+			SetLocation = $XMLData.SetLocation
+			SetVariable = $XMLData.SetVariable
+			Execute     = $XMLData.Execute
 		}
 		try {
-			$Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
 			Write-Output 'Credentials Updated'
 			Write-Output "ConfigFile: $($confile.FullName)"
 		} catch { Write-Error "Error: `n $_" }

@@ -82,7 +82,7 @@ Function New-PSConfigFile {
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
                 CreatedOn         = (Get-Date -Format u)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
-                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSCustomConfig.json))"
+                Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
@@ -98,24 +98,12 @@ Function New-PSConfigFile {
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
         
         $SetLocation = New-Object PSObject -Property @{}
-        $SetVariable = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $Execute = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSDrive = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSFunction = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSCreds = New-Object PSObject -Property @{
-            Default = 'Default'
-        }
-        $PSDefaults = New-Object PSObject -Property @{
-            Default = 'Default'
-        }   
+        $SetVariable = New-Object PSObject -Property @{}
+        $Execute = New-Object PSObject -Property @{}
+        $PSDrive = New-Object PSObject -Property @{}
+        $PSFunction = New-Object PSObject -Property @{}
+        $PSCreds = New-Object PSObject -Property @{}
+        $PSDefaults = New-Object PSObject -Property @{}   
         #main
         New-Object PSObject -Property @{
             Userdata    = $Userdata
@@ -132,22 +120,21 @@ Function New-PSConfigFile {
 
     $Fullpath = Get-Item $ConfigDir
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
-        $check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -ErrorAction SilentlyContinue
+        $check = Test-Path -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -ErrorAction SilentlyContinue
         if (-not($check)) {
             Write-Output 'Config File does not exit, creating default settings.'
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            $data | Export-Clixml -Depth 10 -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -Force -NoClobber -Encoding utf8
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSConfigFile.xml))" -ForegroundColor DarkRed
         } else {
-
-            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
-            Rename-Item (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -NewName "PSCustomConfig_$(Get-Date -Format ddMMyyyy_HHmm).json"
+            Write-Warning "ConfigFile exists, renaming file now to:`n`nPSConfigFile_$(Get-Date -Format ddMMyyyy_HHmm).xml"
+            Rename-Item (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -NewName "PSConfigFile_$(Get-Date -Format ddMMyyyy_HHmm).xml"
 
             $data = DafaultSettings
-            $data | ConvertTo-Json -Depth 5 | Out-File (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -Force
-            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSCustomConfig.json))" -ForegroundColor DarkRed
+            $data | Export-Clixml -Depth 10 -Path (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -Force -NoClobber -Encoding utf8
+            Write-Host '[Created] ' -ForegroundColor Yellow -NoNewline; Write-Host "$((Join-Path $Fullpath -ChildPath \PSConfigFile.xml))" -ForegroundColor DarkRed
         }
     }
-    Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSCustomConfig.json) -DisplayOutput
+    Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -DisplayOutput
 }

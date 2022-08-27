@@ -70,20 +70,20 @@ Function Add-PSDriveToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -98,32 +98,31 @@ Function Add-PSDriveToPSConfigFile {
     $InputDrive = Get-PSDrive -Name $DriveName | Select-Object Name, Root
     if ($null -eq $InputDrive) { Write-Error 'Unknown psdrive'; break }
 
-    if ($Json.PSDrive.psobject.Properties.name -like 'Default' -and
-        $Json.PSDrive.psobject.Properties.value -like 'Default') {
+    if ([string]::IsNullOrEmpty($XMLData.PSDrive)) {
         $PSDriveObject.Add([PSCustomObject]@{
-                Name =  $InputDrive.Name
+                Name = $InputDrive.Name
                 Root = $InputDrive.Root
             })
     } else {
-        $Json.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $XMLData.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
         $PSDriveObject.Add([PSCustomObject]@{
-                Name    = $InputDrive.Name
+                Name = $InputDrive.Name
                 Root = $InputDrive.Root
             })
     }
 
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = ($PSDriveObject  | Where-Object {$_ -notlike $null})
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
-        SetLocation = $Json.SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
+        PSDrive     = ($PSDriveObject | Where-Object {$_ -notlike $null})
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
+        SetLocation = $XMLData.SetLocation
+        SetVariable = $XMLData.SetVariable
+        Execute     = $XMLData.Execute
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'PSDrive added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }

@@ -87,29 +87,29 @@ Function Add-LocationToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'JSON | *.json' }
+        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
     try {
         if ($LocationType -like 'PSDrive') {
-            $check = Get-PSDrive $Path -ErrorAction Stop
+            Get-PSDrive $Path -ErrorAction Stop | Out-Null
             [string]$AddPath = "$($path)"
         }
         if ($LocationType -like 'Folder') {
-            [string]$AddPath = (Get-Item $path).FullName
+            [string]$AddPath = (Get-Item $path -ErrorAction Stop).FullName
         }
     } catch { throw 'Could not find path' }
 
-    $Json = Get-Content $confile.FullName -Raw | ConvertFrom-Json
+    $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
-        Owner             = $json.Userdata.Owner
-        CreatedOn         = $json.Userdata.CreatedOn
-        PSExecutionPolicy = $json.Userdata.PSExecutionPolicy
-        Path              = $json.Userdata.Path
-        Hostname          = $json.Userdata.Hostname
-        PSEdition         = $json.Userdata.PSEdition
-        OS                = $json.Userdata.OS
+        Owner             = $XMLData.Userdata.Owner
+        CreatedOn         = $XMLData.Userdata.CreatedOn
+        PSExecutionPolicy = $XMLData.Userdata.PSExecutionPolicy
+        Path              = $XMLData.Userdata.Path
+        Hostname          = $XMLData.Userdata.Hostname
+        PSEdition         = $XMLData.Userdata.PSEdition
+        OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = (Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -126,16 +126,16 @@ Function Add-LocationToPSConfigFile {
     }
     $Update = [psobject]@{
         Userdata    = $Userdata
-        PSDrive     = $Json.PSDrive
-        PSFunction  = $Json.PSFunction
-        PSCreds     = $Json.PSCreds
-        PSDefaults  = $Json.PSDefaults
+        PSDrive     = $XMLData.PSDrive
+        PSFunction  = $XMLData.PSFunction
+        PSCreds     = $XMLData.PSCreds
+        PSDefaults  = $XMLData.PSDefaults
         SetLocation = $SetLocation
-        SetVariable = $Json.SetVariable
-        Execute     = $Json.Execute
+        SetVariable = $XMLData.SetVariable
+        Execute     = $XMLData.Execute
     }
     try {
-        $Update | ConvertTo-Json -Depth 5 | Set-Content -Path $confile.FullName -Force
+        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -Force -NoClobber -Encoding utf8
         Write-Output 'Location added'
         Write-Output "ConfigFile: $($confile.FullName)"
     } catch { Write-Error "Error: `n $_" }

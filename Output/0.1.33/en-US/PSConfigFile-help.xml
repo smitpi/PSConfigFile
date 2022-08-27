@@ -883,7 +883,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSCustomConfig.json</dev:code>
+        <dev:code>Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
