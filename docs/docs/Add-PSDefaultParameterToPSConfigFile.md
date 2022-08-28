@@ -13,7 +13,7 @@ Add PSDefaultParameterValues to the config file
 ## SYNTAX
 
 ```
-Add-PSDefaultParameterToPSConfigFile [-Function] <String> [-Parameter] <String> [-Value] <String>
+Add-PSDefaultParameterToPSConfigFile [-Function] <String> [-Parameter] <String> [-Value] <String> [-Force]
  [<CommonParameters>]
 ```
 
@@ -70,6 +70,22 @@ Aliases:
 Required: True
 Position: 3
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Will delete the config file before saving the new one.
+If false, then the config file will be renamed.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

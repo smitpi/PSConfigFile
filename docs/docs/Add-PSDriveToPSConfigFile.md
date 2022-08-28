@@ -13,7 +13,7 @@ Add PSDrive to the config file.
 ## SYNTAX
 
 ```
-Add-PSDriveToPSConfigFile [[-DriveName] <String>] [<CommonParameters>]
+Add-PSDriveToPSConfigFile [[-DriveName] <String>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,6 +39,22 @@ Aliases:
 Required: False
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Will delete the config file before saving the new one.
+If false, then the config file will be renamed.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

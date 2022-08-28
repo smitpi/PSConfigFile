@@ -56,6 +56,10 @@ Add PSDrive to the config file.
 .PARAMETER DriveName
 Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-PSDriveToPSConfigFile -DriveName TempDrive
 
@@ -64,7 +68,8 @@ Function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
     PARAM(
         [ValidateScript( { ( Get-PSDrive $_) })]
-        [string]$DriveName
+        [string]$DriveName,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -124,8 +129,8 @@ Function Add-PSDriveToPSConfigFile {
     try {
         Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'PSDrive added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'PSDrive Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 

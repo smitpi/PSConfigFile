@@ -65,6 +65,10 @@ Name for the script block
 .PARAMETER ScriptBlock
 The commands to be executed
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 
@@ -75,7 +79,8 @@ Function Add-CommandToPSConfigFile {
         [ValidateNotNullOrEmpty()]
         [string]$ScriptBlockName,
         [ValidateNotNullOrEmpty()]
-        [string]$ScriptBlock
+        [string]$ScriptBlock,
+        [switch]$Force
     )
 
     try {
@@ -135,10 +140,16 @@ Function Add-CommandToPSConfigFile {
         Execute     = ($ExecuteObject | Where-Object {$_ -notlike $null})
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'Command added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'Command Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
 

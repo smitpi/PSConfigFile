@@ -13,7 +13,7 @@ Creates a self signed cert, then uses it to securely save a credential to the co
 ## SYNTAX
 
 ```
-Add-CredentialToPSConfigFile [[-Name] <String>] [[-Credential] <PSCredential>] [<CommonParameters>]
+Add-CredentialToPSConfigFile [[-Name] <String>] [[-Credential] <PSCredential>] [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,6 +58,22 @@ Aliases:
 Required: False
 Position: 2
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Will delete the config file before saving the new one.
+If false, then the config file will be renamed.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

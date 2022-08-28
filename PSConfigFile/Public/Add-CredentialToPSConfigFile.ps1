@@ -54,6 +54,10 @@ This name will be used for the variable when invoke command is executed.
 .PARAMETER Credential
 Credential object to be saved.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 $labcred = get-credential
 Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred
@@ -64,7 +68,8 @@ Function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	PARAM(
 		[string]$Name,
-		[pscredential]$Credential
+		[pscredential]$Credential,
+		[switch]$Force
 	)
 
  try {
@@ -159,9 +164,15 @@ Function Add-CredentialToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+		 if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		write-Output 'Credential added'
-		Write-Output "ConfigFile: $($confile.FullName)"
+		Write-Host 'Credential Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

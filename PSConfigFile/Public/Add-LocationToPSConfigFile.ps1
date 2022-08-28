@@ -69,6 +69,10 @@ Path to the folder or the PS-Drive name.
 .EXAMPLE
 Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
 
@@ -81,7 +85,8 @@ Function Add-LocationToPSConfigFile {
         [string]$LocationType,
         [Parameter(Mandatory = $true)]
         [ValidateScript( { ( Test-Path $_) -or ( [bool](Get-PSDrive $_)) })]
-        [string]$Path
+        [string]$Path,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -135,10 +140,16 @@ Function Add-LocationToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'Location added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'Start Location Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
 } #end Function

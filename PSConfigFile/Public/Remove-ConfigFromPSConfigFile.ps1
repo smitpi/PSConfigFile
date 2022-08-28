@@ -55,6 +55,10 @@ Which config item to remove.
 .PARAMETER Value
 The value of the config item to filter out.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
 
@@ -64,7 +68,8 @@ Function Remove-ConfigFromPSConfigFile {
     PARAM(
         [ValidateSet('Variable', 'PSDrive', 'Function', 'Command', 'Credential', 'PSDefaults', 'Location')]
         [string]$Config,
-        [string]$Value
+        [string]$Value,
+        [switch]$Force
     )
 
     try {
@@ -142,10 +147,16 @@ Function Remove-ConfigFromPSConfigFile {
         Execute     = ($SetExecute | Where-Object {$_ -notlike $null})
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+         if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output "$(($userdataModAction | Out-String).Trim())"
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host "$(($userdataModAction | Out-String).Trim())" -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 

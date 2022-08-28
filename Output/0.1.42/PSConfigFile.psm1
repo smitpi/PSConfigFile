@@ -3,11 +3,11 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:50:10
+# ModifiedOn:       2022/08/28 19:03:00
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -24,6 +24,10 @@ Name for the script block
 .PARAMETER ScriptBlock
 The commands to be executed
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
 
@@ -34,7 +38,8 @@ Function Add-CommandToPSConfigFile {
         [ValidateNotNullOrEmpty()]
         [string]$ScriptBlockName,
         [ValidateNotNullOrEmpty()]
-        [string]$ScriptBlock
+        [string]$ScriptBlock,
+        [switch]$Force
     )
 
     try {
@@ -94,10 +99,16 @@ Function Add-CommandToPSConfigFile {
         Execute     = ($ExecuteObject | Where-Object {$_ -notlike $null})
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'Command added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'Command Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
 
@@ -111,11 +122,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/08/27 16:10:04
+# ModifiedOn:       2022/08/28 19:02:56
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -133,6 +144,10 @@ This name will be used for the variable when invoke command is executed.
 .PARAMETER Credential
 Credential object to be saved.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 $labcred = get-credential
 Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred
@@ -143,7 +158,8 @@ Function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	PARAM(
 		[string]$Name,
-		[pscredential]$Credential
+		[pscredential]$Credential,
+		[switch]$Force
 	)
 
  try {
@@ -238,10 +254,16 @@ Function Add-CredentialToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+		 if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		write-Output 'Credential added'
-		Write-Output "ConfigFile: $($confile.FullName)"
+		Write-Host 'Credential Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
  
@@ -252,11 +274,11 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:07:46
+# ModifiedOn:       2022/08/28 19:02:52
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -273,6 +295,10 @@ Name to use for the command
 .PARAMETER CommandToRun
 Command to run in a string format
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-FunctionToPSConfigFile -FunctionName psml -CommandToRun "import-module .\*.psm1 -force -verbose"
 
@@ -283,7 +309,8 @@ Function Add-FunctionToPSConfigFile {
         [ValidateNotNullOrEmpty()]
         [string]$FunctionName,
         [ValidateNotNullOrEmpty()]
-        [string]$CommandToRun
+        [string]$CommandToRun,
+        [switch]$Force
     )
 
     try {
@@ -340,10 +367,16 @@ Function Add-FunctionToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+         if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'Function added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'Function Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
  
@@ -354,11 +387,11 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:10:19
+# ModifiedOn:       2022/08/28 19:02:47
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -378,6 +411,10 @@ Path to the folder or the PS-Drive name.
 .EXAMPLE
 Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
 
@@ -390,7 +427,8 @@ Function Add-LocationToPSConfigFile {
         [string]$LocationType,
         [Parameter(Mandatory = $true)]
         [ValidateScript( { ( Test-Path $_) -or ( [bool](Get-PSDrive $_)) })]
-        [string]$Path
+        [string]$Path,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -444,10 +482,16 @@ Function Add-LocationToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+        if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'Location added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'Start Location Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
 } #end Function
@@ -459,11 +503,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/27 16:10:35
+# ModifiedOn:       2022/08/28 19:02:42
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -483,6 +527,10 @@ The Parameter of that function.
 .PARAMETER Value
 Value of the parameter.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\temp\PSLauncherConfig.json
 
@@ -496,7 +544,8 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
 		[string]$Parameter,
 		[Parameter(Position = 2, Mandatory = $true, HelpMessage = 'The Value to add.')]
-		[string]$Value
+		[string]$Value,
+		[switch]$Force
 	)
 
 	try {
@@ -549,10 +598,16 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+		 if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Output 'PSDefaults Added'
-		Write-Output "ConfigFile: $($confile.FullName)"
+		Write-Host 'PSDefault Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
  
@@ -563,11 +618,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:10:47
+# ModifiedOn:       2022/08/28 19:02:37
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -581,6 +636,10 @@ Add PSDrive to the config file.
 .PARAMETER DriveName
 Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-PSDriveToPSConfigFile -DriveName TempDrive
 
@@ -589,7 +648,8 @@ Function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
     PARAM(
         [ValidateScript( { ( Get-PSDrive $_) })]
-        [string]$DriveName
+        [string]$DriveName,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -649,8 +709,8 @@ Function Add-PSDriveToPSConfigFile {
     try {
         Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output 'PSDrive added'
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host 'PSDrive Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 
@@ -662,11 +722,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:11:09
+# ModifiedOn:       2022/08/28 19:02:31
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -680,6 +740,10 @@ Adds variable to the config file.
 .PARAMETER VariableNames
 The name of the variable. (Needs to exist already)
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-VariableToPSConfigFile -VariableNames AzureToken
 
@@ -688,7 +752,8 @@ Function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
     PARAM(
         [ValidateScript( { ( Get-Variable $_) })]
-        [string[]]$VariableNames
+        [string[]]$VariableNames,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -746,10 +811,16 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+             if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-            Write-Output 'Variable added'
-            Write-Output "ConfigFile: $($confile.FullName)"
+            Write-Host 'Variable Added' -ForegroundColor Green
+            Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
         } catch { Write-Error "Error: `n $_" }
     }
 } #end Function
@@ -768,7 +839,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -824,7 +895,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -883,7 +954,7 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1107,7 +1178,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1209,11 +1280,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/08/27 16:13:27
+# ModifiedOn:       2022/08/28 19:02:23
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1230,6 +1301,10 @@ Which config item to remove.
 .PARAMETER Value
 The value of the config item to filter out.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
 
@@ -1239,7 +1314,8 @@ Function Remove-ConfigFromPSConfigFile {
     PARAM(
         [ValidateSet('Variable', 'PSDrive', 'Function', 'Command', 'Credential', 'PSDefaults', 'Location')]
         [string]$Config,
-        [string]$Value
+        [string]$Value,
+        [switch]$Force
     )
 
     try {
@@ -1317,10 +1393,16 @@ Function Remove-ConfigFromPSConfigFile {
         Execute     = ($SetExecute | Where-Object {$_ -notlike $null})
     }
     try {
-        Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+         if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Output "$(($userdataModAction | Out-String).Trim())"
-        Write-Output "ConfigFile: $($confile.FullName)"
+        Write-Host "$(($userdataModAction | Out-String).Trim())" -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 
@@ -1333,7 +1415,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1439,7 +1521,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1617,11 +1699,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.39
+# ModuleVersion:    0.1.42
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/08/27 16:15:53
+# ModifiedOn:       2022/08/28 19:02:03
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1638,6 +1720,9 @@ Creates a new self signed certificate, and re-encrypts the passwords.
 .PARAMETER RenewSavedPasswords
 Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
 .EXAMPLE
 Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
@@ -1647,7 +1732,8 @@ Function Update-CredentialsInPSConfigFile {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[switch]$RenewSelfSignedCert,
-		[string[]]$RenewSavedPasswords
+		[string[]]$RenewSavedPasswords = "All",
+		[switch]$Force
 	)
 
  try {
@@ -1727,10 +1813,16 @@ Function Update-CredentialsInPSConfigFile {
 			Execute     = $XMLData.Execute
 		}
 		try {
-			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+			if ($force) {
+				Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+				Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+			} else {
+				Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+				Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+			}
 			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-			Write-Output 'Credentials Updated'
-			Write-Output "ConfigFile: $($confile.FullName)"
+			Write-Host 'Credentials Updated' -ForegroundColor Green
+			Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 		} catch { Write-Error "Error: `n $_" }
 	}
 

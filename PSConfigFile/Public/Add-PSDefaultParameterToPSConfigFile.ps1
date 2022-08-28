@@ -55,6 +55,10 @@ The Parameter of that function.
 .PARAMETER Value
 Value of the parameter.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\temp\PSLauncherConfig.json
 
@@ -68,7 +72,8 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
 		[string]$Parameter,
 		[Parameter(Position = 2, Mandatory = $true, HelpMessage = 'The Value to add.')]
-		[string]$Value
+		[string]$Value,
+		[switch]$Force
 	)
 
 	try {
@@ -121,9 +126,15 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		Execute     = $XMLData.Execute
 	}
 	try {
-		Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+		 if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Output 'PSDefaults Added'
-		Write-Output "ConfigFile: $($confile.FullName)"
+		Write-Host 'PSDefault Added' -ForegroundColor Green
+        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

@@ -61,6 +61,10 @@ Adds variable to the config file.
 .PARAMETER VariableNames
 The name of the variable. (Needs to exist already)
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
+
 .EXAMPLE
 Add-VariableToPSConfigFile -VariableNames AzureToken
 
@@ -69,7 +73,8 @@ Function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
     PARAM(
         [ValidateScript( { ( Get-Variable $_) })]
-        [string[]]$VariableNames
+        [string[]]$VariableNames,
+        [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
@@ -127,10 +132,16 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+             if ($force) {
+            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+        } else {
+            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+        }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-            Write-Output 'Variable added'
-            Write-Output "ConfigFile: $($confile.FullName)"
+            Write-Host 'Variable Added' -ForegroundColor Green
+            Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
         } catch { Write-Error "Error: `n $_" }
     }
 } #end Function

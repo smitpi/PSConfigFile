@@ -47,6 +47,9 @@ Creates a new self signed certificate, and re-encrypts the passwords.
 .PARAMETER RenewSavedPasswords
 Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.
 
+.PARAMETER Force
+Will delete the config file before saving the new one. If false, then the config file will be renamed.
+
 .EXAMPLE
 Update-CredentialsInPSConfigFile -RenewSavedPasswords All
 
@@ -56,7 +59,8 @@ Function Update-CredentialsInPSConfigFile {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[switch]$RenewSelfSignedCert,
-		[string[]]$RenewSavedPasswords
+		[string[]]$RenewSavedPasswords = "All",
+		[switch]$Force
 	)
 
  try {
@@ -136,10 +140,16 @@ Function Update-CredentialsInPSConfigFile {
 			Execute     = $XMLData.Execute
 		}
 		try {
-			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
+			if ($force) {
+				Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+				Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+			} else {
+				Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+				Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+			}
 			$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-			Write-Output 'Credentials Updated'
-			Write-Output "ConfigFile: $($confile.FullName)"
+			Write-Host 'Credentials Updated' -ForegroundColor Green
+			Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 		} catch { Write-Error "Error: `n $_" }
 	}
 
