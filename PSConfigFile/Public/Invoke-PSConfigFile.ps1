@@ -198,10 +198,10 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
         $SortDefaults = ($XMLData.PSDefaults | Where-Object {$_ -notlike $null}) | Sort-Object -Property Name
         foreach ($PSD in $SortDefaults) {
-            if ($PSDefaultParameterValues["$($PSD.Name)"]) {$PSDefaultParameterValues["$($PSD.Name)"] = $PSD.Value}
-            else {$PSDefaultParameterValues.Add("$($PSD.Name)", "$($PSD.Value)")}
+            if ($global:PSDefaultParameterValues["$($PSD.Name)"]) {$global:PSDefaultParameterValues["$($PSD.Name)"] = $PSD.Value}
+            else {$global:PSDefaultParameterValues.Add("$($PSD.Name)", "$($PSD.Value)")}
         }
-        foreach ($Defaults in ($PSDefaultParameterValues.GetEnumerator()| Sort-Object -Property Name)) {
+        foreach ($Defaults in ($global:PSDefaultParameterValues.GetEnumerator() | Sort-Object -Property Name)) {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
             $PSConfigFileOutput.Add($output)
         }
