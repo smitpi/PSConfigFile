@@ -106,7 +106,6 @@ Function Update-CredentialsInPSConfigFile {
 		} else {
 			$XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$ThisEdition.add($_)}
 			$XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$OtherEdition.add($_)}
-			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
 			$OtherEdition | Where-Object {$_.name -notin $ThisEdition.Name} | Sort-Object -Property Name -Unique | ForEach-Object {$RenewCredsObject.add($_)}
 			
 			foreach ($AddCred in $RenewSavedPasswords) {
@@ -114,6 +113,7 @@ Function Update-CredentialsInPSConfigFile {
 				$ThisEdition  | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
 			}
 			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
+			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
 			$RenewCredsObject =  $RenewCredsObject | Select-Object -Unique
 		}
 
