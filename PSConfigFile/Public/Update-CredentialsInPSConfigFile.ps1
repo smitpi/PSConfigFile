@@ -3,7 +3,7 @@
 
 .VERSION 0.1.0
 
-.GUID 30a6ec8d-630b-42d1-a926-32a3541617d9
+.GUID e7d4d90b-fd4b-433d-bd88-de782bbd6692
 
 .AUTHOR Pierre Smit
 
@@ -26,13 +26,21 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [28/07/2022_20:29] Initial Script Creating
+Created [01/09/2022_18:30] Initial Script Creating
 
 .PRIVATEDATA
 
 #>
 
 #Requires -Module PSWriteColor
+
+<# 
+
+.DESCRIPTION 
+ Update the certificate or credentials from the config file 
+
+#> 
+
 
 <#
 .SYNOPSIS
@@ -187,8 +195,6 @@ Function Update-CredentialsInPSConfigFile {
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
 } #end Function
-
-
 $scriptblock = {
 	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
 	$var = @('All')
