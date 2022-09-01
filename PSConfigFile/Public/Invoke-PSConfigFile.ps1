@@ -163,12 +163,12 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
-        $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
-        $CheckEditionCreds = $EditionCreds | Where-Object {$_.name -notin $NonEditionCreds.name}
+        $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
+        $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
+        $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-            Write-Warning "Re-enter your passwords for $($PSVersionTable.PSEdition)"
-            Update-CredentialsInPSConfigFile -RenewSavedPasswords  $CheckEditionCreds.names
+            Write-Warning "Re-enter your passwords for PS$($PSVersionTable.PSEdition)"
+            Update-CredentialsInPSConfigFile -RenewSavedPasswords  $CheckEditionCreds.Name
             $XMLData = Import-Clixml -Path $confile.FullName
         }
        
