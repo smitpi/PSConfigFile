@@ -163,6 +163,15 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+        $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
+        $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
+        $CheckEditionCreds =  $EditionCreds | Where-Object {$_.name -notin $NonEditionCreds.name}
+        if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
+            Write-Warning "Re-enter your passwords for $($PSVersionTable.PSEdition)"
+            Update-CredentialsInPSConfigFile -RenewSavedPasswords $CheckEditionCreds.name
+            $XMLData = Import-Clixml -Path $confile.FullName
+        }
+
         foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
             $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
             if ($selfcert.NotAfter -lt (Get-Date)) {
