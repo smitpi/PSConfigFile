@@ -124,9 +124,11 @@ Function Add-CredentialToPSConfigFile {
 	[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 	$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 	if ($PSVersionTable.PSEdition -like 'Desktop') {
+		Write-Warning -Message 'Password is saved for Windows PowerShell, rerun command in PowerShell Core to save it in that edition as well.'
 		$Edition = 'PSDesktop'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
 	} else {
+		Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
 		$Edition = 'PSCore'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 	}
@@ -136,7 +138,6 @@ Function Add-CredentialToPSConfigFile {
 	[System.Collections.ArrayList]$SetCreds = @()
 		
 	if ([string]::IsNullOrEmpty($XMLData.PSCreds)) {
-				
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
@@ -157,22 +158,22 @@ Function Add-CredentialToPSConfigFile {
 		Userdata    = $Userdata
 		PSDrive     = $XMLData.PSDrive
 		PSFunction  = $XMLData.PSFunction
-		PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
+		PSCreds     = ($SetCreds | Where-Object {$_ -notlike $null} | Sort-Object -Property Name)
 		PSDefaults  = $XMLData.PSDefaults
 		SetLocation = $XMLData.SetLocation
 		SetVariable = $XMLData.SetVariable
 		Execute     = $XMLData.Execute
 	}
 	try {
-		 if ($force) {
-            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
-            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
-        } else {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
+		if ($force) {
+			Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+			Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+		} else {
+			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+		}
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 		Write-Host 'Credential Added' -ForegroundColor Green
-        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
+		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

@@ -59,7 +59,7 @@ Function Update-CredentialsInPSConfigFile {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[switch]$RenewSelfSignedCert,
-		[string[]]$RenewSavedPasswords = "All",
+		[string[]]$RenewSavedPasswords = 'All',
 		[switch]$Force
 	)
 
@@ -95,43 +95,57 @@ Function Update-CredentialsInPSConfigFile {
 
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
-		[System.Collections.ArrayList]$RenewCreds = @()
-		
-		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique)) {
-			[void]$RenewCreds.Add($OtherCred)
+		[System.Collections.generic.List[PSObject]]$CredsObject = @()
+		[System.Collections.generic.List[PSObject]]$RenewCredsObject = @()
+		[System.Collections.generic.List[PSObject]]$ThisEdition = @()
+		[System.Collections.generic.List[PSObject]]$OtherEdition = @()
+		$AllCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique 
+
+		if ($RenewSavedPasswords -like 'All') {
+			$AllCreds | ForEach-Object {$RenewCredsObject.add($_)}
+		} else {
+			$XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$ThisEdition.add($_)}
+			$XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$OtherEdition.add($_)}
+			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
+			$OtherEdition | Where-Object {$_.name -notin $ThisEdition.Name} | Sort-Object -Property Name -Unique | ForEach-Object {$RenewCredsObject.add($_)}
+			
+			foreach ($AddCred in $RenewSavedPasswords) {
+				$AllCreds | Where-Object {$_.name -like $AddCred} | ForEach-Object {$RenewCredsObject.add($_)}
+				$ThisEdition  | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
+			}
+			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
+			$RenewCredsObject =  $RenewCredsObject | Select-Object -Unique
 		}
-		$UniqueCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique
-		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
-		else {
-			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
-			$UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
-		}
-		foreach ($cred in $renew) {
+
+		foreach ($cred in $RenewCredsObject) {
 			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
 			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
 			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
 			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
+				Write-Warning -Message 'Password is saved for Windows PowerShell, rerun command in PowerShell Core to save it in that edition as well.'
 				$Edition = 'PSDesktop'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
 			} else {
+				Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 			}
 			$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
-			[void]$RenewCreds.Add([PSCustomObject]@{
+			$CredsObject.Add([PSCustomObject]@{
 					Name         = $cred.name
 					Edition      = $Edition
 					UserName     = $cred.UserName
 					EncryptedPwd = $EncryptedPwd
 				})
 		}
+
 		$Update = [psobject]@{
 			Userdata    = $Userdata
 			PSDrive     = $XMLData.PSDrive
 			PSFunction  = $XMLData.PSFunction
-			PSCreds     = ($RenewCreds | Where-Object {$_ -notlike $null})
+			PSCreds     = ($CredsObject | Where-Object {$_ -notlike $null} | Sort-Object -Property Name)
 			PSDefaults  = $XMLData.PSDefaults
 			SetLocation = $XMLData.SetLocation
 			SetVariable = $XMLData.SetVariable

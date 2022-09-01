@@ -3,7 +3,7 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -122,11 +122,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/09/01 13:23:40
+# ModifiedOn:       2022/09/01 17:41:28
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -214,9 +214,11 @@ Function Add-CredentialToPSConfigFile {
 	[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 	$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 	if ($PSVersionTable.PSEdition -like 'Desktop') {
+		Write-Warning -Message 'Password is saved for Windows PowerShell, rerun command in PowerShell Core to save it in that edition as well.'
 		$Edition = 'PSDesktop'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
 	} else {
+		Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
 		$Edition = 'PSCore'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 	}
@@ -226,7 +228,6 @@ Function Add-CredentialToPSConfigFile {
 	[System.Collections.ArrayList]$SetCreds = @()
 		
 	if ([string]::IsNullOrEmpty($XMLData.PSCreds)) {
-				
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
@@ -247,23 +248,23 @@ Function Add-CredentialToPSConfigFile {
 		Userdata    = $Userdata
 		PSDrive     = $XMLData.PSDrive
 		PSFunction  = $XMLData.PSFunction
-		PSCreds     = ($SetCreds  | Where-Object {$_ -notlike $null})
+		PSCreds     = ($SetCreds | Where-Object {$_ -notlike $null} | Sort-Object -Property Name)
 		PSDefaults  = $XMLData.PSDefaults
 		SetLocation = $XMLData.SetLocation
 		SetVariable = $XMLData.SetVariable
 		Execute     = $XMLData.Execute
 	}
 	try {
-		 if ($force) {
-            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
-            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
-        } else {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
+		if ($force) {
+			Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+			Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+		} else {
+			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+		}
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 		Write-Host 'Credential Added' -ForegroundColor Green
-        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
+		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
  
@@ -274,7 +275,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -387,7 +388,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -503,7 +504,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
@@ -618,7 +619,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -722,7 +723,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -839,7 +840,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -895,7 +896,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -954,11 +955,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/01 13:27:30
+# ModifiedOn:       2022/09/01 17:48:40
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -1084,7 +1085,7 @@ Function Invoke-PSConfigFile {
         $CheckEditionCreds = $EditionCreds | Where-Object {$_.name -notin $NonEditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
             Write-Warning "Re-enter your passwords for $($PSVersionTable.PSEdition)"
-            $CheckEditionCreds | ForEach-Object {Update-CredentialsInPSConfigFile -RenewSavedPasswords $_.name}
+            Update-CredentialsInPSConfigFile -RenewSavedPasswords  $CheckEditionCreds.names
             $XMLData = Import-Clixml -Path $confile.FullName
         }
        
@@ -1187,7 +1188,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1289,7 +1290,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1424,7 +1425,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1530,7 +1531,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1708,11 +1709,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.2
+# ModuleVersion:    0.1.31.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/07/28 20:29:29
-# ModifiedOn:       2022/09/01 13:30:22
+# ModifiedOn:       2022/09/01 17:44:57
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1741,7 +1742,7 @@ Function Update-CredentialsInPSConfigFile {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	PARAM(
 		[switch]$RenewSelfSignedCert,
-		[string[]]$RenewSavedPasswords = "All",
+		[string[]]$RenewSavedPasswords = 'All',
 		[switch]$Force
 	)
 
@@ -1777,43 +1778,57 @@ Function Update-CredentialsInPSConfigFile {
 
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
-		[System.Collections.ArrayList]$RenewCreds = @()
-		
-		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique)) {
-			[void]$RenewCreds.Add($OtherCred)
+		[System.Collections.generic.List[PSObject]]$CredsObject = @()
+		[System.Collections.generic.List[PSObject]]$RenewCredsObject = @()
+		[System.Collections.generic.List[PSObject]]$ThisEdition = @()
+		[System.Collections.generic.List[PSObject]]$OtherEdition = @()
+		$AllCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique 
+
+		if ($RenewSavedPasswords -like 'All') {
+			$AllCreds | ForEach-Object {$RenewCredsObject.add($_)}
+		} else {
+			$XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$ThisEdition.add($_)}
+			$XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$OtherEdition.add($_)}
+			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
+			$OtherEdition | Where-Object {$_.name -notin $ThisEdition.Name} | Sort-Object -Property Name -Unique | ForEach-Object {$RenewCredsObject.add($_)}
+			
+			foreach ($AddCred in $RenewSavedPasswords) {
+				$AllCreds | Where-Object {$_.name -like $AddCred} | ForEach-Object {$RenewCredsObject.add($_)}
+				$ThisEdition  | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
+			}
+			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
+			$RenewCredsObject =  $RenewCredsObject | Select-Object -Unique
 		}
-		$UniqueCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique
-		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
-		else {
-			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
-			$UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
-		}
-		foreach ($cred in $renew) {
+
+		foreach ($cred in $RenewCredsObject) {
 			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
 			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
 			$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
 			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
+				Write-Warning -Message 'Password is saved for Windows PowerShell, rerun command in PowerShell Core to save it in that edition as well.'
 				$Edition = 'PSDesktop'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
 			} else {
+				Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 			}
 			$EncryptedPwd = [System.Convert]::ToBase64String($EncryptedBytes)
-			[void]$RenewCreds.Add([PSCustomObject]@{
+			$CredsObject.Add([PSCustomObject]@{
 					Name         = $cred.name
 					Edition      = $Edition
 					UserName     = $cred.UserName
 					EncryptedPwd = $EncryptedPwd
 				})
 		}
+
 		$Update = [psobject]@{
 			Userdata    = $Userdata
 			PSDrive     = $XMLData.PSDrive
 			PSFunction  = $XMLData.PSFunction
-			PSCreds     = ($RenewCreds | Where-Object {$_ -notlike $null})
+			PSCreds     = ($CredsObject | Where-Object {$_ -notlike $null} | Sort-Object -Property Name)
 			PSDefaults  = $XMLData.PSDefaults
 			SetLocation = $XMLData.SetLocation
 			SetVariable = $XMLData.SetVariable

@@ -168,7 +168,7 @@ Function Invoke-PSConfigFile {
         $CheckEditionCreds = $EditionCreds | Where-Object {$_.name -notin $NonEditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
             Write-Warning "Re-enter your passwords for $($PSVersionTable.PSEdition)"
-            $CheckEditionCreds | ForEach-Object {Update-CredentialsInPSConfigFile -RenewSavedPasswords $_.name}
+            Update-CredentialsInPSConfigFile -RenewSavedPasswords  $CheckEditionCreds.names
             $XMLData = Import-Clixml -Path $confile.FullName
         }
        
