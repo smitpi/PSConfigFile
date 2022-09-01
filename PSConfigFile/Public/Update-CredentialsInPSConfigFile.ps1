@@ -96,18 +96,16 @@ Function Update-CredentialsInPSConfigFile {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
 		[System.Collections.ArrayList]$RenewCreds = @()
-
-		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})) {
+		
+		foreach ($OtherCred in ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique)) {
 			[void]$RenewCreds.Add($OtherCred)
 		}
-        
 		$UniqueCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique
 		if ($RenewSavedPasswords -like 'All') {$renew = $UniqueCreds}
 		else {
 			$renew = $UniqueCreds | Where-Object {$_.name -in $RenewSavedPasswords}
 			$UniqueCreds | Where-Object {$_.name -notin $RenewSavedPasswords} | ForEach-Object {[void]$RenewCreds.Add($_)}
 		}
-
 		foreach ($cred in $renew) {
 			$tmpcred = Get-Credential -UserName $cred.UserName -Message 'Renew Password'
 			$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($tmpcred.Password)
