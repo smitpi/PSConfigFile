@@ -62,8 +62,11 @@ Creates a new config file. If a config file already exists in that folder, it wi
 .PARAMETER ConfigDir
 Directory to create config file
 
+.PARAMETER BackupsToKeep
+The amount of copies to keep of the config file when config is changed.
+
 .EXAMPLE
- New-PSConfigFile -ConfigDir C:\Temp\config
+ New-PSConfigFile -ConfigDir C:\Temp\config -BackupsToKeep 3
 
 #>
 Function New-PSConfigFile {
@@ -88,7 +91,6 @@ Function New-PSConfigFile {
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
-                PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
                 BackupsToKeep     = $BackupsToKeep
                 ModifiedData      = [PSCustomObject]@{
                     ModifiedDate   = 'None'

@@ -3,7 +3,7 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -122,7 +122,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -275,7 +275,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -388,7 +388,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -504,7 +504,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
@@ -619,7 +619,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -723,7 +723,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -840,7 +840,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -896,7 +896,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -955,11 +955,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/02 16:41:32
+# ModifiedOn:       2022/09/02 17:10:43
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -996,7 +996,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('')
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
         $XMLData = Import-Clixml -Path $confile.FullName
         if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
@@ -1007,15 +1007,33 @@ Function Invoke-PSConfigFile {
     #region User Data
     try {
         $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Session Details ######################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
         $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
         $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f "Backups Removed", $($BackupsToDelete.count)
-            $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
+        $PSConfigFileOutput.Add($output)
+    } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
+    #endregion
+
+    #region Session Data
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Current Session Details:")
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'User', "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())" 
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSExecutionPolicy', $env:PSExecutionPolicyPreference
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Hostname', (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSEdition', "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'OS', (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+        $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
     #endregion
 
@@ -1024,7 +1042,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
         $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-25}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
     } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
@@ -1033,6 +1051,7 @@ Function Invoke-PSConfigFile {
     #region Set Variables
     try {
         $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Config Details #######################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
         foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
             $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
@@ -1088,7 +1107,7 @@ Function Invoke-PSConfigFile {
         $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
         $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ",") (PS$($PSVersionTable.PSEdition) Edition)"
+            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ',') (PS$($PSVersionTable.PSEdition) Edition)"
             Update-CredentialsInPSConfigFile -RenewSavedPasswords $CheckEditionCreds.Name
             $XMLData = Import-Clixml -Path $confile.FullName
         }
@@ -1168,7 +1187,7 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
     #endregion
 
-    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
     $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
 
     if ($DisplayOutput) {
@@ -1192,11 +1211,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/02 16:30:13
+# ModifiedOn:       2022/09/02 17:10:47
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1210,8 +1229,11 @@ Creates a new config file. If a config file already exists in that folder, it wi
 .PARAMETER ConfigDir
 Directory to create config file
 
+.PARAMETER BackupsToKeep
+The amount of copies to keep of the config file when config is changed.
+
 .EXAMPLE
- New-PSConfigFile -ConfigDir C:\Temp\config
+ New-PSConfigFile -ConfigDir C:\Temp\config -BackupsToKeep 3
 
 #>
 Function New-PSConfigFile {
@@ -1236,7 +1258,6 @@ Function New-PSConfigFile {
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
-                PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
                 BackupsToKeep     = $BackupsToKeep
                 ModifiedData      = [PSCustomObject]@{
                     ModifiedDate   = 'None'
@@ -1297,7 +1318,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1432,7 +1453,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1538,7 +1559,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1716,7 +1737,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.13
+# ModuleVersion:    0.1.31.14
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/09/01 18:30:26

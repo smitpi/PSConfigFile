@@ -79,7 +79,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('')
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
         $XMLData = Import-Clixml -Path $confile.FullName
         if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
@@ -90,15 +90,33 @@ Function Invoke-PSConfigFile {
     #region User Data
     try {
         $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Session Details ######################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
         $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
         $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f "Backups Removed", $($BackupsToDelete.count)
-            $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
+        $PSConfigFileOutput.Add($output)
+    } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
+    #endregion
+
+    #region Session Data
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Current Session Details:")
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'User', "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())" 
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSExecutionPolicy', $env:PSExecutionPolicyPreference
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Hostname', (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSEdition', "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'OS', (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+        $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
     #endregion
 
@@ -107,7 +125,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
         $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-25}: {1,-20}" -f $($_.name), $($_.value)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
     } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
@@ -116,6 +134,7 @@ Function Invoke-PSConfigFile {
     #region Set Variables
     try {
         $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Config Details #######################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
         foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
             $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
@@ -171,7 +190,7 @@ Function Invoke-PSConfigFile {
         $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
         $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ",") (PS$($PSVersionTable.PSEdition) Edition)"
+            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ',') (PS$($PSVersionTable.PSEdition) Edition)"
             Update-CredentialsInPSConfigFile -RenewSavedPasswords $CheckEditionCreds.Name
             $XMLData = Import-Clixml -Path $confile.FullName
         }
@@ -251,7 +270,7 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
     #endregion
 
-    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
+    $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
     $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
 
     if ($DisplayOutput) {
