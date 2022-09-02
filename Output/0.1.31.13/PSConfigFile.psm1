@@ -3,7 +3,7 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -122,7 +122,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
@@ -275,7 +275,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -388,7 +388,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -504,7 +504,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
@@ -619,7 +619,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -723,7 +723,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -840,7 +840,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -896,7 +896,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -955,11 +955,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/02 07:00:06
+# ModifiedOn:       2022/09/02 16:41:32
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -999,7 +999,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
         $XMLData = Import-Clixml -Path $confile.FullName
-        if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
+        if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
     } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
     #endregion
@@ -1012,6 +1012,10 @@ Function Invoke-PSConfigFile {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
+        $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
+        $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f "Backups Removed", $($BackupsToDelete.count)
+            $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
     #endregion
 
@@ -1188,11 +1192,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 14:41:52
+# ModifiedOn:       2022/09/02 16:30:13
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1217,7 +1221,9 @@ Function New-PSConfigFile {
         [ValidateScript( {if (Test-Path $_) {$true}
                 else {New-Item -Path $_ -ItemType Directory -Force | Out-Null }
             })]
-        [System.IO.DirectoryInfo]$ConfigDir
+        [System.IO.DirectoryInfo]$ConfigDir,
+        [Parameter(HelpMessage = 'The amount of backup copies to keep of the config file.')]
+        [int]$BackupsToKeep = 10 
     )
 
     function DafaultSettings {
@@ -1231,6 +1237,7 @@ Function New-PSConfigFile {
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
                 PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+                BackupsToKeep     = $BackupsToKeep
                 ModifiedData      = [PSCustomObject]@{
                     ModifiedDate   = 'None'
                     ModifiedUser   = 'None'
@@ -1290,7 +1297,7 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
@@ -1425,7 +1432,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1531,7 +1538,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1709,7 +1716,7 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.31.12
+# ModuleVersion:    0.1.31.13
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/09/01 18:30:26

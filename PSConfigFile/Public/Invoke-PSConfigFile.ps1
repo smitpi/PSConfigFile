@@ -82,7 +82,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
         $XMLData = Import-Clixml -Path $confile.FullName
-        if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
+        if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
     } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
     #endregion
@@ -95,6 +95,10 @@ Function Invoke-PSConfigFile {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
+        $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
+        $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f "Backups Removed", $($BackupsToDelete.count)
+            $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
     #endregion
 

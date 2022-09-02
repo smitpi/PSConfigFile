@@ -73,7 +73,9 @@ Function New-PSConfigFile {
         [ValidateScript( {if (Test-Path $_) {$true}
                 else {New-Item -Path $_ -ItemType Directory -Force | Out-Null }
             })]
-        [System.IO.DirectoryInfo]$ConfigDir
+        [System.IO.DirectoryInfo]$ConfigDir,
+        [Parameter(HelpMessage = 'The amount of backup copies to keep of the config file.')]
+        [int]$BackupsToKeep = 10 
     )
 
     function DafaultSettings {
@@ -87,6 +89,7 @@ Function New-PSConfigFile {
                 PSEdition         = "$($PSVersionTable.PSEdition) (ver $($PSVersionTable.PSVersion.ToString()))"
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
                 PSConfigFileVer   = (Get-Module PSConfigFile | Sort-Object -Property Version)[0].Version.ToString()
+                BackupsToKeep     = $BackupsToKeep
                 ModifiedData      = [PSCustomObject]@{
                     ModifiedDate   = 'None'
                     ModifiedUser   = 'None'
