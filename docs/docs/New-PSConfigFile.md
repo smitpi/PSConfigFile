@@ -13,7 +13,8 @@ Creates a new config file
 ## SYNTAX
 
 ```
-New-PSConfigFile [-ConfigDir] <DirectoryInfo> [-WhatIf] [-Confirm] [<CommonParameters>]
+New-PSConfigFile [-ConfigDir] <DirectoryInfo> [[-BackupsToKeep] <Int32>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +25,7 @@ If a config file already exists in that folder, it will be renamed.
 
 ### EXAMPLE 1
 ```
-New-PSConfigFile -ConfigDir C:\Temp\config
+New-PSConfigFile -ConfigDir C:\Temp\config -BackupsToKeep 3
 ```
 
 ## PARAMETERS
@@ -40,6 +41,21 @@ Aliases:
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BackupsToKeep
+The amount of copies to keep of the config file when config is changed.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: 10
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
