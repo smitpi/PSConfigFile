@@ -490,6 +490,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-backupstokeep" class="md-nav__link">
+    -BackupsToKeep
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-whatif" class="md-nav__link">
     -WhatIf
   </a>
@@ -694,6 +701,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-backupstokeep" class="md-nav__link">
+    -BackupsToKeep
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-whatif" class="md-nav__link">
     -WhatIf
   </a>
@@ -769,14 +783,15 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Creates a new config file</p>
 <h2 id="syntax">SYNTAX</h2>
-<div class="highlight"><pre><span></span><code>New-PSConfigFile [-ConfigDir] &lt;DirectoryInfo&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>New-PSConfigFile [-ConfigDir] &lt;DirectoryInfo&gt; [[-BackupsToKeep] &lt;Int32&gt;] [-WhatIf] [-Confirm]
+ [&lt;CommonParameters&gt;]
 </code></pre></div>
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new config file.
 If a config file already exists in that folder, it will be renamed.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<div class="highlight"><pre><span></span><code>New-PSConfigFile -ConfigDir C:\Temp\config
+<div class="highlight"><pre><span></span><code>New-PSConfigFile -ConfigDir C:\Temp\config -BackupsToKeep 3
 </code></pre></div>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-configdir">-ConfigDir</h3>
@@ -788,6 +803,18 @@ If a config file already exists in that folder, it will be renamed.</p>
 <span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 <span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
 <span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+</code></pre></div>
+<h3 id="-backupstokeep">-BackupsToKeep</h3>
+<p>The amount of copies to keep of the config file when config is changed.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Int32</span><span class="w"></span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span><span class="w"></span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"></span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </code></pre></div>
