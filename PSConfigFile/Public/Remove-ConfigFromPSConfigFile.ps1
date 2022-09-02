@@ -85,32 +85,32 @@ Function Remove-ConfigFromPSConfigFile {
     $userdataModAction = 'Removed Config: '
 
     if ($Config -like 'Variable') {
-        $userdataModAction += "Removed Variable $($Value)`n"
+        $userdataModAction += "Variable: $(($XMLData.setvariable | Where-Object {$_ -like "*$($Value)*"} | Get-Member -MemberType NoteProperty).name)`n"
         $SetVariable = $XMLData.setvariable | Where-Object {$_ -notlike "*$($Value)*"}
     } else {$SetVariable = $XMLData.setvariable}
 
     if ($Config -like 'PSDrive') {
-        $userdataModAction += "Removed PSDrive $($Value)`n"
+        $userdataModAction += "PSDrive: $(($XMLData.PSDrive | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
         $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDrive = $XMLData.PSDrive}
 
     if ($Config -like 'Function') {
-        $userdataModAction += "Removed Function $($Value)`n"
+        $userdataModAction += "Function: $(($XMLData.PSFunction | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
         $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSFunction = $XMLData.PSFunction}
 
     if ($Config -like 'Command') { 
-        $userdataModAction += "Removed Command $($Value)`n"
+        $userdataModAction += "Command: $(($XMLData.Execute | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
         $SetExecute = $XMLData.Execute | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetExecute = $XMLData.Execute}
 
     if ($Config -like 'Credential') {
-        $userdataModAction += "Removed Credential $($Value)`n"
+        $userdataModAction += "Credential: $(($XMLData.PSCreds | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
         $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetCreds = $XMLData.PSCreds}
 
     if ($Config -like 'PSDefaults') {
-        $userdataModAction += "Removed PSDefaults $($Value)`n"
+        $userdataModAction += "PSDefaults: $(($XMLData.PSDefaults | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
         $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
     } else {$SetPSDefaults = $XMLData.PSDefaults}
 
@@ -147,7 +147,7 @@ Function Remove-ConfigFromPSConfigFile {
         Execute     = ($SetExecute | Where-Object {$_ -notlike $null})
     }
     try {
-         if ($force) {
+        if ($force) {
             Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
             Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
         } else {
