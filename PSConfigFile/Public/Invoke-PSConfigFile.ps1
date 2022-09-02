@@ -80,7 +80,7 @@ Function Invoke-PSConfigFile {
 
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile).Version.ToString())")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
         $XMLData = Import-Clixml -Path $confile.FullName
         if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
         $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
@@ -167,11 +167,11 @@ Function Invoke-PSConfigFile {
         $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
         $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
         if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-            Write-Warning "Re-enter your passwords for PS$($PSVersionTable.PSEdition)"
-            Update-CredentialsInPSConfigFile -RenewSavedPasswords  $CheckEditionCreds.Name
+            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ",") (PS$($PSVersionTable.PSEdition) Edition)"
+            Update-CredentialsInPSConfigFile -RenewSavedPasswords $CheckEditionCreds.Name
             $XMLData = Import-Clixml -Path $confile.FullName
         }
-       
+
         foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
             $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
             if ($selfcert.NotAfter -lt (Get-Date)) {
