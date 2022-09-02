@@ -99,7 +99,7 @@ Function Update-CredentialsInPSConfigFile {
 	}
 
 	function RedoPass {
-		PARAM([string]$RenewSavedPasswords)
+		PARAM([string[]]$RenewSavedPasswords)
 
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 		$Update = @()
@@ -122,7 +122,7 @@ Function Update-CredentialsInPSConfigFile {
 			}
 			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
 			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
-			$RenewCredsObject =  $RenewCredsObject | Select-Object -Unique
+			$RenewCredsObject =  $RenewCredsObject | Sort-Object -Property name -Unique
 		}
 
 		foreach ($cred in $RenewCredsObject) {
