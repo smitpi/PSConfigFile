@@ -2,82 +2,82 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/New-PSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Show-PSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile/</loc>
-         <lastmod>2022-09-08</lastmod>
+         <lastmod>2022-09-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
