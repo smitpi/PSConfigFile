@@ -92,9 +92,9 @@ Function Add-CredentialToPSConfigFile {
 		OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = [datetime](Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = "Add Credencial $($Name)"
+			ModifiedAction = "Added Credencial: $($Name)"
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
@@ -174,7 +174,8 @@ Function Add-CredentialToPSConfigFile {
 			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Host 'Credential Added' -ForegroundColor Green
+		Write-Host 'Credential Added: ' -ForegroundColor Green  -NoNewline
+        Write-Host "$($Name)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

@@ -126,7 +126,7 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
             foreach ($file in $files) {	
                 $tmp = Get-Content -Path $file.FullName | Where-Object { $_ -notlike '*PSConfigFile*'}
                 $tmp | Set-Content -Path $file.FullName -Force
-                Write-Host '[Updated]' -NoNewline -ForegroundColor Yellow; Write-Host ' Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
+                Write-Host '[Removed]' -NoNewline -ForegroundColor Yellow; Write-Host ' From Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
             }
         }
 

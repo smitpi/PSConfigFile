@@ -91,9 +91,9 @@ Function Add-PSDriveToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add PS Drive $($DriveName)"
+            ModifiedAction = "Added PSDrive: $($DriveName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -130,7 +130,8 @@ Function Add-PSDriveToPSConfigFile {
     try {
         Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'PSDrive Added' -ForegroundColor Green
+        Write-Host 'PSDrive Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($DriveName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function

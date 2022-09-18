@@ -96,9 +96,9 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = [datetime](Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = "Add PSDefaultParameter $($Function)"
+			ModifiedAction = "Add PSDefaultParameter $($Function):$($Parameter)"
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
@@ -135,7 +135,8 @@ Function Add-PSDefaultParameterToPSConfigFile {
 			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Host 'PSDefault Added' -ForegroundColor Green
+		Write-Host 'PSDefault Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($Function):$($Parameter)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

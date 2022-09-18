@@ -86,9 +86,9 @@ Function Add-VariableToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add variable $($VariableNames)"
+            ModifiedAction = "Added variable: $($VariableNames)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -131,7 +131,8 @@ Function Add-VariableToPSConfigFile {
                 Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
             }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-            Write-Host 'Variable Added' -ForegroundColor Green
+            Write-Host 'Variable Added: ' -ForegroundColor Green -NoNewline
+            Write-Host "$($VariableNames)" -ForegroundColor Yellow
             Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
         } catch { Write-Error "Error: `n $_" }
     }

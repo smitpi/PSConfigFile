@@ -95,9 +95,9 @@ Function Add-FunctionToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Function $($FunctionName)"
+            ModifiedAction = "Added Function: $($FunctionName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -138,7 +138,8 @@ Function Add-FunctionToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Function Added' -ForegroundColor Green
+        Write-Host 'Function Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($FunctionName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function

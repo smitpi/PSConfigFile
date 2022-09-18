@@ -104,9 +104,9 @@ Function Add-CommandToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Command $($ScriptBlockName)"
+            ModifiedAction = "Added Command: $($ScriptBlockName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -149,7 +149,8 @@ Function Add-CommandToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Command Added' -ForegroundColor Green
+        Write-Host 'Command Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($ScriptBlockName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 

@@ -129,7 +129,7 @@ Function Remove-ConfigFromPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = ($userdataModAction | Out-String).Trim()
             Path           = "$confile"

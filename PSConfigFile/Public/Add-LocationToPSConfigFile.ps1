@@ -117,9 +117,9 @@ Function Add-LocationToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Location $($Path)"
+            ModifiedAction = "Working Directory Changed: $($Path)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -149,7 +149,8 @@ Function Add-LocationToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Start Location Added' -ForegroundColor Green
+        Write-Host 'Working Directory Changed: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($Path)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 

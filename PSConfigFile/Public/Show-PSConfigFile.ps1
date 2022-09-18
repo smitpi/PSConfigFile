@@ -85,37 +85,46 @@ Function Show-PSConfigFile {
                 }
             }
             #region Import xml
+            $XMLData = Import-Clixml -Path $confile.FullName
+            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
             $outputfile = [System.Collections.Generic.List[string]]::new()
             $outputfile.Add('')
 
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $XMLData = Import-Clixml -Path $confile.FullName
-            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
-            $outputfile.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Details")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Module Version', "$((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)"
+            $outputfile.Add($output)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Showing PSCustomConfig file', "$($confile.fullname)"
+            $outputfile.Add($output)
             #endregion
 
             #region User Data
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-            $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ################### Config File: Meta Data ###################")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creation Data:")
+                $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
             #endregion
 
             #region User Data Modified
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-            $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())]  Modification Data:")
+                $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
             #endregion
 
             #region Set Variables
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Variables to be created:")
             foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
                 $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
@@ -130,7 +139,7 @@ Function Show-PSConfigFile {
             #region Set PsDrives
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSDrives to be created:")
                 foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
                     $outputfile.Add($output)
@@ -141,7 +150,7 @@ Function Show-PSConfigFile {
             #region Set Function
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Functions to be created: ")
                 foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
                     $outputfile.Add($output)
@@ -151,7 +160,7 @@ Function Show-PSConfigFile {
 
             #region Creds
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Credentials to be created: ")
                 foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
@@ -162,7 +171,7 @@ Function Show-PSConfigFile {
 
             #region Set PSDefaults
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSDefaultParameterValues to be created:")
             foreach ($PSD in  $XMLData.PSDefaults) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
@@ -173,7 +182,7 @@ Function Show-PSConfigFile {
             try {
                 if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
                     $outputfile.Add('<h>  ')
-                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Working Directory to be set: ")
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
                     $outputfile.Add($output)
                 }
@@ -183,7 +192,7 @@ Function Show-PSConfigFile {
             #region Execute Commands
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Commands to be executed: ")
                 foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
                     $outputfile.Add($output)
@@ -192,7 +201,7 @@ Function Show-PSConfigFile {
             #endregion
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Details End")
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
     }
 

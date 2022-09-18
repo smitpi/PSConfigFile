@@ -3,11 +3,11 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:46:16
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -63,9 +63,9 @@ Function Add-CommandToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Command $($ScriptBlockName)"
+            ModifiedAction = "Added Command: $($ScriptBlockName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -108,7 +108,8 @@ Function Add-CommandToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Command Added' -ForegroundColor Green
+        Write-Host 'Command Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($ScriptBlockName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
@@ -123,11 +124,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:46:04
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -183,9 +184,9 @@ Function Add-CredentialToPSConfigFile {
 		OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = [datetime](Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = "Add Credencial $($Name)"
+			ModifiedAction = "Added Credencial: $($Name)"
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
@@ -265,7 +266,8 @@ Function Add-CredentialToPSConfigFile {
 			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Host 'Credential Added' -ForegroundColor Green
+		Write-Host 'Credential Added: ' -ForegroundColor Green  -NoNewline
+        Write-Host "$($Name)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -277,11 +279,11 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:46:39
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -336,9 +338,9 @@ Function Add-FunctionToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Function $($FunctionName)"
+            ModifiedAction = "Added Function: $($FunctionName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -379,7 +381,8 @@ Function Add-FunctionToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Function Added' -ForegroundColor Green
+        Write-Host 'Function Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($FunctionName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -391,11 +394,11 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:47:53
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -463,9 +466,9 @@ Function Add-LocationToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add Location $($Path)"
+            ModifiedAction = "Working Directory Changed: $($Path)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -495,7 +498,8 @@ Function Add-LocationToPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Start Location Added' -ForegroundColor Green
+        Write-Host 'Working Directory Changed: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($Path)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
@@ -508,11 +512,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:45:10
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -573,9 +577,9 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = [datetime](Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-			ModifiedAction = "Add PSDefaultParameter $($Function)"
+			ModifiedAction = "Add PSDefaultParameter $($Function):$($Parameter)"
 			Path           = "$confile"
 			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
@@ -612,7 +616,8 @@ Function Add-PSDefaultParameterToPSConfigFile {
 			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Host 'PSDefault Added' -ForegroundColor Green
+		Write-Host 'PSDefault Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($Function):$($Parameter)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -624,11 +629,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 08:47:08
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -677,9 +682,9 @@ Function Add-PSDriveToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add PS Drive $($DriveName)"
+            ModifiedAction = "Added PSDrive: $($DriveName)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -716,7 +721,8 @@ Function Add-PSDriveToPSConfigFile {
     try {
         Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm).xml" -Force
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'PSDrive Added' -ForegroundColor Green
+        Write-Host 'PSDrive Added: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($DriveName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
@@ -729,11 +735,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:41:27
+# ModifiedOn:       2022/09/18 08:48:33
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -782,9 +788,9 @@ Function Add-VariableToPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-            ModifiedAction = "Add variable $($VariableNames)"
+            ModifiedAction = "Added variable: $($VariableNames)"
             Path           = "$confile"
             Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
@@ -827,7 +833,8 @@ Function Add-VariableToPSConfigFile {
                 Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
             }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-            Write-Host 'Variable Added' -ForegroundColor Green
+            Write-Host 'Variable Added: ' -ForegroundColor Green -NoNewline
+            Write-Host "$($VariableNames)" -ForegroundColor Yellow
             Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
         } catch { Write-Error "Error: `n $_" }
     }
@@ -847,7 +854,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
@@ -903,7 +910,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
@@ -962,11 +969,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:13:56
+# ModifiedOn:       2022/09/18 08:27:33
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -998,39 +1005,55 @@ Function Invoke-PSConfigFile {
 
     #region import file
     try {
+        $XMLData = Import-Clixml -Path $confile.FullName
+        if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
+
         $confile = Get-Item $ConfigFile -ErrorAction Stop
         $Script:PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
         $PSConfigFileOutput.Add('')
-
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Module Version: $((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)")
-        $XMLData = Import-Clixml -Path $confile.FullName
-        if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
-        $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Module Version', "$((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)"
+        $PSConfigFileOutput.Add($output)
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Using PSCustomConfig File', "$($confile.fullname)"
+        $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
     #endregion
 
     #region User Data
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Session Details ######################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ################### Config File: Meta Data ###################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creation Data:")
         $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
-        if ($BackupsToDelete.count -gt 0) {$BackupsToDelete | Remove-Item -Force -ErrorAction Stop}
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
-        $PSConfigFileOutput.Add($output)
+        if ($BackupsToDelete.count -gt 0) {
+            $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
+            $PSConfigFileOutput.Add($output)
+        }
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
+    #endregion
+
+    #region User Data Modified
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Modification Data:")
+        $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
+            $PSConfigFileOutput.Add($output)
+        }
+    } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
     #endregion
 
     #region Session Data
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Current Session Details:")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ###################### Session Details: ######################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Current Session:")
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'User', "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())" 
         $PSConfigFileOutput.Add($output)
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSExecutionPolicy', $env:PSExecutionPolicyPreference
@@ -1044,22 +1067,11 @@ Function Invoke-PSConfigFile {
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
     #endregion
 
-    #region User Data Modified
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-        $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
-            $PSConfigFileOutput.Add($output)
-        }
-    } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
-    #endregion
-
     #region Set Variables
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ####################### Config Details #######################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
         foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
             $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
@@ -1094,7 +1106,7 @@ Function Invoke-PSConfigFile {
     #region Set Function
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Functions: ")
         foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
@@ -1151,7 +1163,7 @@ Function Invoke-PSConfigFile {
     #region Set PSDefaults
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaultParameterValues:")
         $SortDefaults = ($XMLData.PSDefaults | Where-Object {$_ -notlike $null}) | Sort-Object -Property Name
         foreach ($PSD in $SortDefaults) {
             if ($global:PSDefaultParameterValues["$($PSD.Name)"]) {$global:PSDefaultParameterValues["$($PSD.Name)"] = $PSD.Value}
@@ -1181,7 +1193,7 @@ Function Invoke-PSConfigFile {
     #region Execute Commands
     try {
         $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Commands: ")
         foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
             $tmp = $null
             $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
@@ -1218,11 +1230,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/18 07:27:13
+# ModifiedOn:       2022/09/18 07:46:25
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1259,7 +1271,7 @@ Function New-PSConfigFile {
         try {
             $Userdata = New-Object PSObject -Property @{
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-                CreatedOn         = [datetime](Get-Date -Format u)
+                CreatedOn         = [datetime](Get-Date)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
                 Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
@@ -1325,11 +1337,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 07:46:05
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1420,7 +1432,7 @@ Function Remove-ConfigFromPSConfigFile {
         OS                = $XMLData.Userdata.OS
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = [datetime](Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = ($userdataModAction | Out-String).Trim()
             Path           = "$confile"
@@ -1461,11 +1473,11 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:14:27
+# ModifiedOn:       2022/09/18 08:43:25
 # Synopsis:         Adds functionality to add the execution to your profile.
 #############################################
  
@@ -1552,7 +1564,7 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
             foreach ($file in $files) {	
                 $tmp = Get-Content -Path $file.FullName | Where-Object { $_ -notlike '*PSConfigFile*'}
                 $tmp | Set-Content -Path $file.FullName -Force
-                Write-Host '[Updated]' -NoNewline -ForegroundColor Yellow; Write-Host ' Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
+                Write-Host '[Removed]' -NoNewline -ForegroundColor Yellow; Write-Host ' From Profile File:' -NoNewline -ForegroundColor Cyan; Write-Host " $($file.FullName)" -ForegroundColor Green
             }
         }
 
@@ -1567,11 +1579,11 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/27 16:15:22
+# ModifiedOn:       2022/09/18 08:25:50
 # Synopsis:         Display what's configured in the config file.
 #############################################
  
@@ -1618,37 +1630,46 @@ Function Show-PSConfigFile {
                 }
             }
             #region Import xml
+            $XMLData = Import-Clixml -Path $confile.FullName
+            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
             $outputfile = [System.Collections.Generic.List[string]]::new()
             $outputfile.Add('')
 
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $XMLData = Import-Clixml -Path $confile.FullName
-            if ([string]::IsNullOrEmpty($XMLData)) { Write-Error 'Valid Parameters file not found'; break }
-            $outputfile.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] Using PSCustomConfig file: $($confile.fullname)")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Details")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Module Version', "$((Get-Module PSConfigFile -ListAvailable | Sort-Object -Property Version -Descending)[0].Version)"
+            $outputfile.Add($output)
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Showing PSCustomConfig file', "$($confile.fullname)"
+            $outputfile.Add($output)
             #endregion
 
             #region User Data
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Details of Config File:")
-            $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ################### Config File: Meta Data ###################")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creation Data:")
+                $XMLData.Userdata.PSObject.Properties | Where-Object {$_.name -notlike 'ModifiedData' } | ForEach-Object {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
             #endregion
 
             #region User Data Modified
-            $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Config File Modified Data:")
-            $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t  {0,-28}: {1,-20}" -f $($_.name), $($_.value)
-                $outputfile.Add($output)
-            }
+            try {
+                $outputfile.Add('<h>  ')
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())]  Modification Data:")
+                $XMLData.Userdata.ModifiedData.PSObject.Properties | ForEach-Object {
+                    $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f $($_.name), $($_.value)
+                    $outputfile.Add($output)
+                }
+            } catch {Write-Warning "Error Modified: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Modified: Message:$($_.Exception.Message)")}
             #endregion
 
             #region Set Variables
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Default Variables:")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Variables to be created:")
             foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
                 $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
@@ -1663,7 +1684,7 @@ Function Show-PSConfigFile {
             #region Set PsDrives
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSDrives to be created:")
                 foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
                     $outputfile.Add($output)
@@ -1674,7 +1695,7 @@ Function Show-PSConfigFile {
             #region Set Function
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Custom Functions: ")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Functions to be created: ")
                 foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
                     $outputfile.Add($output)
@@ -1684,7 +1705,7 @@ Function Show-PSConfigFile {
 
             #region Creds
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Credentials to be created: ")
                 foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
                     $credname = $Cred.Name
                     $username = $Cred.UserName
@@ -1695,7 +1716,7 @@ Function Show-PSConfigFile {
 
             #region Set PSDefaults
             $outputfile.Add('<h>  ')
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaults:")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSDefaultParameterValues to be created:")
             foreach ($PSD in  $XMLData.PSDefaults) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($PSD.Name.Split(':')[0]), $($PSD.Name.Split(':')[1]), $($PSD.Value)
                 $outputfile.Add($output)
@@ -1706,7 +1727,7 @@ Function Show-PSConfigFile {
             try {
                 if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
                     $outputfile.Add('<h>  ')
-                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
+                    $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Working Directory to be set: ")
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
                     $outputfile.Add($output)
                 }
@@ -1716,7 +1737,7 @@ Function Show-PSConfigFile {
             #region Execute Commands
             try {
                 $outputfile.Add('<h>  ')
-                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Custom Commands: ")
+                $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Commands to be executed: ")
                 foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
                     $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
                     $outputfile.Add($output)
@@ -1725,7 +1746,7 @@ Function Show-PSConfigFile {
             #endregion
 
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
-            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution End")
+            $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Details End")
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
     }
 
@@ -1745,11 +1766,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35.2
+# ModuleVersion:    0.1.35.3
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/09/01 18:30:26
-# ModifiedOn:       2022/09/18 07:37:28
+# ModifiedOn:       2022/09/18 07:46:05
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1802,7 +1823,7 @@ Function Update-CredentialsInPSConfigFile {
 		OS                = $XMLData.Userdata.OS
 		BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = [datetime](Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = 'Modified Credentials'
 			Path           = "$confile"
