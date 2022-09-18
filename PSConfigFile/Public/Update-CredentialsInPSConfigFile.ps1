@@ -89,6 +89,7 @@ Function Update-CredentialsInPSConfigFile {
 		Hostname          = $XMLData.Userdata.Hostname
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
+		BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = [datetime](Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
@@ -118,11 +119,11 @@ Function Update-CredentialsInPSConfigFile {
 			
 			foreach ($AddCred in $RenewSavedPasswords) {
 				$AllCreds | Where-Object {$_.name -like $AddCred} | ForEach-Object {$RenewCredsObject.add($_)}
-				$ThisEdition  | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
+				$ThisEdition | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
 			}
 			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
 			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
-			$RenewCredsObject =  $RenewCredsObject | Sort-Object -Property name -Unique
+			$RenewCredsObject = $RenewCredsObject | Sort-Object -Property name -Unique
 		}
 
 		foreach ($cred in $RenewCredsObject) {

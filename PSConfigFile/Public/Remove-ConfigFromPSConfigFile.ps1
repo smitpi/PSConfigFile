@@ -127,6 +127,7 @@ Function Remove-ConfigFromPSConfigFile {
         Hostname          = $XMLData.Userdata.Hostname
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
+        BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"

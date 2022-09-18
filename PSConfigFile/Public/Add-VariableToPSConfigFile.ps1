@@ -1,9 +1,9 @@
-﻿
+
 <#PSScriptInfo
 
 .VERSION 1.1.4
 
-.GUID da6df4de-5b05-4796-bf82-345686b30e78
+.GUID a811aeae-b035-4631-aca6-6be058179ecc
 
 .AUTHOR Pierre Smit
 
@@ -11,7 +11,7 @@
 
 .COPYRIGHT
 
-.TAGS PowerShell ps
+.TAGS
 
 .LICENSEURI
 
@@ -19,37 +19,27 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [04/10/2021_19:05] Initial Script Creating
-Updated [05/10/2021_08:30] Spit into more functions
-Updated [08/10/2021_20:51] Getting ready to upload
-Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Function Script
+
 
 .PRIVATEDATA
 
 #>
 
+<# 
+
+.DESCRIPTION 
+ Adds variable to the config file. 
+
+#> 
 
 
-
-
-
-
-
-
-<#
-
-.DESCRIPTION
-Add a variable to the config file
-
-#>
 
 <#
 .SYNOPSIS
@@ -94,6 +84,8 @@ Function Add-VariableToPSConfigFile {
         Hostname          = $XMLData.Userdata.Hostname
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
+        BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
+        BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
