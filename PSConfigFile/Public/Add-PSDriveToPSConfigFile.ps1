@@ -90,7 +90,7 @@ Function Add-PSDriveToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add PS Drive $($DriveName)"
             Path           = "$confile"

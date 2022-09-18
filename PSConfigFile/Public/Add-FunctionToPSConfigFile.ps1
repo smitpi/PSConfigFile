@@ -94,7 +94,7 @@ Function Add-FunctionToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add Function $($FunctionName)"
             Path           = "$confile"
@@ -129,7 +129,7 @@ Function Add-FunctionToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-         if ($force) {
+        if ($force) {
             Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
             Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
         } else {

@@ -90,7 +90,7 @@ Function Update-CredentialsInPSConfigFile {
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = (Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = 'Modified Credentials'
 			Path           = "$confile"

@@ -95,7 +95,7 @@ Function Add-VariableToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add variable $($VariableNames)"
             Path           = "$confile"
@@ -132,13 +132,13 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-             if ($force) {
-            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
-            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
-        } else {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
+            if ($force) {
+                Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+                Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+            } else {
+                Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+                Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+            }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
             Write-Host 'Variable Added' -ForegroundColor Green
             Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan

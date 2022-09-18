@@ -97,7 +97,7 @@ Function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
-        $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
+        if ($BackupsToDelete.count -gt 0) {$BackupsToDelete | Remove-Item -Force -ErrorAction Stop}
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
         $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}

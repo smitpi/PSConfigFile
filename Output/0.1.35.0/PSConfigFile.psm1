@@ -3,11 +3,11 @@
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/28 19:03:00
+# ModifiedOn:       2022/09/18 07:26:37
 # Synopsis:         Adds a command or script block to the config file, to be executed every time the invoke function is called.
 #############################################
  
@@ -62,7 +62,7 @@ Function Add-CommandToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add Command $($ScriptBlockName)"
             Path           = "$confile"
@@ -122,11 +122,11 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 ######## Function 2 of 15 ##################
 # Function:         Add-CredentialToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/21 03:47:31
-# ModifiedOn:       2022/09/01 17:41:28
+# ModifiedOn:       2022/09/18 07:26:38
 # Synopsis:         Creates a self signed cert, then uses it to securely save a credential to the config file.
 #############################################
  
@@ -181,7 +181,7 @@ Function Add-CredentialToPSConfigFile {
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = (Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = "Add Credencial $($Name)"
 			Path           = "$confile"
@@ -275,11 +275,11 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 ######## Function 3 of 15 ##################
 # Function:         Add-FunctionToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/28 19:02:52
+# ModifiedOn:       2022/09/18 07:26:39
 # Synopsis:         Creates Shortcuts (Functions) to commands or script blocks
 #############################################
  
@@ -333,7 +333,7 @@ Function Add-FunctionToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add Function $($FunctionName)"
             Path           = "$confile"
@@ -368,7 +368,7 @@ Function Add-FunctionToPSConfigFile {
         Execute     = $XMLData.Execute
     }
     try {
-         if ($force) {
+        if ($force) {
             Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
             Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
         } else {
@@ -388,11 +388,11 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 ######## Function 4 of 15 ##################
 # Function:         Add-LocationToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/28 19:02:47
+# ModifiedOn:       2022/09/18 07:26:40
 # Synopsis:         Adds default location to the config file.
 #############################################
  
@@ -459,7 +459,7 @@ Function Add-LocationToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add Location $($Path)"
             Path           = "$confile"
@@ -504,11 +504,11 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 ######## Function 5 of 15 ##################
 # Function:         Add-PSDefaultParameterToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 07:54:55
-# ModifiedOn:       2022/08/28 19:02:42
+# ModifiedOn:       2022/09/18 07:26:41
 # Synopsis:         Add PSDefaultParameterValues to the config file
 #############################################
  
@@ -568,7 +568,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = (Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = "Add PSDefaultParameter $($Function)"
 			Path           = "$confile"
@@ -593,22 +593,22 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		PSDrive     = $XMLData.PSDrive
 		PSFunction  = $XMLData.PSFunction
 		PSCreds     = $XMLData.PSCreds
-		PSDefaults  = ($PSDefaultObject  | Where-Object {$_ -notlike $null})
+		PSDefaults  = ($PSDefaultObject | Where-Object {$_ -notlike $null})
 		SetLocation = $XMLData.SetLocation
 		SetVariable = $XMLData.SetVariable
 		Execute     = $XMLData.Execute
 	}
 	try {
-		 if ($force) {
-            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
-            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
-        } else {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
+		if ($force) {
+			Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+			Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+		} else {
+			Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+		}
+		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 		Write-Host 'PSDefault Added' -ForegroundColor Green
-        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
+		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
  
@@ -619,11 +619,11 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 ######## Function 6 of 15 ##################
 # Function:         Add-PSDriveToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/28 19:02:37
+# ModifiedOn:       2022/09/18 07:26:41
 # Synopsis:         Add PSDrive to the config file.
 #############################################
  
@@ -671,7 +671,7 @@ Function Add-PSDriveToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add PS Drive $($DriveName)"
             Path           = "$confile"
@@ -723,11 +723,11 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 ######## Function 7 of 15 ##################
 # Function:         Add-VariableToPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/08/28 19:02:31
+# ModifiedOn:       2022/09/18 07:26:42
 # Synopsis:         Adds variable to the config file.
 #############################################
  
@@ -775,7 +775,7 @@ Function Add-VariableToPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Add variable $($VariableNames)"
             Path           = "$confile"
@@ -812,13 +812,13 @@ Function Add-VariableToPSConfigFile {
             Execute     = $XMLData.Execute
         }
         try {
-             if ($force) {
-            Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
-            Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
-        } else {
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
+            if ($force) {
+                Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
+                Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
+            } else {
+                Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
+                Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
+            }
             $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
             Write-Host 'Variable Added' -ForegroundColor Green
             Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
@@ -840,11 +840,11 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 ######## Function 8 of 15 ##################
 # Function:         Export-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:33:12
-# ModifiedOn:       2022/08/19 18:17:26
+# ModifiedOn:       2022/08/19 18:17:18
 # Synopsis:         Export the PFX file for credentials.
 #############################################
  
@@ -896,11 +896,11 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 ######## Function 9 of 15 ##################
 # Function:         Import-PSConfigFilePFX
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/08/18 09:38:48
-# ModifiedOn:       2022/08/19 18:25:01
+# ModifiedOn:       2022/08/19 18:24:58
 # Synopsis:         Import the PFX file for credentials
 #############################################
  
@@ -955,11 +955,11 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 ######## Function 10 of 15 ##################
 # Function:         Invoke-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/02 17:10:43
+# ModifiedOn:       2022/09/18 07:13:56
 # Synopsis:         Executes the config from the json file.
 #############################################
  
@@ -1014,7 +1014,7 @@ Function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
-        $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
+        if ($BackupsToDelete.count -gt 0) {$BackupsToDelete | Remove-Item -Force -ErrorAction Stop}
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
         $PSConfigFileOutput.Add($output)
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
@@ -1211,11 +1211,11 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 ######## Function 11 of 15 ##################
 # Function:         New-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
-# ModifiedOn:       2022/09/02 17:10:47
+# ModifiedOn:       2022/09/18 07:27:13
 # Synopsis:         Creates a new config file
 #############################################
  
@@ -1252,7 +1252,7 @@ Function New-PSConfigFile {
         try {
             $Userdata = New-Object PSObject -Property @{
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-                CreatedOn         = (Get-Date -Format u)
+                CreatedOn         = [datetime](Get-Date -Format u)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
                 Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
@@ -1318,11 +1318,11 @@ Export-ModuleMember -Function New-PSConfigFile
 ######## Function 12 of 15 ##################
 # Function:         Remove-ConfigFromPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/05/22 07:47:34
-# ModifiedOn:       2022/09/02 16:16:25
+# ModifiedOn:       2022/09/18 07:26:42
 # Synopsis:         Removes a item from the config file.
 #############################################
  
@@ -1412,7 +1412,7 @@ Function Remove-ConfigFromPSConfigFile {
         PSEdition         = $XMLData.Userdata.PSEdition
         OS                = $XMLData.Userdata.OS
         ModifiedData      = [PSCustomObject]@{
-            ModifiedDate   = (Get-Date -Format u)
+            ModifiedDate   = [datetime](Get-Date -Format u)
             ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = ($userdataModAction | Out-String).Trim()
             Path           = "$confile"
@@ -1453,7 +1453,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 ######## Function 13 of 15 ##################
 # Function:         Set-PSConfigFileExecution
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1559,7 +1559,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 ######## Function 14 of 15 ##################
 # Function:         Show-PSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/03/20 13:17:05
@@ -1737,11 +1737,11 @@ Export-ModuleMember -Function Show-PSConfigFile
 ######## Function 15 of 15 ##################
 # Function:         Update-CredentialsInPSConfigFile
 # Module:           PSConfigFile
-# ModuleVersion:    0.1.35
+# ModuleVersion:    0.1.35.0
 # Author:           Pierre Smit
 # Company:          HTPCZA Tech
 # CreatedOn:        2022/09/01 18:30:26
-# ModifiedOn:       2022/09/02 14:17:24
+# ModifiedOn:       2022/09/18 07:24:38
 # Synopsis:         Allows you to renew the certificate or saved passwords.
 #############################################
  
@@ -1793,7 +1793,7 @@ Function Update-CredentialsInPSConfigFile {
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
 		ModifiedData      = [PSCustomObject]@{
-			ModifiedDate   = (Get-Date -Format u)
+			ModifiedDate   = [datetime](Get-Date -Format u)
 			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = 'Modified Credentials'
 			Path           = "$confile"
