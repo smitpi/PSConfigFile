@@ -200,6 +200,7 @@ Function Show-PSConfigFile {
             } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $outputfile.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
             #endregion
 
+            $outputfile.Add('<h>  ')
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #######################################################")
             $outputfile.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Details End")
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
