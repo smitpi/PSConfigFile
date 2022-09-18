@@ -74,10 +74,12 @@ Function Invoke-PSConfigFile {
 
     #region import file
     try {
+        $confile = Get-Item $ConfigFile -ErrorAction Stop
         $XMLData = Import-Clixml -Path $confile.FullName
         if ([string]::IsNullOrEmpty($XMLData.Userdata)) { Write-Error 'Valid Parameters file not found'; break }
+    } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
 
-        $confile = Get-Item $ConfigFile -ErrorAction Stop
+    try {
         $Script:PSConfigFileOutput = [System.Collections.Generic.List[string]]::new()
         $PSConfigFileOutput.Add('')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] PSConfigFile Execution Start")
@@ -86,7 +88,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add($output)
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())] {0,-28}: {1,-20}" -f 'Using PSCustomConfig File', "$($confile.fullname)"
         $PSConfigFileOutput.Add($output)
-    } catch {Write-Warning "Error Import: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Import: Message:$($_.Exception.Message)") }
+    } catch {Write-Warning "Error Config Start: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Config Start: Message:$($_.Exception.Message)") }
     #endregion
 
     #region User Data
