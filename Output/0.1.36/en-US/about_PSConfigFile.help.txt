@@ -1,0 +1,31 @@
+
+PSConfigFile
+	 about_PSConfigFile
+ 
+SHORT DESCRIPTION
+	 Creates a Config file with Variables, PSDrives, Credentials, Shortcuts(Functions), PSDefaultParameters and a Starting location. You can then execute this config when your profile is loaded, or you can run it manually at any time. And all of the variables, psdrives credentials ext. are then available in your session. This way you can quickly and easily switch between "environment setups"
+
+ 
+NOTES
+Functions in this module:
+	 Add-CommandToPSConfigFile -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
+	 Add-CredentialToPSConfigFile -- Creates a self signed cert, then uses it to securely save a credential to the config file.
+	 Add-FunctionToPSConfigFile -- Creates Shortcuts (Functions) to commands or script blocks
+	 Add-LocationToPSConfigFile -- Adds default location to the config file.
+	 Add-PSDefaultParameterToPSConfigFile -- Add PSDefaultParameterValues to the config file
+	 Add-PSDriveToPSConfigFile -- Add PSDrive to the config file.
+	 Add-VariableToPSConfigFile -- Adds variable to the config file.
+	 Export-PSConfigFilePFX -- Export the PFX file for credentials.
+	 Import-PSConfigFilePFX -- Import the PFX file for credentials
+	 Invoke-PSConfigFile -- Executes the config from the json file.
+	 New-PSConfigFile -- Creates a new config file
+	 Remove-ConfigFromPSConfigFile -- Removes a item from the config file.
+	 Set-PSConfigFileExecution -- Adds functionality to add the execution to your profile.
+	 Show-PSConfigFile -- Display what's configured in the config file.
+	 Update-CredentialsInPSConfigFile -- Allows you to renew the certificate or saved passwords.
+ 
+SEE ALSO
+	 https://github.com/smitpi/PSConfigFile
+
+	 https://smitpi.github.io/PSConfigFile
+

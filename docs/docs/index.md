@@ -8,9 +8,14 @@ Creates a Config file with Variables, PSDrives, Credentials, Shortcuts(Functions
 ```
 Install-Module -Name PSConfigFile -Verbose
 ```
-- or from GitHub [GitHub Repo](https://github.com/smitpi/PSConfigFile)
+- or run this script to install from GitHub [GitHub Repo](https://github.com/smitpi/PSConfigFile)
 ```
-git clone https://github.com/smitpi/PSConfigFile (Join-Path (get-item (Join-Path (Get-Item $profile).Directory 'Modules')).FullName -ChildPath PSConfigFile)
+$CurrentLocation = Get-Item .
+$ModuleDestination = (Join-Path (Get-Item (Join-Path (Get-Item $profile).Directory 'Modules')).FullName -ChildPath PSConfigFile)
+git clone --depth 1 https://github.com/smitpi/PSConfigFile $ModuleDestination 2>&1 | Write-Host -ForegroundColor Yellow
+Set-Location $ModuleDestination
+git filter-branch --prune-empty --subdirectory-filter Output HEAD 2>&1 | Write-Host -ForegroundColor Yellow
+Set-Location $CurrentLocation
 ```
 - Then import the module into your session
 ```
