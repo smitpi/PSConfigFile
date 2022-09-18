@@ -17,9 +17,9 @@
         <maml:name>Add-CommandToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>ScriptBlockName</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Name for the script block</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -29,9 +29,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>ScriptBlock</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The commands to be executed</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -41,9 +41,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -55,9 +55,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ScriptBlockName</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Name for the script block</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -67,9 +67,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>ScriptBlock</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The commands to be executed</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -79,9 +79,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -125,9 +125,9 @@
         <maml:name>Add-CredentialToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Name</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>This name will be used for the variable when invoke command is executed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -137,9 +137,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Credential</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Credential object to be saved.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
           <dev:type>
             <maml:name>PSCredential</maml:name>
@@ -149,9 +149,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -163,9 +163,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Name</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>This name will be used for the variable when invoke command is executed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -175,9 +175,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Credential</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Credential object to be saved.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
         <dev:type>
           <maml:name>PSCredential</maml:name>
@@ -187,9 +187,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -242,9 +242,9 @@
         <maml:name>Add-FunctionToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>FunctionName</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Name to use for the command</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -254,9 +254,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>CommandToRun</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Command to run in a string format</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -266,9 +266,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -280,9 +280,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>FunctionName</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Name to use for the command</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -292,9 +292,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>CommandToRun</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Command to run in a string format</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -304,9 +304,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -350,9 +350,9 @@
         <maml:name>Add-LocationToPSConfigFile</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>LocationType</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Is the location a folder or a PS-Drive.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -362,9 +362,9 @@
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Path</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Path to the folder or the PS-Drive name.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -374,9 +374,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -388,9 +388,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>LocationType</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Is the location a folder or a PS-Drive.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -400,9 +400,9 @@
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Path</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Path to the folder or the PS-Drive name.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -412,9 +412,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -465,9 +465,9 @@
         <maml:name>Add-PSDefaultParameterToPSConfigFile</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Function</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The Function to add</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -477,9 +477,9 @@
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Parameter</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The Parameter of that function.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -489,9 +489,9 @@
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>Value</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Value of the parameter.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -501,9 +501,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -515,9 +515,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Function</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The Function to add</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -527,9 +527,9 @@
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Parameter</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The Parameter of that function.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -539,9 +539,9 @@
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>Value</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Value of the parameter.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -551,9 +551,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -606,9 +606,9 @@
         <maml:name>Add-PSDriveToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>DriveName</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -618,9 +618,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -632,9 +632,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>DriveName</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Name of the PSDrive (PSDrive needs to be created first with New-PSDrive)</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -644,9 +644,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -690,9 +690,9 @@
         <maml:name>Add-VariableToPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>VariableNames</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The name of the variable. (Needs to exist already)</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -702,9 +702,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -716,9 +716,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>VariableNames</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The name of the variable. (Needs to exist already)</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -728,9 +728,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -774,9 +774,9 @@
         <maml:name>Export-PSConfigFilePFX</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Path</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Path where the pfx will be saved.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">DirectoryInfo</command:parameterValue>
           <dev:type>
             <maml:name>DirectoryInfo</maml:name>
@@ -786,9 +786,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Credential</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Credential used to export the pfx file.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
           <dev:type>
             <maml:name>PSCredential</maml:name>
@@ -801,9 +801,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Path</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Path where the pfx will be saved.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">DirectoryInfo</command:parameterValue>
         <dev:type>
           <maml:name>DirectoryInfo</maml:name>
@@ -813,9 +813,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Credential</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Credential used to export the pfx file.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
         <dev:type>
           <maml:name>PSCredential</maml:name>
@@ -868,9 +868,9 @@
         <maml:name>Import-PSConfigFilePFX</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Path</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Path to the PFX file.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
           <dev:type>
             <maml:name>FileInfo</maml:name>
@@ -880,9 +880,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Credential</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Credential used to create the pfx file.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
           <dev:type>
             <maml:name>PSCredential</maml:name>
@@ -892,9 +892,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will override existing certificates.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -906,9 +906,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Path</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Path to the PFX file.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
           <maml:name>FileInfo</maml:name>
@@ -918,9 +918,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Credential</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Credential used to create the pfx file.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
         <dev:type>
           <maml:name>PSCredential</maml:name>
@@ -930,9 +930,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will override existing certificates.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -985,9 +985,9 @@
         <maml:name>Invoke-PSConfigFile</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>ConfigFile</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Path to the the config file that was created by New-PSConfigFile</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
           <dev:type>
             <maml:name>FileInfo</maml:name>
@@ -997,9 +997,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DisplayOutput</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1011,9 +1011,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ConfigFile</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Path to the the config file that was created by New-PSConfigFile</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
           <maml:name>FileInfo</maml:name>
@@ -1023,9 +1023,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>DisplayOutput</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1069,9 +1069,9 @@
         <maml:name>New-PSConfigFile</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>ConfigDir</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Directory to create config file</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">DirectoryInfo</command:parameterValue>
           <dev:type>
             <maml:name>DirectoryInfo</maml:name>
@@ -1081,9 +1081,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>BackupsToKeep</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The amount of copies to keep of the config file when config is changed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -1093,9 +1093,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
           <maml:name>WhatIf</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1104,9 +1104,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1118,9 +1118,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ConfigDir</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Directory to create config file</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">DirectoryInfo</command:parameterValue>
         <dev:type>
           <maml:name>DirectoryInfo</maml:name>
@@ -1130,9 +1130,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>BackupsToKeep</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The amount of copies to keep of the config file when config is changed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -1142,9 +1142,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
         <maml:name>WhatIf</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1154,9 +1154,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
         <maml:name>Confirm</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1200,9 +1200,9 @@
         <maml:name>Remove-ConfigFromPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Config</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Which config item to remove.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1212,9 +1212,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Value</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>The value of the config item to filter out.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1224,9 +1224,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1238,9 +1238,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Config</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Which config item to remove.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1250,9 +1250,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Value</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>The value of the config item to filter out.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1262,9 +1262,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1308,9 +1308,9 @@
         <maml:name>Set-PSConfigFileExecution</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PSProfile</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1320,9 +1320,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DisplayOutput</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will add the DisplayOutput parameter when setting the invoke command in the profile.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1331,9 +1331,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
           <maml:name>WhatIf</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1342,9 +1342,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
           <maml:name>Confirm</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1356,9 +1356,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PSProfile</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Enable or disable loading of config when your ps profile is loaded.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1368,9 +1368,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>DisplayOutput</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will add the DisplayOutput parameter when setting the invoke command in the profile.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1380,9 +1380,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
         <maml:name>WhatIf</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1392,9 +1392,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
         <maml:name>Confirm</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1438,9 +1438,9 @@
         <maml:name>Show-PSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>OtherConfigFile</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Path to a previously created config file.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
           <dev:type>
             <maml:name>FileInfo</maml:name>
@@ -1450,9 +1450,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>ShowLastInvokeOutput</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Display the output of the last Invoke-PSConfigFile execution.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1464,9 +1464,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>ShowLastInvokeOutput</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Display the output of the last Invoke-PSConfigFile execution.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1476,9 +1476,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>OtherConfigFile</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Path to a previously created config file.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
           <maml:name>FileInfo</maml:name>
@@ -1522,9 +1522,9 @@
         <maml:name>Update-CredentialsInPSConfigFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>RenewSavedPasswords</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.</maml:para>
-          </maml:description>
+          </maml:Description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -1534,9 +1534,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>RenewSelfSignedCert</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Creates a new self signed certificate, and re-encrypts the passwords.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1545,9 +1545,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:description>
+          <maml:Description>
             <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-          </maml:description>
+          </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1559,9 +1559,9 @@
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>RenewSelfSignedCert</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Creates a new self signed certificate, and re-encrypts the passwords.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1571,9 +1571,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>RenewSavedPasswords</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Re-encrypts the passwords for the current PS Edition. Run it in PS core and desktop to save both version.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -1583,9 +1583,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:description>
+        <maml:Description>
           <maml:para>Will delete the config file before saving the new one. If false, then the config file will be renamed.</maml:para>
-        </maml:description>
+        </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
