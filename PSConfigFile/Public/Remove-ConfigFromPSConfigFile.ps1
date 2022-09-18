@@ -156,7 +156,8 @@ Function Remove-ConfigFromPSConfigFile {
             Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host "$(($userdataModAction | Out-String).Trim())" -ForegroundColor Green
+        Write-Host "Config Removed: " -ForegroundColor Green -NoNewline
+        Write-Host "$(($userdataModAction | Out-String).Trim())" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
