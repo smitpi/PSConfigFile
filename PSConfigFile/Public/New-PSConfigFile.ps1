@@ -85,7 +85,7 @@ Function New-PSConfigFile {
         try {
             $Userdata = New-Object PSObject -Property @{
                 Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
-                CreatedOn         = [datetime](Get-Date)
+                CreatedOn         = (Get-Date -Format u)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
                 Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
                 Hostname          = (([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName).ToLower()
