@@ -70,19 +70,12 @@ function Update-PSConfigFileCredentials {
 		$AllCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique 
 
 		if ($RenewSavedPasswords -like 'All') {
-			$AllCreds | ForEach-Object {$RenewCredsObject.add($_)}
+			$AllCreds | ForEach-Object { $RenewCredsObject.Add($_) }
 		} else {
-			$XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$ThisEdition.add($_)}
-			$XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"} | Sort-Object -Property Name -Unique | ForEach-Object {$OtherEdition.add($_)}
-			$OtherEdition | Where-Object {$_.name -notin $ThisEdition.Name} | Sort-Object -Property Name -Unique | ForEach-Object {$RenewCredsObject.add($_)}
-			
-			foreach ($AddCred in $RenewSavedPasswords) {
-				$AllCreds | Where-Object {$_.name -like $AddCred} | ForEach-Object {$RenewCredsObject.add($_)}
-				$ThisEdition | Where-Object {$_.name -like $AddCred} | ForEach-Object {$ThisEdition.Remove($_)}
+			foreach ($credName in $RenewSavedPasswords) {
+				$AllCreds | Where-Object { $_.Name -like $credName } | ForEach-Object { $RenewCredsObject.Add($_) }
 			}
-			$ThisEdition | ForEach-Object {$CredsObject.Add($_)}
-			$OtherEdition | ForEach-Object {$CredsObject.Add($_)}
-			$RenewCredsObject = $RenewCredsObject | Sort-Object -Property name -Unique
+			$RenewCredsObject = $RenewCredsObject | Sort-Object -Property Name -Unique
 		}
 
 		foreach ($cred in $RenewCredsObject) {
@@ -92,11 +85,9 @@ function Update-PSConfigFileCredentials {
 			[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
-				Write-Warning -Message 'Password is saved for Windows PowerShell, rerun command in PowerShell Core to save it in that edition as well.'
-				$Edition = 'PSDesktop'
-				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
+				Write-Error 'Credentials is only a feature of Powershell core.'
+				exit
 			} else {
-				Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 			}
@@ -120,7 +111,7 @@ function Update-PSConfigFileCredentials {
 			Execute     = $XMLData.Execute
 		}
 		try {
-			if ($force) {
+			if ($Force) {
 				Remove-Item -Path $confile.FullName -Force -ErrorAction Stop
 				Write-Host 'Original ConfigFile Removed' -ForegroundColor Red
 			} else {
