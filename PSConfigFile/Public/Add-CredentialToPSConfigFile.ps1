@@ -38,10 +38,10 @@ Created [21/05/2022_03:47] Initial Script Creating
 Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.
 
 .DESCRIPTION
-This function creates a self-signed certificate (if one does not already exist) and uses it to encrypt and store a PowerShell credential object in your configuration file. The certificate can be exported and installed on other machines, allowing you to decrypt and use the credential securely across trusted systems. This is ideal for automating scripts that require credentials without exposing sensitive information in plain text.
+Use this function to securely store a PowerShell credential object in your configuration file. A self-signed certificate is created (if one does not already exist) and used to encrypt the credential. The certificate can be exported and installed on other machines, allowing you to decrypt and use the credential securely across trusted systems. This is ideal for automating scripts that require credentials without exposing sensitive information in plain text.
 
 .PARAMETER Name
-The variable name to assign to the credential in the config file. This name is used to reference the credential when invoking commands from the config.
+The unique variable name to assign to the credential in the config file. This name is used to reference the credential when invoking commands from the config.
 
 .PARAMETER Credential
 The PowerShell credential object to be securely stored. Use Get-Credential to create this object.
@@ -61,7 +61,7 @@ Saves a credential named 'AdminUser', overwriting the config file if it exists.
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Credentials are encrypted using a self-signed certificate for security and portability.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Credentials are encrypted using a self-signed certificate for security and portability.
 #>
 function Add-CredentialToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile')]

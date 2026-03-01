@@ -46,7 +46,7 @@ Updated [13/11/2021_16:30] Added Function Script
 
 <#
 .SYNOPSIS
-Adds a named command or script block to the PSConfigFile configuration, to be executed automatically when the config is invoked.
+Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.
 
 .DESCRIPTION
 Use this function to store custom commands or script blocks in your configuration file. These commands will be executed every time the config file is invoked using Invoke-PSConfigFile. This is useful for automating environment setup, running startup tasks, or ensuring certain commands always run in your PowerShell environment.

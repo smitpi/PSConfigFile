@@ -21,12 +21,13 @@ Add a start-up location to the config file
 
 
 
+
 <#
 .SYNOPSIS
 Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
 
 .DESCRIPTION
-This function allows you to specify a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked, your session will automatically change to this location, streamlining your workflow and ensuring you always start in the right place.
+Use this function to specify a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked using Invoke-PSConfigFile, your session will automatically change to this location. This is useful for streamlining your workflow and ensuring you always start in the correct directory or drive.
 
 .PARAMETER LocationType
 Specifies the type of location to add. Accepts 'PSDrive' for a PowerShell drive or 'Folder' for a filesystem path.
@@ -42,13 +43,13 @@ Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
 Sets the default location to the 'temp' PSDrive when the config is invoked.
 
 .EXAMPLE
-Add-LocationToPSConfigFile -LocationType Folder -Path c:\\temp
-Sets the default location to the 'c:\\temp' folder when the config is invoked.
+Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
+Sets the default location to the 'c:\temp' folder when the config is invoked.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Use this to ensure your PowerShell session always starts in the correct directory or drive.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation.
 #>
 
 function Add-LocationToPSConfigFile {
