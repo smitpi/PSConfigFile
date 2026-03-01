@@ -3,52 +3,6 @@
 
 .VERSION 0.1.0
 
-.GUID f87f855c-ea0b-4d07-829a-9143b6b3a131
-
-.AUTHOR Pierre Smit
-
-.COMPANYNAME Private
-
-.COPYRIGHT
-
-.TAGS
-
-.LICENSEURI
-
-.PROJECTURI
-
-.ICONURI
-
-.EXTERNALMODULEDEPENDENCIES 
-
-.REQUIREDSCRIPTS
-
-.EXTERNALSCRIPTDEPENDENCIES
-
-.RELEASENOTES
-
-
-.PRIVATEDATA
-
-#>
-
-#Requires -Module PSWriteColor
-
-<# 
-
-.DESCRIPTION 
- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration. 
-
-#> 
-
-
-
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDefaults -ScriptBlock $PSDefaults
-
-<#PSScriptInfo
-
-.VERSION 0.1.0
-
 .GUID dd6d4e7a-509e-423e-a972-f0e1a1c34b94
 
 .AUTHOR Pierre Smit
@@ -78,36 +32,50 @@ Created [22/05/2022_07:47] Initial Script Creating
 
 #>
 
-#Requires -Module PSWriteColor
 
 <#
 .SYNOPSIS
 Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 
 .DESCRIPTION
-This function allows you to remove a specific configuration item from your config file, such as a PSDrive, function, variable, command, credential, default parameter, or location. This is useful for cleaning up or updating your configuration as your environment changes. You can optionally force the config file to be deleted before saving the new one.
+Use this function to remove a specific configuration item from your config file, such as a PSDrive, function, variable, command, credential, default parameter, or location. This is useful for cleaning up or updating your configuration as your environment changes. You can optionally force the config file to be deleted before saving the new one.
 
-.PARAMETER Config
-The type of configuration item to remove. Valid values: Variable, PSDrive, Function, Command, Credential, PSDefaults, Location.
+.PARAMETER Variable
+The name(s) of the variable(s) to remove from the config file.
 
-.PARAMETER Value
-The value or name of the item to remove. For example, the name of the drive, function, or variable.
+.PARAMETER PSDrive
+The name(s) of the PSDrive(s) to remove from the config file.
+
+.PARAMETER Function
+The name(s) of the function(s) to remove from the config file.
+
+.PARAMETER Command
+The name(s) of the command(s) to remove from the config file.
+
+.PARAMETER Credential
+The name(s) of the credential(s) to remove from the config file.
+
+.PARAMETER PSDefaults
+The name(s) of the default parameter(s) to remove from the config file.
+
+.PARAMETER Location
+If specified, removes the default location from the config file.
 
 .PARAMETER Force
 If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
+Remove-ConfigFromPSConfigFile -PSDrive ProdMods
 Removes the 'ProdMods' PSDrive from the config file.
 
 .EXAMPLE
-Remove-ConfigFromPSConfigFile -Config Variable -Value AzureToken -Force
+Remove-ConfigFromPSConfigFile -Variable AzureToken -Force
 Removes the 'AzureToken' variable, overwriting the config file if it exists.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Use this to keep your configuration file clean and up to date.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to keep your configuration file clean and up to date.
 #>
 function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]

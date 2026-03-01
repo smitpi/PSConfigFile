@@ -43,7 +43,7 @@ Updated [13/11/2021_16:30] Added Function Script
 Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
 
 .DESCRIPTION
-This function loads a PSConfigFile XML configuration file and applies all stored settings to your current session. This includes setting variables, creating PSDrives, defining functions, importing credentials, applying default parameters, setting the working directory, and executing startup commands. Use this to quickly restore your preferred environment or automate session setup across systems.
+Use this function to load a PSConfigFile XML configuration file and apply all stored settings to your current session. This includes setting variables, creating PSDrives, defining functions, importing credentials, applying default parameters, setting the working directory, and executing startup commands. Use this to quickly restore your preferred environment or automate session setup across systems.
 
 .PARAMETER ConfigFile
 The path to the configuration XML file created by New-PSConfigFile. Must have a .xml extension.
@@ -52,17 +52,17 @@ The path to the configuration XML file created by New-PSConfigFile. Must have a 
 If specified, displays detailed output of each configuration step. Otherwise, only completion status is shown. Use Show-PSConfigFile to display the last execution output.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile C:\\Temp\\config\\PSConfigFile.xml
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
 Loads and applies all settings from the specified config file.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile .\\PSConfigFile.xml -DisplayOutput
+Invoke-PSConfigFile -ConfigFile .\PSConfigFile.xml -DisplayOutput
 Runs the config file and displays detailed output for each step.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Use this to automate and standardize your PowerShell environment setup.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to automate and standardize your PowerShell environment setup.
 #>
 function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]

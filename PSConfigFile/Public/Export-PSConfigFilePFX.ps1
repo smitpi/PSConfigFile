@@ -24,23 +24,23 @@
 Exports the self-signed certificate (PFX) used for credential encryption in your PSConfigFile configuration.
 
 .DESCRIPTION
-This function exports the self-signed certificate (in PFX format) that is used to encrypt and decrypt credentials in your PSConfigFile configuration. Exporting the certificate allows you to import it on other machines, enabling secure decryption of credentials across trusted systems. You must provide a credential to protect the exported PFX file.
+Use this function to export the self-signed certificate (in PFX format) that is used to encrypt and decrypt credentials in your PSConfigFile configuration. Exporting the certificate allows you to import it on other machines, enabling secure decryption of credentials across trusted systems. You must provide a credential to protect the exported PFX file.
 
 .PARAMETER Path
-The directory path where the exported PFX file will be saved.
+The directory path where the exported PFX file will be saved. The directory will be created if it does not exist.
 
 .PARAMETER Credential
 The credential (username and password) used to protect the exported PFX file. Use Get-Credential to create this object.
 
 .EXAMPLE
 $creds = Get-Credential
-Export-PSConfigFilePFX -Path C:\\temp -Credential $creds
+Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 Exports the certificate to C:\temp, protected by the provided credentials.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Use this to securely transfer your credential encryption certificate to other systems.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to securely transfer your credential encryption certificate to other systems.
 #>
 function Export-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX')]

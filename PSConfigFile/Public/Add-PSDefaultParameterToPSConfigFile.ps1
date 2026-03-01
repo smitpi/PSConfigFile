@@ -1,4 +1,3 @@
-
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -37,7 +36,7 @@ Created [18/08/2022_07:54] Initial Script Creating
 Adds a default parameter value for a function to the PSConfigFile configuration.
 
 .DESCRIPTION
-Use this function to specify default parameter values for any PowerShell function. These defaults are stored in your configuration file and will be automatically applied in your session, saving you from repeatedly specifying common parameters. Wildcards can be used to apply defaults to multiple functions or parameters, streamlining your workflow and ensuring consistency across sessions.
+This function allows you to specify default parameter values for any PowerShell function. These defaults are stored in your configuration file and will be automatically applied in your session, saving you from repeatedly specifying common parameters. Wildcards can be used to apply defaults to multiple functions or parameters.
 
 .PARAMETER Function
 The name of the function to add a default parameter for. Wildcards are supported to match multiple functions.
@@ -52,17 +51,17 @@ The value to assign as the default for the specified parameter.
 If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\temp\PSLauncherConfig.json
+Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\\temp\\PSLauncherConfig.json
 Sets a default value for the 'PSLauncherConfigFile' parameter of the 'Start-PSLauncher' function.
 
 .EXAMPLE
-Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\Data -Force
+Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\\Data -Force
 Sets a default 'Path' for all functions ending with '-Item', overwriting the config file if it exists.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to streamline your PowerShell workflow with persistent default parameters.
+Use this to streamline your PowerShell workflow with persistent default parameters.
 #>
 function Add-PSDefaultParameterToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]

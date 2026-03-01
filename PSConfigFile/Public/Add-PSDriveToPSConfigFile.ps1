@@ -42,7 +42,7 @@ Updated [13/11/2021_16:30] Added Function Script
 Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
 
 .DESCRIPTION
-This function allows you to register a PowerShell drive (PSDrive) in your configuration file. When the config is invoked, the drive will be automatically available in your session, streamlining access to file systems, registries, or other providers. The PSDrive must already exist (use New-PSDrive to create it first).
+Use this function to register a PowerShell drive (PSDrive) in your configuration file. When the config is invoked, the drive will be automatically available in your session, streamlining access to file systems, registries, or other providers. The PSDrive must already exist (use New-PSDrive to create it first).
 
 .PARAMETER DriveName
 The name of the PSDrive to add. The drive must already exist in the current session.
@@ -62,7 +62,7 @@ Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-Use this to ensure custom drives are always available in your PowerShell environment.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure custom drives are always available in your PowerShell environment.
 #>
 function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]

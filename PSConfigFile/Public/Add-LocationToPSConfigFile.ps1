@@ -49,7 +49,7 @@ Sets the default location to the 'c:\temp' folder when the config is invoked.
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation.
+This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure your PowerShell session always starts in the correct directory or drive.
 #>
 
 function Add-LocationToPSConfigFile {
