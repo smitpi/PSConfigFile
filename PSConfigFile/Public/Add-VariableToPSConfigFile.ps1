@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -32,36 +32,35 @@
 
 #>
 
-<# 
-
-.DESCRIPTION 
- Adds variable to the config file. 
-
-#> 
-
-
-
 <#
 .SYNOPSIS
-Adds variable to the config file.
+Adds one or more existing variables to the PSConfigFile configuration for automatic session import.
 
 .DESCRIPTION
-Adds variable to the config file.
+This function allows you to store the values of existing variables in your configuration file. When the config is invoked, these variables will be automatically recreated in your session, making it easy to persist tokens, paths, or other important values across PowerShell sessions. SecureString and PSCredential types are not allowed for security reasons.
 
 .PARAMETER VariableNames
-The name of the variable. (Needs to exist already)
+The name(s) of the variable(s) to add. Each variable must already exist in the current session.
 
 .PARAMETER Force
-Will delete the config file before saving the new one. If false, then the config file will be renamed.
-
+If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
 Add-VariableToPSConfigFile -VariableNames AzureToken
+Adds the 'AzureToken' variable to the config file for automatic import in future sessions.
 
+.EXAMPLE
+Add-VariableToPSConfigFile -VariableNames Path1,Path2 -Force
+Adds both 'Path1' and 'Path2' variables, overwriting the config file if it exists.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to persist important variables between PowerShell sessions.
 #>
-Function Add-VariableToPSConfigFile {
+function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
-    PARAM(
+    param(
         [ValidateScript( { ( Get-Variable $_) })]
         [string[]]$VariableNames,
         [switch]$Force
@@ -87,10 +86,7 @@ Function Add-VariableToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Added variable: $($VariableNames)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
@@ -103,12 +99,14 @@ Function Add-VariableToPSConfigFile {
 
         if ([string]::IsNullOrEmpty($XMLData.SetVariable)) {
             $VarObject.Add([PSCustomObject]@{
-                    $InputVar.Name.ToString() = $InputVar.Value
+                    Name  = $InputVar.Name.ToString()
+                    value = $InputVar.Value
                 })        
         } else {
             $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
-                    $InputVar.Name.ToString() = $InputVar.Value
+                    Name  = $InputVar.Name.ToString()
+                    value = $InputVar.Value
                 })
         }
 

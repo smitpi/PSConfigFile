@@ -7,65 +7,47 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
-.TAGS ps
-
-.LICENSEURI
-
-.PROJECTURI
-
-.ICONURI
-
-.EXTERNALMODULEDEPENDENCIES 
-
-.REQUIREDSCRIPTS
-
-.EXTERNALSCRIPTDEPENDENCIES
-
-.RELEASENOTES
-Created [18/08/2022_09:38] Initial Script Creating
-
-.PRIVATEDATA
-
-#>
-
-
-<# 
-
-.DESCRIPTION 
- Import the PFX file for credentials 
-
-#> 
-
+#
 
 <#
 .SYNOPSIS
-Import the PFX file for credentials
+Imports a self-signed certificate (PFX) for credential decryption in your PSConfigFile configuration.
 
 .DESCRIPTION
-Import the PFX file for credentials
+This function imports a self-signed certificate (in PFX format) that is used to decrypt credentials in your PSConfigFile configuration. This is useful when moving your configuration to a new system or restoring access to encrypted credentials. You must provide the credential used to protect the PFX file. Optionally, you can force the import to override existing certificates.
 
 .PARAMETER Path
-Path to the PFX file.
+The path to the PFX file to import.
 
 .PARAMETER Credential
-Credential used to create the pfx file.
+The credential (username and password) that was used to protect the PFX file. Use Get-Credential to create this object.
 
 .PARAMETER Force
-Will override existing certificates.
+If specified, will override any existing certificates with the same name.
 
 .EXAMPLE
 $creds = Get-Credential
-Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
+Import-PSConfigFilePFX -Path C:\\temp\\PSConfigFileCert.pfx -Credential $creds
+Imports the certificate from C:\temp, using the provided credentials for decryption.
 
+.EXAMPLE
+Import-PSConfigFilePFX -Path .\\PSConfigFileCert.pfx -Credential (Get-Credential) -Force
+Imports and overwrites any existing certificate with the same name.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to restore credential decryption capability on new or rebuilt systems.
 #>
-Function Import-PSConfigFilePFX {
+
+function Import-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX')]
 	[OutputType([System.Object[]])]
-	PARAM(
+	param(
 		[Parameter(Mandatory)]
 		[ValidateScript( { if ((Get-Item $_).Extension -like '.pfx') { $true }
 				else {throw 'Not a valid .pfx file'}	

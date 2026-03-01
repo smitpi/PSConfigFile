@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -36,31 +36,34 @@ Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecutio
 #Requires -Module PSWriteColor
 
 <#
-
-.DESCRIPTION
-Adds functionality to add the execution to your profile or a PowerShell module
-
-#>
-
-
 <#
 .SYNOPSIS
-Adds functionality to add the execution to your profile.
+Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
 
 .DESCRIPTION
-Adds functionality to add the execution to your profile.
+This function adds or removes the command to invoke your PSConfigFile configuration from your PowerShell profile or a specified module. This ensures your environment is set up automatically every time you start a new session. You can also choose to include the DisplayOutput parameter for verbose startup information.
 
 .PARAMETER PSProfile
-Enable or disable loading of config when your ps profile is loaded.
+Specifies whether to add or remove the config execution command from your PowerShell profile. Accepts values like 'AddScript' or 'RemoveScript'.
 
 .PARAMETER DisplayOutput
-Will add the DisplayOutput parameter when setting the invoke command in the profile.
+If specified, adds the DisplayOutput parameter to the invoke command in your profile for detailed output at startup.
 
 .EXAMPLE
 Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
+Adds the config execution command with detailed output to your PowerShell profile.
 
+.EXAMPLE
+Set-PSConfigFileExecution -PSProfile RemoveScript
+Removes the config execution command from your PowerShell profile.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to automate your environment setup every time you launch PowerShell.
 #>
-Function Set-PSConfigFileExecution {
+
+function Set-PSConfigFileExecution {
     [Cmdletbinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Profile', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution')]
     param (
         [Parameter(ParameterSetName = 'Profile')]

@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -33,40 +33,40 @@ Created [21/05/2022_03:47] Initial Script Creating
 #>
 
 
-<# 
-
-.DESCRIPTION 
- Creates a self signed cert, then uses it to securely save a credential to the config file. 
-
-#> 
-
 <#
 .SYNOPSIS
-Creates a self signed cert, then uses it to securely save a credential to the config file.
+Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.
 
 .DESCRIPTION
-Creates a self signed cert, then uses it to securely save a credential to the config file. 
-You can export the cert, and install it on other machines. Then you would be able to decrypt the password on those machines.
+This function creates a self-signed certificate (if one does not already exist) and uses it to encrypt and store a PowerShell credential object in your configuration file. The certificate can be exported and installed on other machines, allowing you to decrypt and use the credential securely across trusted systems. This is ideal for automating scripts that require credentials without exposing sensitive information in plain text.
 
 .PARAMETER Name
-This name will be used for the variable when invoke command is executed.
+The variable name to assign to the credential in the config file. This name is used to reference the credential when invoking commands from the config.
 
 .PARAMETER Credential
-Credential object to be saved.
+The PowerShell credential object to be securely stored. Use Get-Credential to create this object.
 
 .PARAMETER Force
-Will delete the config file before saving the new one. If false, then the config file will be renamed.
-
+If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-$labcred = get-credential
+$labcred = Get-Credential
 Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred
+Prompts for credentials and saves them securely in the config file under the name 'LabTest'.
 
+.EXAMPLE
+Add-CredentialToPSConfigFile -Name AdminUser -Credential (Get-Credential) -Force
+Saves a credential named 'AdminUser', overwriting the config file if it exists.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Credentials are encrypted using a self-signed certificate for security and portability.
 #>
-Function Add-CredentialToPSConfigFile {
+function Add-CredentialToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile')]
 	[OutputType([System.Object[]])]
-	PARAM(
+	param(
 		[string]$Name,
 		[pscredential]$Credential,
 		[switch]$Force
@@ -90,13 +90,10 @@ Function Add-CredentialToPSConfigFile {
 		Hostname          = $XMLData.Userdata.Hostname
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
-        BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
+		BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = [datetime](Get-Date)
-			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = "Added Credencial: $($Name)"
-			Path           = "$confile"
-			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
 	}
 
@@ -129,7 +126,7 @@ Function Add-CredentialToPSConfigFile {
 		$Edition = 'PSDesktop'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, $true)
 	} else {
-		Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell Core to save it in that edition as well.'
+		Write-Warning -Message 'Password is saved for PowerShell Core, rerun command in Windows PowerShell to save it in that edition as well.'
 		$Edition = 'PSCore'
 		$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
 	}
@@ -174,8 +171,8 @@ Function Add-CredentialToPSConfigFile {
 			Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-		Write-Host 'Credential Added: ' -ForegroundColor Green  -NoNewline
-        Write-Host "$($Name)" -ForegroundColor Yellow
+		Write-Host 'Credential Added: ' -ForegroundColor Green -NoNewline
+		Write-Host "$($Name)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

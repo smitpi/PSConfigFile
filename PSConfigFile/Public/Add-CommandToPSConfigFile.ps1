@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -45,37 +45,37 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 <#
-
-.DESCRIPTION
-Add a command to the config file
-
-#>
-
-
-<#
 .SYNOPSIS
-Adds a command or script block to the config file, to be executed every time the invoke function is called.
+Adds a named command or script block to the PSConfigFile configuration, to be executed automatically when the config is invoked.
 
 .DESCRIPTION
-Adds a command or script block to the config file, to be executed every time the invoke function is called.
+Use this function to store custom commands or script blocks in your configuration file. These commands will be executed every time the config file is invoked using Invoke-PSConfigFile. This is useful for automating environment setup, running startup tasks, or ensuring certain commands always run in your PowerShell environment.
 
 .PARAMETER ScriptBlockName
-Name for the script block
+The unique name to assign to the script block. This name is used to identify and manage the command within the config file.
 
 .PARAMETER ScriptBlock
-The commands to be executed
+The PowerShell command(s) or script block to be executed. Provide as a string. Example: "Get-ChildItem C:\\Logs | Out-File C:\\log.txt"
 
 .PARAMETER Force
-Will delete the config file before saving the new one. If false, then the config file will be renamed.
-
+If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\"
+Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\\"
+Adds a script block named 'DriveC' that lists the contents of the C drive every time the config is invoked.
 
+.EXAMPLE
+Add-CommandToPSConfigFile -ScriptBlockName Startup -ScriptBlock "Write-Host 'Welcome!'" -Force
+Adds a script block named 'Startup' that displays a welcome message, overwriting the config file if it exists.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+This function is part of the PSConfigFile module for managing PowerShell configuration automation.
 #>
-Function Add-CommandToPSConfigFile {
+function Add-CommandToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]
-    PARAM(
+    param(
         [ValidateNotNullOrEmpty()]
         [string]$ScriptBlockName,
         [ValidateNotNullOrEmpty()]
@@ -105,10 +105,7 @@ Function Add-CommandToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Added Command: $($ScriptBlockName)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 

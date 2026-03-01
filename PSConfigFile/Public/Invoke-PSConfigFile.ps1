@@ -6,7 +6,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -39,31 +39,32 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 <#
-
-.DESCRIPTION
-Read and execute the config file
-
-#>
-
-
-<#
 .SYNOPSIS
-Executes the config from the json file.
+Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
 
 .DESCRIPTION
-Executes the config from the json file.
+This function loads a PSConfigFile XML configuration file and applies all stored settings to your current session. This includes setting variables, creating PSDrives, defining functions, importing credentials, applying default parameters, setting the working directory, and executing startup commands. Use this to quickly restore your preferred environment or automate session setup across systems.
 
 .PARAMETER ConfigFile
-Path to the the config file that was created by New-PSConfigFile
+The path to the configuration XML file created by New-PSConfigFile. Must have a .xml extension.
 
 .PARAMETER DisplayOutput
-By default no output is displayed, switch this on to display the output. Or use Show-PSConfigFile to display the last execution.
+If specified, displays detailed output of each configuration step. Otherwise, only completion status is shown. Use Show-PSConfigFile to display the last execution output.
 
 .EXAMPLE
-Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
+Invoke-PSConfigFile -ConfigFile C:\\Temp\\config\\PSConfigFile.xml
+Loads and applies all settings from the specified config file.
 
+.EXAMPLE
+Invoke-PSConfigFile -ConfigFile .\\PSConfigFile.xml -DisplayOutput
+Runs the config file and displays detailed output for each step.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to automate and standardize your PowerShell environment setup.
 #>
-Function Invoke-PSConfigFile {
+function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
     param (
         [parameter(Mandatory)]
@@ -101,9 +102,9 @@ Function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
         }
         $BackupsToDelete = Get-ChildItem "$($confile.Directory)\Outdated_PSConfigFile*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Skip $($XMLData.Userdata.BackupsToKeep)
-        if ($BackupsToDelete.count -gt 0) {
+        if ($null -ne $BackupsToDelete) {
             $BackupsToDelete | Remove-Item -Force -ErrorAction Stop
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
+            #$output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'Backups Removed', $($BackupsToDelete.count)
             $PSConfigFileOutput.Add($output)
         }
     } catch {Write-Warning "Error user data: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error user data: Message:$($_.Exception.Message)")}
@@ -125,7 +126,7 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ###################### Session Details: ######################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Current Session:")
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'User', "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())" 
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'User', "$($env:USERNAME.ToLower())" 
         $PSConfigFileOutput.Add($output)
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]`t`t{0,-28}: {1,-20}" -f 'PSExecutionPolicy', $env:PSExecutionPolicyPreference
         $PSConfigFileOutput.Add($output)
@@ -144,11 +145,10 @@ Function Invoke-PSConfigFile {
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
         foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
-            $VarMember = $SetVariable | Get-Member -MemberType NoteProperty, Property
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($VarMember.name), $($SetVariable.$($VarMember.name))
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.value)
             $PSConfigFileOutput.Add($output)
             try {
-                New-Variable -Name $($VarMember.name) -Value $($SetVariable.$($VarMember.name)) -Force -Scope global -ErrorAction Stop
+                New-Variable -Name $($SetVariable.name) -Value $($SetVariable.value) -Force -Scope global -ErrorAction Stop
             } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
         }
         $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
@@ -193,39 +193,43 @@ Function Invoke-PSConfigFile {
     try {
         $PSConfigFileOutput.Add('<h>  ')
         $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
-        $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
-        $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
-        if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-            Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ',') (PS$($PSVersionTable.PSEdition) Edition)"
-            Update-CredentialsInPSConfigFile -RenewSavedPasswords $CheckEditionCreds.Name
-            $XMLData = Import-Clixml -Path $confile.FullName
-        }
+        if ($null -ne $XMLData.PSCreds) {
+            $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
+            $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
+            $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
+            if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
+                Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ',') (PS$($PSVersionTable.PSEdition) Edition)"
+                Update-PSConfigFileCredentials -RenewSavedPasswords $CheckEditionCreds.Name
+                $XMLData = Import-Clixml -Path $confile.FullName
+            }
 
-        foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
-            $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
-            if ($selfcert.NotAfter -lt (Get-Date)) {
-                Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
-            } else {
-                $credname = $Cred.Name
-                $username = $Cred.UserName
-                $password = $Cred.EncryptedPwd
-                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
-                $PSConfigFileOutput.Add($output)
-                $EncryptedBytes = [System.Convert]::FromBase64String($password)
-                if ($PSVersionTable.PSEdition -like 'Desktop') {
-                    try {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
-                } else {
-                    try {
-                        $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
-                    } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
+            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+                if ($null -ne $Cred) {
+                    $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
+                    if ($selfcert.NotAfter -lt (Get-Date)) {
+                        Write-Error "User Certificate not found.`nOr has expired"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: User Certificate not found. Or has expired')
+                    } else {
+                        $credname = $Cred.Name
+                        $username = $Cred.UserName
+                        $password = $Cred.EncryptedPwd
+                        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($credname), "(PS$($PSVersionTable.PSEdition)) $($username)"
+                        $PSConfigFileOutput.Add($output)
+                        $EncryptedBytes = [System.Convert]::FromBase64String($password)
+                        if ($PSVersionTable.PSEdition -like 'Desktop') {
+                            try {
+                                $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, $true)
+                            } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Core"; $PSConfigFileOutput.Add('<e>Error Credentials: Message: Password was encoded in PowerShell Core')}
+                        } else {
+                            try {
+                                $DecryptedBytes = $selfcert.PrivateKey.Decrypt($EncryptedBytes, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
+                            } catch {Write-Warning "Error Credentials: `n`tMessage: Password was encoded in PowerShell Desktop"; $PSConfigFileOutput.Add('<e>Error Credentials: Message:  Password was encoded in PowerShell Desktop')}
+                        }
+                        try {
+                            $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
+                            New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
+                        } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
+                    }
                 }
-                try {
-                    $DecryptedPwd = [system.text.encoding]::UTF8.GetString($DecryptedBytes) | ConvertTo-SecureString -AsPlainText -Force
-                    New-Variable -Name $Credname -Value (New-Object System.Management.Automation.PSCredential ($username, $DecryptedPwd)) -Scope Global -Force -ErrorAction Stop
-                } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Credentials: Message:$($_.Exception.Message)")}
             }
         }
     } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}

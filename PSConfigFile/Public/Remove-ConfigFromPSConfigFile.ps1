@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -34,41 +34,45 @@ Created [22/05/2022_07:47] Initial Script Creating
 
 #Requires -Module PSWriteColor
 
-<# 
-
-.DESCRIPTION 
- Will display existing config with the option to remove it from the config file 
-
-#> 
-
-
 <#
 .SYNOPSIS
-Removes a item from the config file.
+Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 
 .DESCRIPTION
-Removes a item from the config file.
+This function allows you to remove a specific configuration item from your config file, such as a PSDrive, function, variable, command, credential, default parameter, or location. This is useful for cleaning up or updating your configuration as your environment changes. You can optionally force the config file to be deleted before saving the new one.
 
 .PARAMETER Config
-Which config item to remove.
+The type of configuration item to remove. Valid values: Variable, PSDrive, Function, Command, Credential, PSDefaults, Location.
 
 .PARAMETER Value
-The value of the config item to filter out.
+The value or name of the item to remove. For example, the name of the drive, function, or variable.
 
 .PARAMETER Force
-Will delete the config file before saving the new one. If false, then the config file will be renamed.
-
+If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
 Remove-ConfigFromPSConfigFile -Config PSDrive -Value ProdMods
+Removes the 'ProdMods' PSDrive from the config file.
 
+.EXAMPLE
+Remove-ConfigFromPSConfigFile -Config Variable -Value AzureToken -Force
+Removes the 'AzureToken' variable, overwriting the config file if it exists.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to keep your configuration file clean and up to date.
 #>
-Function Remove-ConfigFromPSConfigFile {
+function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]
-    PARAM(
-        [ValidateSet('Variable', 'PSDrive', 'Function', 'Command', 'Credential', 'PSDefaults', 'Location')]
-        [string]$Config,
-        [string]$Value,
+    param(
+        [string[]]$Variable,
+        [string[]]$PSDrive,
+        [string[]]$Function,
+        [string[]]$Command,
+        [string[]]$Credential,
+        [string[]]$PSDefaults,
+        [string[]]$Location,
         [switch]$Force
     )
 
@@ -84,40 +88,40 @@ Function Remove-ConfigFromPSConfigFile {
     $XMLData.Add((Import-Clixml -Path $confile.FullName))
     $userdataModAction = 'Removed Config: '
 
-    if ($Config -like 'Variable') {
-        $userdataModAction += "Variable: $(($XMLData.setvariable | Where-Object {$_ -like "*$($Value)*"} | Get-Member -MemberType NoteProperty).name)`n"
-        $SetVariable = $XMLData.setvariable | Where-Object {$_ -notlike "*$($Value)*"}
-    } else {$SetVariable = $XMLData.setvariable}
+    if ($PSBoundParameters.ContainsKey('Variable')) {
+        $userdataModAction += "Variable: $(($XMLData.SetVariable | Where-Object {$_.name -like "*$($Variable)*"}).name)`n"
+        $SetVariable = $XMLData.SetVariable | Where-Object {$_.name -notlike "*$Variable*"}
+    } else { $SetVariable = $XMLData.SetVariable }
 
-    if ($Config -like 'PSDrive') {
-        $userdataModAction += "PSDrive: $(($XMLData.PSDrive | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
-        $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSDrive = $XMLData.PSDrive}
+    if ($PSBoundParameters.ContainsKey('PSDrive')) {
+        $userdataModAction += "PSDrive: $(($XMLData.PSDrive | Where-Object {$_.name -like "*$($PSDrive)*"}).name)`n"
+        $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.name -notlike "*$PSDrive*"}
+    } else { $SetPSDrive = $XMLData.PSDrive }
 
-    if ($Config -like 'Function') {
-        $userdataModAction += "Function: $(($XMLData.PSFunction | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
-        $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSFunction = $XMLData.PSFunction}
+    if ($PSBoundParameters.ContainsKey('Function')) {
+        $userdataModAction += "Function: $(($XMLData.PSFunction | Where-Object {$_.name -like "*$($Function)*"}).name)`n"
+        $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.name -notlike "*$Function*"}
+    } else { $SetPSFunction = $XMLData.PSFunction }
 
-    if ($Config -like 'Command') { 
-        $userdataModAction += "Command: $(($XMLData.Execute | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
-        $SetExecute = $XMLData.Execute | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetExecute = $XMLData.Execute}
+    if ($PSBoundParameters.ContainsKey('Command')) { 
+        $userdataModAction += "Command: $(($XMLData.Execute | Where-Object {$_.name -like "*$($Command)*"}).name)`n"
+        $SetExecute = $XMLData.Execute | Where-Object {$_.name -notlike "*$Command*"}
+    } else { $SetExecute = $XMLData.Execute }
 
-    if ($Config -like 'Credential') {
-        $userdataModAction += "Credential: $(($XMLData.PSCreds | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
-        $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetCreds = $XMLData.PSCreds}
+    if ($PSBoundParameters.ContainsKey('Credential')) {
+        $userdataModAction += "Credential: $(($XMLData.PSCreds | Where-Object {$_.name -like "*$($Credential)*"}).name)`n"
+        $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "*$Credential*"}
+    } else { $SetCreds = $XMLData.PSCreds }
 
-    if ($Config -like 'PSDefaults') {
-        $userdataModAction += "PSDefaults: $(($XMLData.PSDefaults | Where-Object {$_.name -like "*$($Value)*"}).name)`n"
-        $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "*$Value*"}
-    } else {$SetPSDefaults = $XMLData.PSDefaults}
+    if ($PSBoundParameters.ContainsKey('PSDefaults')) {
+        $userdataModAction += "PSDefaults: $(($XMLData.PSDefaults | Where-Object {$_.name -like "*$($PSDefaults)*"}).name)`n"
+        $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "*$PSDefaults*"}
+    } else { $SetPSDefaults = $XMLData.PSDefaults }
 
-    if ($Config -like 'Location') {
+    if ($PSBoundParameters.ContainsKey('Location')) {
         $userdataModAction += "Removed Location`n"
-        $SetLocation = @{}
-    } else {$SetLocation = $XMLData.SetLocation}
+        [psobject]$SetLocation = $null
+    } else { $SetLocation = $XMLData.SetLocation }
     
     $userdata = [PSCustomObject]@{
         Owner             = $XMLData.Userdata.Owner
@@ -130,10 +134,7 @@ Function Remove-ConfigFromPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = ($userdataModAction | Out-String).Trim()
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
     $Update = @()
@@ -162,4 +163,48 @@ Function Remove-ConfigFromPSConfigFile {
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 
-
+$SetVariable = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    if ($null -ne $XMLData.SetVariable) {
+        $XMLData.SetVariable.Name
+    }
+}
+$PSDrive = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    if ($null -ne $XMLData.PSDrive) {
+        $XMLData.PSDrive.Name
+    }
+}
+$Execute = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    if ($null -ne $XMLData.Command) {
+        $XMLData.Execute.Name
+    }
+}
+$PSCreds = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    if ($null -ne $XMLData.PSCreds) {
+        $XMLData.PSCreds.Name
+    }
+}
+$PSDefaults = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    if ($null -ne $XMLData.PSDefaults) {
+        $XMLData.PSDefaults.Name
+    }
+}
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Variable -ScriptBlock $SetVariable
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDrive -ScriptBlock $PSDrive
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Command -ScriptBlock $Execute
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Credential -ScriptBlock $PSCreds
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDefaults -ScriptBlock $PSDefaults

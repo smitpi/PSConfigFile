@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -32,41 +32,42 @@ Created [18/08/2022_07:54] Initial Script Creating
 
 #>
 
-<# 
-
-.DESCRIPTION 
- Add PSDefaultParameterValues to the config file 
-
-#> 
-
 <#
 .SYNOPSIS
-Add PSDefaultParameterValues to the config file
+Adds a default parameter value for a function to the PSConfigFile configuration.
 
 .DESCRIPTION
-Add PSDefaultParameterValues to the config file
+This function allows you to specify default parameter values for any PowerShell function. These defaults are stored in your configuration file and will be automatically applied in your session, saving you from repeatedly specifying common parameters. Wildcards can be used to apply defaults to multiple functions or parameters.
 
 .PARAMETER Function
-The Function to add
+The name of the function to add a default parameter for. Wildcards are supported to match multiple functions.
 
 .PARAMETER Parameter
-The Parameter of that function.
+The name of the parameter to set a default value for. Wildcards are supported to match multiple parameters.
 
 .PARAMETER Value
-Value of the parameter.
+The value to assign as the default for the specified parameter.
 
 .PARAMETER Force
-Will delete the config file before saving the new one. If false, then the config file will be renamed.
-
+If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\temp\PSLauncherConfig.json
+Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\\temp\\PSLauncherConfig.json
+Sets a default value for the 'PSLauncherConfigFile' parameter of the 'Start-PSLauncher' function.
 
+.EXAMPLE
+Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\\Data -Force
+Sets a default 'Path' for all functions ending with '-Item', overwriting the config file if it exists.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to streamline your PowerShell workflow with persistent default parameters.
 #>
-Function Add-PSDefaultParameterToPSConfigFile {
+function Add-PSDefaultParameterToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
 	[OutputType([System.Object[]])]
-	PARAM(
+	param(
 		[Parameter(Position = 0, Mandatory = $true, HelpMessage = 'Name of a function to add, You can use wildcards to apply to more functions.')]
 		[string]$Function,
 		[Parameter(Position = 1, Mandatory = $true, HelpMessage = 'Name of a parameter to add, You can use wildcards to apply to more parameters.')]
@@ -94,13 +95,10 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		Hostname          = $XMLData.Userdata.Hostname
 		PSEdition         = $XMLData.Userdata.PSEdition
 		OS                = $XMLData.Userdata.OS
-        BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
+		BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
 		ModifiedData      = [PSCustomObject]@{
 			ModifiedDate   = [datetime](Get-Date)
-			ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
 			ModifiedAction = "Add PSDefaultParameter $($Function):$($Parameter)"
-			Path           = "$confile"
-			Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
 		}
 	}
 	[System.Collections.generic.List[PSObject]]$PSDefaultObject = @()
@@ -136,7 +134,7 @@ Function Add-PSDefaultParameterToPSConfigFile {
 		}
 		$Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
 		Write-Host 'PSDefault Added: ' -ForegroundColor Green -NoNewline
-        Write-Host "$($Function):$($Parameter)" -ForegroundColor Yellow
+		Write-Host "$($Function):$($Parameter)" -ForegroundColor Yellow
 		Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
 	} catch { Write-Error "Error: `n $_" }
 } #end Function

@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -45,46 +45,48 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 <#
-
-.DESCRIPTION
-To store your settings
-
-#>
-
-
-<#
 .SYNOPSIS
-Creates a new config file
+Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
 
 .DESCRIPTION
-Creates a new config file. If a config file already exists in that folder, it will be renamed.
+This function initializes a new configuration file in the specified directory, capturing your environment's settings, drives, functions, credentials, variables, and more. If a config file already exists in the folder, it will be renamed as a backup before creating the new one. You can specify how many backup copies to keep when the config changes.
 
 .PARAMETER ConfigDir
-Directory to create config file
+The directory where the new config file will be created. The directory will be created if it does not exist.
 
 .PARAMETER BackupsToKeep
-The amount of copies to keep of the config file when config is changed.
+The number of backup copies to keep when the config file is changed. Older backups beyond this number will be deleted automatically.
 
 .EXAMPLE
- New-PSConfigFile -ConfigDir C:\Temp\config -BackupsToKeep 3
+New-PSConfigFile -ConfigDir C:\\Temp\\config -BackupsToKeep 3
+Creates a new config file in C:\Temp\config and keeps up to 3 backup copies.
 
+.EXAMPLE
+New-PSConfigFile -ConfigDir .
+Creates a new config file in the current directory with the default number of backups.
+
+.NOTES
+Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+Use this to start managing your PowerShell environment with a portable, versioned config file.
 #>
-Function New-PSConfigFile {
+function New-PSConfigFile {
     [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
     param (
         [parameter(Mandatory)]
-        [ValidateScript( {if (Test-Path $_) {$true}
-                else {New-Item -Path $_ -ItemType Directory -Force | Out-Null }
+        [ValidateScript({
+                if (Test-Path $_) { $true }
+                else { New-Item -Path $_ -ItemType Directory -Force | Out-Null; $true }
             })]
         [System.IO.DirectoryInfo]$ConfigDir,
         [Parameter(HelpMessage = 'The amount of backup copies to keep of the config file.')]
-        [int]$BackupsToKeep = 10 
+        [int]$BackupsToKeep = 3
     )
 
     function DafaultSettings {
         try {
             $Userdata = New-Object PSObject -Property @{
-                Owner             = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
+                Owner             = "$($env:USERNAME.ToLower())"
                 CreatedOn         = (Get-Date -Format u)
                 PSExecutionPolicy = $env:PSExecutionPolicyPreference
                 Path              = "$((Join-Path (Get-Item $ConfigDir).FullName -ChildPath \PSConfigFile.xml))"
@@ -93,11 +95,8 @@ Function New-PSConfigFile {
                 OS                = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
                 BackupsToKeep     = $BackupsToKeep
                 ModifiedData      = [PSCustomObject]@{
-                    ModifiedDate   = 'None'
-                    ModifiedUser   = 'None'
-                    ModifiedAction = 'None'
-                    Path           = 'None'
-                    Hostname       = 'None'
+                    ModifiedDate   = [datetime](Get-Date)
+                    ModifiedAction = 'Created initial config file'
                 }
             }
         } catch {Write-Warning "Error: `n`tMessage:$($_.Exception.Message)"}
