@@ -1,4 +1,50 @@
-﻿
+
+<#PSScriptInfo
+
+.VERSION 0.1.0
+
+.GUID f87f855c-ea0b-4d07-829a-9143b6b3a131
+
+.AUTHOR Pierre Smit
+
+.COMPANYNAME Private
+
+.COPYRIGHT
+
+.TAGS
+
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+
+
+.PRIVATEDATA
+
+#>
+
+#Requires -Module PSWriteColor
+
+<# 
+
+.DESCRIPTION 
+ Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration. 
+
+#> 
+
+
+
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDefaults -ScriptBlock $PSDefaults
+
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -89,38 +135,38 @@ function Remove-ConfigFromPSConfigFile {
     $userdataModAction = 'Removed Config: '
 
     if ($PSBoundParameters.ContainsKey('Variable')) {
-        $userdataModAction += "Variable: $(($XMLData.SetVariable | Where-Object {$_.name -like "*$($Variable)*"}).name)`n"
-        $SetVariable = $XMLData.SetVariable | Where-Object {$_.name -notlike "*$Variable*"}
+        $userdataModAction += "Variable: $(($XMLData.SetVariable | Where-Object {$_.name -like "$($Variable)"}).name)`n"
+        $SetVariable = $XMLData.SetVariable | Where-Object {$_.Name -notlike "$Variable"}
     } else { $SetVariable = $XMLData.SetVariable }
 
     if ($PSBoundParameters.ContainsKey('PSDrive')) {
-        $userdataModAction += "PSDrive: $(($XMLData.PSDrive | Where-Object {$_.name -like "*$($PSDrive)*"}).name)`n"
-        $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.name -notlike "*$PSDrive*"}
+        $userdataModAction += "PSDrive: $(($XMLData.PSDrive | Where-Object {$_.name -like "$($PSDrive)"}).name)`n"
+        $SetPSDrive = $XMLData.PSDrive | Where-Object {$_.Name -notlike "$PSDrive"}
     } else { $SetPSDrive = $XMLData.PSDrive }
 
     if ($PSBoundParameters.ContainsKey('Function')) {
-        $userdataModAction += "Function: $(($XMLData.PSFunction | Where-Object {$_.name -like "*$($Function)*"}).name)`n"
-        $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.name -notlike "*$Function*"}
+        $userdataModAction += "Function: $(($XMLData.PSFunction | Where-Object {$_.name -like "$($Function)"}).name)`n"
+        $SetPSFunction = $XMLData.PSFunction | Where-Object {$_.Name -notlike "$Function"}
     } else { $SetPSFunction = $XMLData.PSFunction }
 
     if ($PSBoundParameters.ContainsKey('Command')) { 
-        $userdataModAction += "Command: $(($XMLData.Execute | Where-Object {$_.name -like "*$($Command)*"}).name)`n"
-        $SetExecute = $XMLData.Execute | Where-Object {$_.name -notlike "*$Command*"}
+        $userdataModAction += "Command: $(($XMLData.Execute | Where-Object {$_.name -like "$($Command)"}).name)`n"
+        $SetExecute = $XMLData.Execute | Where-Object {$_.Name -notlike "$Command"}
     } else { $SetExecute = $XMLData.Execute }
 
     if ($PSBoundParameters.ContainsKey('Credential')) {
-        $userdataModAction += "Credential: $(($XMLData.PSCreds | Where-Object {$_.name -like "*$($Credential)*"}).name)`n"
-        $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "*$Credential*"}
+        $userdataModAction += "Credential: $(($XMLData.PSCreds | Where-Object {$_.name -like "$($Credential)"}).name)`n"
+        $SetCreds = $XMLData.PSCreds | Where-Object {$_.name -notlike "$Credential"}
     } else { $SetCreds = $XMLData.PSCreds }
 
     if ($PSBoundParameters.ContainsKey('PSDefaults')) {
-        $userdataModAction += "PSDefaults: $(($XMLData.PSDefaults | Where-Object {$_.name -like "*$($PSDefaults)*"}).name)`n"
-        $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "*$PSDefaults*"}
+        $userdataModAction += "PSDefaults: $(($XMLData.PSDefaults | Where-Object {$_.name -like "$($PSDefaults)"}).name)`n"
+        $SetPSDefaults = $XMLData.PSDefaults | Where-Object {$_.name -notlike "$PSDefaults"}
     } else { $SetPSDefaults = $XMLData.PSDefaults }
 
     if ($PSBoundParameters.ContainsKey('Location')) {
         $userdataModAction += "Removed Location`n"
-        [psobject]$SetLocation = $null
+        $SetLocation = [PSCustomObject]@()
     } else { $SetLocation = $XMLData.SetLocation }
     
     $userdata = [PSCustomObject]@{
@@ -167,7 +213,7 @@ $SetVariable = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -ne $XMLData.SetVariable) {
+    if ($null -notlike $XMLData.SetVariable) {
         $XMLData.SetVariable.Name
     }
 }
@@ -175,7 +221,7 @@ $PSDrive = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -ne $XMLData.PSDrive) {
+    if ($null -notlike $XMLData.PSDrive) {
         $XMLData.PSDrive.Name
     }
 }
@@ -183,7 +229,7 @@ $Execute = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -ne $XMLData.Command) {
+    if ($null -notlike $XMLData.Command) {
         $XMLData.Execute.Name
     }
 }
@@ -191,7 +237,7 @@ $PSCreds = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -ne $XMLData.PSCreds) {
+    if ($null -notlike $XMLData.PSCreds) {
         $XMLData.PSCreds.Name
     }
 }
@@ -199,7 +245,7 @@ $PSDefaults = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -ne $XMLData.PSDefaults) {
+    if ($null -notlike $XMLData.PSDefaults) {
         $XMLData.PSDefaults.Name
     }
 }

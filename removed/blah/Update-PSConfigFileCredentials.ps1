@@ -1,31 +1,4 @@
 
-<#
-.SYNOPSIS
-Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.
-
-.DESCRIPTION
-This function allows you to renew the self-signed certificate used for credential encryption, and to re-encrypt or update saved credentials for your PowerShell environment. This is useful when certificates expire, passwords change, or you need to ensure compatibility across PowerShell editions (Core/Desktop). You can renew all credentials or select specific ones by name.
-
-.PARAMETER RenewSavedPasswords
-Specifies which saved credentials to renew. Use 'All' to renew all credentials, or provide an array of credential names. Run in both PowerShell Core and Desktop to ensure compatibility.
-
-.PARAMETER Force
-If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
-
-.EXAMPLE
-Update-PSConfigFileCredentials -RenewSavedPasswords All
-Prompts to renew all saved credentials in the config file.
-
-.EXAMPLE
-Update-PSConfigFileCredentials -RenewSavedPasswords AdminUser,LabTest
-Renews only the 'AdminUser' and 'LabTest' credentials.
-
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to keep your credential storage secure and up to date.
-#>
-function Update-PSConfigFileCredentials {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
 	param(
@@ -135,11 +108,4 @@ function Update-PSConfigFileCredentials {
 
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
-} #end Function
-$scriptblock = {
-	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-	$var = @('All')
-	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
-	$var
-}
-Register-ArgumentCompleter -CommandName Update-PSConfigFileCredentials -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
+

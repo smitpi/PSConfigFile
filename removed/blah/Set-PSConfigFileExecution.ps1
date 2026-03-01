@@ -1,78 +1,4 @@
 
-<#PSScriptInfo
-
-.VERSION 0.1.1
-
-.GUID c9a080fb-962b-4f23-a9ea-defb81e835cd
-
-.AUTHOR Pierre Smit
-
-.COMPANYNAME Private
-
-.COPYRIGHT
-
-.TAGS
-
-.LICENSEURI
-
-.PROJECTURI
-
-.ICONURI
-
-.EXTERNALMODULEDEPENDENCIES 
-
-.REQUIREDSCRIPTS
-
-.EXTERNALSCRIPTDEPENDENCIES
-
-.RELEASENOTES
-
-
-.PRIVATEDATA
-
-#>
-
-#Requires -Module PSWriteColor
-
-<# 
-
-.DESCRIPTION 
- 
-Set-PSConfigFileExecution [-PSProfile <string>] [-DisplayOutput] [-WhatIf] [-Confirm] [<CommonParameters>]
- 
-
-#> 
-
-
-
-<#
-.SYNOPSIS
-Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
-
-.DESCRIPTION
-This function adds or removes the command to invoke your PSConfigFile configuration from your PowerShell profile or a specified module. This ensures your environment is set up automatically every time you start a new session. You can also choose to include the DisplayOutput parameter for verbose startup information.
-
-.PARAMETER PSProfile
-Specifies whether to add or remove the config execution command from your PowerShell profile. Accepts values like 'AddScript' or 'RemoveScript'.
-
-.PARAMETER DisplayOutput
-If specified, adds the DisplayOutput parameter to the invoke command in your profile for detailed output at startup.
-
-.EXAMPLE
-Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
-Adds the config execution command with detailed output to your PowerShell profile.
-
-.EXAMPLE
-Set-PSConfigFileExecution -PSProfile RemoveScript
-Removes the config execution command from your PowerShell profile.
-
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to automate your environment setup every time you launch PowerShell.
-#>
-
-function Set-PSConfigFileExecution {
     [Cmdletbinding(SupportsShouldProcess = $true, DefaultParameterSetName = 'Profile', HelpURI = 'https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution')]
     param (
         [Parameter(ParameterSetName = 'Profile')]
@@ -143,5 +69,4 @@ Invoke-PSConfigFile -ConfigFile `"$($confile.FullName)`" #PSConfigFile
         }
 
     }
-} #end Function
 

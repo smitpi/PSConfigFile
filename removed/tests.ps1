@@ -2,7 +2,7 @@
 
 
 
-New-PSConfigFile -ConfigDir C:\temp\tmp -BackupsToKeep 2
+New-PSConfigFile -ConfigDir C:\temp\tmp2 -BackupsToKeep 5
 # Fix: 
 #[Created] C:\Temp\tmp\PSConfigFile.xml                                                              
 #WARNING: Error Credentials:                                                                                 
@@ -127,4 +127,31 @@ Error Creds: Message:The property 'WorkerDir' cannot be found on this object. Ve
 [09:40:43] ##############################################################                           
 [09:40:43] PSConfigFile Execution End 
 
-#>
+
+
+
+
+[18:22:09] Creating PSDrives:                                                                                                                                                                                  
+[18:22:09]  AllUserModules              : C:\Program Files\WindowsPowerShell\Modules                                                                                                                           
+[18:22:11]  ProdModules                 : C:\Users\psmit\Dropbox\#Profile\Documents\PowerShell\ProdModules                                                                                                     
+[18:22:11]  LabScripts                  : C:\Users\psmit\Dropbox\#Profile\Documents\PowerShell\ProdModules\@Lab-Scripts\LabScripts                                                                             
+[18:22:11]  ScratchPad                  : C:\Users\psmit\Dropbox\#Profile\Documents\PowerShell\Eight-Lakes-Dev-Scripts\ScratchPad                                                                                                                                                                                                                                                                                             
+[18:22:11] Creating Functions:                                                                                                                                                                                 
+[18:22:11]  GoProdMod                   : Set-Location ProdModules:                                                                                                                                            
+[18:22:11]  GoLabScripts                : Set-Location LabScripts:                                                                                                                                             
+[18:22:11]  GoAllUsersMod               : Set-Location AllUserModules:                                                                                                                                         
+[18:22:11]  RunGitPush                  : git add --all 2>&1 | Write-Host -ForegroundColor DarkCyan;git commit --all -m "$(Get-date)" 2>&1 | Write-Host -ForegroundColor DarkGreen;git push 2>&1 | Write-Host -ForegroundColor DarkYellow                                                                                                                                                                                     
+[18:22:11]  RunGitPull                  : git status 2>&1 | Write-Host -ForegroundColor DarkCyan;git pull 2>&1 | Write-Host -ForegroundColor DarkGreen                                                         
+[18:22:11]  ShowPSConfig                : Show-PSConfigFile -ShowLastInvokeOutput                                                                                                                              
+[18:22:11]  RunPSConfig                 : Invoke-PSConfigFile -ConfigFile $PSConfigFile -DisplayOutput                                                                                                         
+[18:22:11]  DirPSConfigFile             : dir $PSConfigFilePath                                                                                                                                                
+[18:22:11]  ..                          : cd ..                                                                                                                                                                
+[18:22:11]  ...                         : cd ..; cd ..                                                                                                                                                         
+[18:22:11]  ....                        : cd ..; cd ..; cd ..                                                                                                                                                  
+[18:22:11]  BuildPSToolkit              : & 'ProdModules:\Build PSToolkit.ps1'                                                                                                                                 
+[18:22:11]  NewScratch                  : New-Item -Path ScratchPad:\$(Get-Date -Format 'yyyy.MM.dd_HH\hmm')-$($args).ps1                              
+
+
+
+
+#>                                                        

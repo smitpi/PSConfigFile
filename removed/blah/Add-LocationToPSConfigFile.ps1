@@ -1,59 +1,6 @@
-﻿
-<#PSScriptInfo
 
-.VERSION 1.1.4
-
-.GUID 9f023856-311a-4463-a042-f57955ced2de
-
-.AUTHOR Pierre Smit
-
-.COMPANYNAME Private
-
-.COPYRIGHT
-
-.TAGS powershell ps
-
-
-.DESCRIPTION
-Add a start-up location to the config file
-
-#>
-
-
-
-<#
-.SYNOPSIS
-Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
-
-.DESCRIPTION
-This function allows you to specify a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked, your session will automatically change to this location, streamlining your workflow and ensuring you always start in the right place.
-
-.PARAMETER LocationType
-Specifies the type of location to add. Accepts 'PSDrive' for a PowerShell drive or 'Folder' for a filesystem path.
-
-.PARAMETER Path
-The path to the folder or the name of the PSDrive to set as the default location. Must exist as a valid path or drive.
-
-.PARAMETER Force
-If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
-
-.EXAMPLE
-Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
-Sets the default location to the 'temp' PSDrive when the config is invoked.
-
-.EXAMPLE
-Add-LocationToPSConfigFile -LocationType Folder -Path c:\\temp
-Sets the default location to the 'c:\\temp' folder when the config is invoked.
-
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to ensure your PowerShell session always starts in the correct directory or drive.
-#>
-
-function Add-LocationToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
-    param(
+    PARAM(
         [Parameter(Mandatory = $true)]
         [validateSet('PSDrive', 'Folder')]
         [string]$LocationType,
@@ -72,23 +19,11 @@ function Add-LocationToPSConfigFile {
     }
     try {
         if ($LocationType -like 'PSDrive') {
-            try {
-                $Drive = Get-PSDrive $Path -ErrorAction Stop
-                $PathName = $Drive.Name
-                $PathValue = $Drive.Root
-                $PathType = 'PSDrive'
-            } catch {
-                Write-Error 'PSDrive not found'
-                exit
-            }
+            Get-PSDrive $Path -ErrorAction Stop | Out-Null
+            [string]$AddPath = "$($path)"
         }
         if ($LocationType -like 'Folder') {
-            [System.IO.DirectoryInfo]$Dir = $Path
-            $AddPath = Get-Item $Dir
-            $PathName = $AddPath.Directory
-            $PathValue = $AddPath.FullName
-            $PathType = 'Folder'
-
+            [string]$AddPath = (Get-Item $path -ErrorAction Stop).FullName
         }
     } catch { throw 'Could not find path' }
 
@@ -104,17 +39,18 @@ function Add-LocationToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Working Directory Changed: $($Path)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
     $Update = @()
-    [System.Collections.generic.List[PSObject]]$SetLocation = @()
-    $SetLocation.Add([PSCustomObject]@{
-            Name  = $PathName
-            value = $PathValue
-            Type  = $PathType
-        })
+    $SetLocation = @{}
+    $SetLocation += @{
+        WorkerDir = $($AddPath)
+    }
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $XMLData.PSDrive
@@ -140,4 +76,3 @@ function Add-LocationToPSConfigFile {
     } catch { Write-Error "Error: `n $_" }
 
 
-} #end Function

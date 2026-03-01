@@ -28,19 +28,35 @@ Get-Help about_PSConfigFile
 ```
 Documentation can be found at: [Github_Pages](https://smitpi.github.io/PSConfigFile)
  
+## PS Controller Scripts
+- .git
+- .github
+- .vscode
+- docs
+- Output
+- PSConfigFile
+- removed
+- .whitesource
+- instructions.md
+- LICENSE
+- ScriptInfo.zip
+ 
 ## Functions
-- [`Add-CommandToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile) -- Adds a command or script block to the config file, to be executed every time the invoke function is called.
-- [`Add-CredentialToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile) -- Creates a self signed cert, then uses it to securely save a credential to the config file.
-- [`Add-FunctionToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile) -- Creates Shortcuts (Functions) to commands or script blocks
-- [`Add-LocationToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile) -- Adds default location to the config file.
-- [`Add-PSDefaultParameterToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile) -- Add PSDefaultParameterValues to the config file
-- [`Add-PSDriveToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile) -- Add PSDrive to the config file.
-- [`Add-VariableToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile) -- Adds variable to the config file.
-- [`Export-PSConfigFilePFX`](https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX) -- Export the PFX file for credentials.
-- [`Import-PSConfigFilePFX`](https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX) -- Import the PFX file for credentials
-- [`Invoke-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile) -- Executes the config from the json file.
-- [`New-PSConfigFile`](https://smitpi.github.io/PSConfigFile/New-PSConfigFile) -- Creates a new config file
-- [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a item from the config file.
-- [`Set-PSConfigFileExecution`](https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution) -- Adds functionality to add the execution to your profile.
-- [`Show-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Show-PSConfigFile) -- Display what's configured in the config file.
-- [`Update-CredentialsInPSConfigFile`](https://smitpi.github.io/PSConfigFile/Update-CredentialsInPSConfigFile) -- Allows you to renew the certificate or saved passwords.
+- [`Add-FunctionToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile) -- Adds a custom function (shortcut) to the PSConfigFile configuration for quick command or script execution.
+- [`Add-LocationToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile) -- Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
+- [`Add-PSDriveToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile) -- Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
+- [`Add-VariableToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile) -- Adds one or more existing variables to the PSConfigFile configuration for automatic session import.
+- [`Import-PSConfigFilePFX`](https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX) -- 
+Import-PSConfigFilePFX [-Path] <FileInfo> [[-Credential] <pscredential>] [-Force] [<CommonParameters>]
+
+- [`Invoke-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile) -- Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
+- [`New-PSConfigCertificate`](https://smitpi.github.io/PSConfigFile/New-PSConfigCertificate) -- Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.
+- [`New-PSConfigFile`](https://smitpi.github.io/PSConfigFile/New-PSConfigFile) -- Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
+- [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
+- [`Set-PSConfigFileExecution`](https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution) -- 
+Set-PSConfigFileExecution [-PSProfile <string>] [-DisplayOutput] [-WhatIf] [-Confirm] [<CommonParameters>]
+
+- [`Show-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Show-PSConfigFile) -- 
+Show-PSConfigFile [[-OtherConfigFile] <FileInfo>] [-ShowLastInvokeOutput] [<CommonParameters>]
+
+- [`Update-PSConfigFileCredentials`](https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials) -- Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.

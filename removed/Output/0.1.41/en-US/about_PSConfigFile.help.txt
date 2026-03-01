@@ -1,0 +1,34 @@
+
+PSConfigFile
+	 about_PSConfigFile
+ 
+SHORT DESCRIPTION
+	 PSConfigFile is an extension to your PowerShell profile that enables advanced, portable, and modular environment management. It creates a configuration file containing Variables, PSDrives, Credentials, Shortcuts (Functions), PSDefaultParameters, and a Starting Location. You can execute this config automatically when your profile loads, or manually at any time, making all your environment settings instantly available in your session. Effortlessly switch between different environment setups, share configurations across systems, and keep your PowerShell experience consistent and efficient.
+
+ 
+NOTES
+Functions in this module:
+	 Add-FunctionToPSConfigFile -- Adds a custom function (shortcut) to the PSConfigFile configuration for quick command or script execution.
+	 Add-LocationToPSConfigFile -- Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
+	 Add-PSDriveToPSConfigFile -- Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
+	 Add-VariableToPSConfigFile -- Adds one or more existing variables to the PSConfigFile configuration for automatic session import.
+	 Import-PSConfigFilePFX -- 
+Import-PSConfigFilePFX [-Path] <FileInfo> [[-Credential] <pscredential>] [-Force] [<CommonParameters>]
+
+	 Invoke-PSConfigFile -- Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
+	 New-PSConfigCertificate -- Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.
+	 New-PSConfigFile -- Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
+	 Remove-ConfigFromPSConfigFile -- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
+	 Set-PSConfigFileExecution -- 
+Set-PSConfigFileExecution [-PSProfile <string>] [-DisplayOutput] [-WhatIf] [-Confirm] [<CommonParameters>]
+
+	 Show-PSConfigFile -- 
+Show-PSConfigFile [[-OtherConfigFile] <FileInfo>] [-ShowLastInvokeOutput] [<CommonParameters>]
+
+	 Update-PSConfigFileCredentials -- Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.
+ 
+SEE ALSO
+	 https://github.com/smitpi/PSConfigFile
+
+	 https://smitpi.github.io/PSConfigFile
+

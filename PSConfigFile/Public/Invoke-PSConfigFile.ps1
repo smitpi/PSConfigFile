@@ -1,4 +1,50 @@
-﻿<#PSScriptInfo
+
+<#PSScriptInfo
+
+.VERSION 1.1.4
+
+.GUID a2a9d2b4-3684-46f1-a35f-477b4572600f
+
+.AUTHOR Pierre Smit
+
+.COMPANYNAME Private
+
+.COPYRIGHT
+
+.TAGS
+
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+
+
+.PRIVATEDATA
+
+#>
+
+#Requires -Module PSWriteColor
+
+<# 
+
+.DESCRIPTION 
+ Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically. 
+
+#> 
+
+
+
+} #end Function
+<#PSScriptInfo
 
 .VERSION 1.1.4
 
@@ -73,6 +119,19 @@ function Invoke-PSConfigFile {
         [switch]$DisplayOutput = $false
     )
 
+    try {
+        $confile = Get-Item $ConfigFile -ErrorAction stop
+    } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            exit
+        }
+    }
     #region import file
     try {
         $confile = Get-Item $ConfigFile -ErrorAction Stop
@@ -140,70 +199,70 @@ function Invoke-PSConfigFile {
     #endregion
 
     #region Set Variables
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
-        foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.value)
+    if (-not [string]::IsNullOrEmpty($XMLData.SetVariable)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
+            foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.value)
+                $PSConfigFileOutput.Add($output)
+                try {
+                    New-Variable -Name $($SetVariable.name) -Value $($SetVariable.value) -Force -Scope global -ErrorAction Stop
+                } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
+            }
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
             $PSConfigFileOutput.Add($output)
-            try {
-                New-Variable -Name $($SetVariable.name) -Value $($SetVariable.value) -Force -Scope global -ErrorAction Stop
-            } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
-        }
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
-        $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
-        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
-        $PSConfigFileOutput.Add($output)
-        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
-    } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
+            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+            $PSConfigFileOutput.Add($output)
+            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
+        } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
+    }
     #endregion
 
     #region Set PsDrives
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
-        foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
-            $PSConfigFileOutput.Add($output)
-            if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
-                New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.root -Scope Global | Out-Null
-            } else {$PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
-        }
-    } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    if (-not [string]::IsNullOrEmpty($XMLData.PSDrive)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating PSDrives:")
+            foreach ($SetPSDrive in  ($XMLData.PSDrive | Where-Object {$_ -notlike $null})) {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSDrive.Name), $($SetPSDrive.root)
+                $PSConfigFileOutput.Add($output)
+                if (-not(Get-PSDrive -Name $SetPSDrive.name -ErrorAction SilentlyContinue)) {
+                    New-PSDrive -Name $SetPSDrive.name -PSProvider FileSystem -Root $SetPSDrive.root -Scope Global | Out-Null
+                } else {$PSConfigFileOutput.Add('<w>Warning: PSDrive - Already exists') }
+            }
+        } catch {Write-Warning "Error PSDrive: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDrive: Message:$($_.Exception.Message)")}
+    }
     #endregion
 
     #region Set Function
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Functions: ")
-        foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
-            $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
-            $PSConfigFileOutput.Add($output)
-            $command = "function global:$($SetPSFunction.name) {$($SetPSFunction.command)}"
-            $tmp = [scriptblock]::Create($command)
-            $tmp.invoke()
-        }
-    } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Function: Message:$($_.Exception.Message)")}
+    if (-not [string]::IsNullOrEmpty($XMLData.PSFunction)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Functions: ")
+            foreach ($SetPSFunction in  ($XMLData.PSFunction | Where-Object {$_ -notlike $null})) {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetPSFunction.name), $($SetPSFunction.Command)
+                $PSConfigFileOutput.Add($output)
+                $command = "function global:$($SetPSFunction.name) {$($SetPSFunction.command)}"
+                $tmp = [scriptblock]::Create($command)
+                $tmp.invoke()
+            }
+        } catch {Write-Warning "Error Function: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Function: Message:$($_.Exception.Message)")}
+    }
     #endregion
 
     #region Creds
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
-        if ($null -ne $XMLData.PSCreds) {
-            $NonEditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -notlike "*$($PSVersionTable.PSEdition)*"})
-            $EditionCreds = ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})
-            $CheckEditionCreds = $NonEditionCreds | Where-Object {$_.name -notin $EditionCreds.name}
-            if (-not([string]::IsNullOrEmpty($CheckEditionCreds))) {
-                Write-Warning "Re-enter your passwords for $($CheckEditionCreds.name | Join-String -Separator ',') (PS$($PSVersionTable.PSEdition) Edition)"
-                Update-PSConfigFileCredentials -RenewSavedPasswords $CheckEditionCreds.Name
-                $XMLData = Import-Clixml -Path $confile.FullName
+    if (-not [string]::IsNullOrEmpty($XMLData.PSCreds)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Creating Credentials: ")
+            if (($XMLData.PSCreds.edition -contains 'PSDesktop') -and $PSVersionTable.edition -eq 'PSDesktop') {
+                Write-Error ' PSConfigFile Credentials is only a PSCore feature'; $PSConfigFileOutput.Add('<e>Error Credentials: Message: PSConfigFile Credentials is only a PSCore feature')
             }
-
-            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like "*$($PSVersionTable.PSEdition)*"})) {
+            foreach ($Cred in ($XMLData.PSCreds | Where-Object {$_.Edition -like 'PSCore'})) {
                 if ($null -ne $Cred) {
                     $selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction Stop
                     if ($selfcert.NotAfter -lt (Get-Date)) {
@@ -231,55 +290,62 @@ function Invoke-PSConfigFile {
                     }
                 }
             }
-        }
-    } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
+        } catch {Write-Warning "Error Credentials: `n`tMessage:$($_.Exception.Message)"}
+    }
     #endregion
 
     #region Set PSDefaults
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaultParameterValues:")
-        $SortDefaults = ($XMLData.PSDefaults | Where-Object {$_ -notlike $null}) | Sort-Object -Property Name
-        foreach ($PSD in $SortDefaults) {
-            if ($global:PSDefaultParameterValues["$($PSD.Name)"]) {$global:PSDefaultParameterValues["$($PSD.Name)"] = $PSD.Value}
-            else {$global:PSDefaultParameterValues.Add("$($PSD.Name)", "$($PSD.Value)")}
-        }
-        foreach ($Defaults in ($global:PSDefaultParameterValues.GetEnumerator() | Sort-Object -Property Name)) {
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
-            $PSConfigFileOutput.Add($output)
-        }
-    } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
+    if (-not [string]::IsNullOrEmpty($XMLData.PSDefaults)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting PSDefaultParameterValues:")
+            $SortDefaults = ($XMLData.PSDefaults | Where-Object {$_ -notlike $null}) | Sort-Object -Property Name
+            foreach ($PSD in $SortDefaults) {
+                if ($global:PSDefaultParameterValues["$($PSD.Name)"]) {$global:PSDefaultParameterValues["$($PSD.Name)"] = $PSD.Value}
+                else {$global:PSDefaultParameterValues.Add("$($PSD.Name)", "$($PSD.Value)")}
+            }
+            foreach ($Defaults in ($global:PSDefaultParameterValues.GetEnumerator() | Sort-Object -Property Name)) {
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  Function:{0,-20} Parameter:{1,-30}: {2}" -f $($Defaults.Name.Split(':')[0]), $($Defaults.Name.Split(':')[1]), $($Defaults.Value)
+                $PSConfigFileOutput.Add($output)
+            }
+        } catch {Write-Warning "Error PSDefaults $($PSD.Name): `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error PSDefaults $($PSD.Name): Message:$($_.Exception.Message)")}
+    }
     #endregion
 
     #region Set Location
-    try {
-        if (-not([string]::IsNullOrEmpty($XMLData.SetLocation))) {
+    if (-not [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+        try {
+            $SetPath = $XMLData.SetLocation[0]
             $PSConfigFileOutput.Add('<h>  ')
             $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Working Directory: ")
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($XMLData.SetLocation.WorkerDir))
+            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'Location:', $($($SetPath.value))
             $PSConfigFileOutput.Add($output)
-            if ([bool](Get-PSDrive $($XMLData.SetLocation.WorkerDir) -ErrorAction SilentlyContinue)) { Set-Location -Path "$($XMLData.SetLocation.WorkerDir):" }
-            elseif (Test-Path $($XMLData.SetLocation.WorkerDir)) { Set-Location $($XMLData.SetLocation.WorkerDir) }
-            else { Write-Error '<e>No valid location found.' }
-        }
-    } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+            if ($SetPath.type -eq 'PSDrive') {
+                Set-Location "$($SetPath.Name):"
+                else { Set-Location $($SetPath.value)}
+            }
+        } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
+    }
     #endregion
 
     #region Execute Commands
-    try {
-        $PSConfigFileOutput.Add('<h>  ')
-        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Commands: ")
-        foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
-            $tmp = $null
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
-            $PSConfigFileOutput.Add($output)
-            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
-            $tmp = [scriptblock]::Create($execute.ScriptBlock)
-            Invoke-Command $tmp -OutVariable output
-            $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($output | Out-String)")
-        }
-    } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
+    if (-not [string]::IsNullOrEmpty($XMLData.execute)) {
+        try {
+            $PSConfigFileOutput.Add('<h>  ')
+            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Executing Commands: ")
+            foreach ($execute in  ($XMLData.execute | Where-Object {$_ -notlike $null})) {
+                $tmp = $null
+                $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($execute.name), $($execute.ScriptBlock)
+                $PSConfigFileOutput.Add($output)
+                $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())]  ScriptBlock Output:")
+                $tmp = [scriptblock]::Create($execute.ScriptBlock)
+                Invoke-Command $tmp -OutVariable output
+                $PSConfigFileOutput.Add("<b>[$((Get-Date -Format HH:mm:ss).ToString())] $($output | Out-String)")
+            }
+        } catch {Write-Warning "Error Commands: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Commands: Message:$($_.Exception.Message)")}
+    }
     #endregion
+
 
     $PSConfigFileOutput.Add('<h>  ')
     $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] ##############################################################")

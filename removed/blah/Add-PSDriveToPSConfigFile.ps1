@@ -1,73 +1,7 @@
-<#PSScriptInfo
 
-.VERSION 1.0.2
-
-.GUID 0fcfdc24-96af-490f-a636-3a8a6bfb4ece
-
-.AUTHOR Pierre Smit
-
-.COMPANYNAME Private
-
-.COPYRIGHT
-
-.TAGS ps
-
-.LICENSEURI
-
-.PROJECTURI
-
-.ICONURI
-
-.EXTERNALMODULEDEPENDENCIES
-
-.REQUIREDSCRIPTS
-
-.EXTERNALSCRIPTDEPENDENCIES
-
-.RELEASENOTES
-Created [14/10/2021_13:56] Initial Script Creating
-Updated [14/10/2021_19:32] Added PSDrive Script
-Updated [13/11/2021_16:30] Added Function Script
-
-.PRIVATEDATA
-
-#>
-
-
-
-
-
-<#
-.SYNOPSIS
-Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
-
-.DESCRIPTION
-This function allows you to register a PowerShell drive (PSDrive) in your configuration file. When the config is invoked, the drive will be automatically available in your session, streamlining access to file systems, registries, or other providers. The PSDrive must already exist (use New-PSDrive to create it first).
-
-.PARAMETER DriveName
-The name of the PSDrive to add. The drive must already exist in the current session.
-
-.PARAMETER Force
-If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
-
-.EXAMPLE
-New-PSDrive -Name TempDir -PSProvider FileSystem -Root "C:\\Temp"
-Add-PSDriveToPSConfigFile -DriveName TempDir
-Registers the 'TempDir' PSDrive in the config file for automatic use in future sessions.
-
-.EXAMPLE
-Add-PSDriveToPSConfigFile -DriveName ProdModules -Force
-Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.
-
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to ensure custom drives are always available in your PowerShell environment.
-#>
-function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
-    param(
-        [ValidateScript({ if (Get-PSDrive $_) { $true } else { $false } })]
+    PARAM(
+        [ValidateScript( { ( Get-PSDrive $_) })]
         [string]$DriveName,
         [switch]$Force
     )
@@ -92,7 +26,10 @@ function Add-PSDriveToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
+            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Added PSDrive: $($DriveName)"
+            Path           = "$confile"
+            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
@@ -131,5 +68,4 @@ function Add-PSDriveToPSConfigFile {
         Write-Host "$($DriveName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
-} #end Function
 
