@@ -3,6 +3,8 @@
 
 
 New-PSConfigFile -ConfigDir C:\temp\tmp2 -BackupsToKeep 5
+Invoke-PSConfigFile -ConfigFile C:\temp\tmp2\PSConfigFile.xml -DisplayOutput
+
 # Fix: 
 #[Created] C:\Temp\tmp\PSConfigFile.xml                                                              
 #WARNING: Error Credentials:                                                                                 
@@ -11,18 +13,21 @@ New-PSConfigFile -ConfigDir C:\temp\tmp2 -BackupsToKeep 5
 ##TODO Check for duplicate config before saving.
 ##TODO Added script line errors on invoke
 
-Add-CommandToPSConfigFile -ScriptBlockName 2 -ScriptBlock "get-childitem c:\temp"
+Add-CommandToPSConfigFile -ScriptBlockName childitem -ScriptBlock "get-childitem C:\temp\tmp2"
 
 $cred = Get-Credential
 Add-CredentialToPSConfigFile -Name Cred -Credential $cred
+#TODO AutoComplete does not work
 Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 
 Add-FunctionToPSConfigFile -FunctionName cdt -CommandToRun "cd \temp"
 Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 
 New-PSDrive -Name tmp -PSProvider FileSystem -Root C:\temp\tmp
-Add-LocationToPSConfigFile -LocationType Folder -Path C:\temp\tmp
+Add-LocationToPSConfigFile -LocationType Folder -Path C:\temp\tmp2
+#TODO Folder fails:   } catch { throw 'Could not find path' } 
 Add-LocationToPSConfigFile -LocationType PSDrive -Path tmp
+
 Add-PSDriveToPSConfigFile -DriveName tmp
 Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 

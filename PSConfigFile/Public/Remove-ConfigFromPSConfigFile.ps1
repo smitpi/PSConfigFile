@@ -186,48 +186,52 @@ function Remove-ConfigFromPSConfigFile {
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 
-$SetVariable = {
+$PSVariable = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.SetVariable) {
-        $XMLData.SetVariable.Name
-    }
+    $XMLData.SetVariable | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Variable -ScriptBlock $PSVariable
 $PSDrive = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSDrive) {
-        $XMLData.PSDrive.Name
-    }
+    $XMLData.PSDrive | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-$Execute = {
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDrive -ScriptBlock $PSDrive
+$PSFunction = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.Command) {
-        $XMLData.Execute.Name
-    }
+    $XMLData.PSFunction | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-$PSCreds = {
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Function -ScriptBlock $PSFunction
+$PSCommand = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSCreds) {
-        $XMLData.PSCreds.Name
-    }
+    $XMLData.Execute | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Command -ScriptBlock $PSCommand
+$PSCredential = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    $XMLData.PSCreds | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
+}
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Credential -ScriptBlock $PSCredential
 $PSDefaults = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSDefaults) {
-        $XMLData.PSDefaults.Name
-    }
+    $XMLData.PSDefaults | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Variable -ScriptBlock $SetVariable
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDrive -ScriptBlock $PSDrive
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Command -ScriptBlock $Execute
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Credential -ScriptBlock $PSCreds
 Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDefaults -ScriptBlock $PSDefaults
+$Location = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    $XMLData.SetLocation | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
+}
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Location -ScriptBlock $Location

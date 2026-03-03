@@ -162,11 +162,11 @@ function Invoke-PSConfigFile {
     #endregion
 
     #region Set Variables
-    if (-not [string]::IsNullOrEmpty($XMLData.SetVariable)) {
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
+        if (-not [string]::IsNullOrEmpty($XMLData.SetVariable)) {
             foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.value)
                 $PSConfigFileOutput.Add($output)
@@ -174,14 +174,14 @@ function Invoke-PSConfigFile {
                     New-Variable -Name $($SetVariable.name) -Value $($SetVariable.value) -Force -Scope global -ErrorAction Stop
                 } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
             }
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
-            $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
-            $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
-        } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
-    }
+        }
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
+    } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
     #endregion
 
     #region Set PsDrives
@@ -276,7 +276,7 @@ function Invoke-PSConfigFile {
     #endregion
 
     #region Set Location
-    if (-not [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+    if ($null -ne $XMLData.SetLocation) {
         try {
             $SetPath = $XMLData.SetLocation[0]
             $PSConfigFileOutput.Add('<h>  ')
@@ -285,7 +285,8 @@ function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
             if ($SetPath.type -eq 'PSDrive') {
                 Set-Location "$($SetPath.Name):"
-                else { Set-Location $($SetPath.value)}
+            } else { 
+                Set-Location $($SetPath.value)
             }
         } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
     }

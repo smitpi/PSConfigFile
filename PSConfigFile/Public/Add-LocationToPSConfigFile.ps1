@@ -88,12 +88,10 @@ This function is part of the PSConfigFile module for managing PowerShell configu
 function Add-LocationToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
     param(
-        [Parameter(Mandatory = $true)]
-        [validateSet('PSDrive', 'Folder')]
-        [string]$LocationType,
-        [Parameter(Mandatory = $true)]
-        [ValidateScript( { ( Test-Path $_) -or ( [bool](Get-PSDrive $_)) })]
-        [string]$Path,
+        [ValidateScript( {( [bool](Get-PSDrive $_)) })]
+        [string]$PSDriveName,
+        [ValidateScript( { ( Test-Path $_) })]
+        [System.IO.DirectoryInfo]$FolderPath,
         [switch]$Force
     )
     try {
@@ -104,27 +102,36 @@ function Add-LocationToPSConfigFile {
         $null = $FileBrowser.ShowDialog()
         $confile = Get-Item $FileBrowser.FileName
     }
-    try {
-        if ($LocationType -like 'PSDrive') {
-            try {
-                $Drive = Get-PSDrive $Path -ErrorAction Stop
-                $PathName = $Drive.Name
-                $PathValue = $Drive.Root
-                $PathType = 'PSDrive'
-            } catch {
-                Write-Error 'PSDrive not found'
-                exit
-            }
+    if ((-not($PSBoundParameters.ContainsKey('PSDriveName'))) -and (-not($PSBoundParameters.ContainsKey('FolderPath')))) {
+        Write-Error 'Parameters are emty'
+    }
+    if ($PSBoundParameters.ContainsKey('PSDriveName')) {
+        try {
+            $Drive = Get-PSDrive $PSDriveName -ErrorAction Stop
+            $PathName = $Drive.Name
+            $PathValue = $Drive.Root
+            $PathType = 'PSDrive'
+        } catch {
+            Write-Error "PSDrive: Error: `n $_"
         }
-        if ($LocationType -like 'Folder') {
-            [System.IO.DirectoryInfo]$Dir = $Path
-            $AddPath = Get-Item $Dir
-            $PathName = $AddPath.Directory
-            $PathValue = $AddPath.FullName
+    }
+    if ($PSBoundParameters.ContainsKey('FolderPath')) {
+        try {
+            $PathName = $FolderPath.Name
+            $PathValue = $FolderPath.FullName
             $PathType = 'Folder'
-
+        } catch {
+            Write-Error "Folder: Error: `n $_"
         }
-    } catch { throw 'Could not find path' }
+
+    }
+    $Update = @()
+    [System.Collections.generic.List[PSObject]]$SetLocation = @()
+    $SetLocation.Add([PSCustomObject]@{
+            Name  = $PathName
+            value = $PathValue
+            Type  = $PathType
+        })
 
     $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
@@ -138,17 +145,11 @@ function Add-LocationToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedAction = "Working Directory Changed: $($Path)"
+            ModifiedAction = "Working Directory Changed: $($PathName)"
         }
     }
 
-    $Update = @()
-    [System.Collections.generic.List[PSObject]]$SetLocation = @()
-    $SetLocation.Add([PSCustomObject]@{
-            Name  = $PathName
-            value = $PathValue
-            Type  = $PathType
-        })
+
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $XMLData.PSDrive
@@ -169,7 +170,6 @@ function Add-LocationToPSConfigFile {
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Host 'Working Directory Changed: ' -ForegroundColor Green -NoNewline
-        Write-Host "$($Path)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 

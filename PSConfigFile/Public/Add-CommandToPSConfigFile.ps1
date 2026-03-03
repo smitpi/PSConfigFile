@@ -38,14 +38,6 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 
-
-
-
-
-
-
-
-
 <#
 
 .DESCRIPTION
@@ -115,10 +107,7 @@ function Add-CommandToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Added Command: $($ScriptBlockName)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
