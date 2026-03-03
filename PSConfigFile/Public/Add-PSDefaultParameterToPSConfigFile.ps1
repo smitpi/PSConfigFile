@@ -68,10 +68,6 @@ Sets a default value for the 'PSLauncherConfigFile' parameter of the 'Start-PSLa
 Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\\Data -Force
 Sets a default 'Path' for all functions ending with '-Item', overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to streamline your PowerShell workflow with persistent default parameters.
 #>
 function Add-PSDefaultParameterToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]

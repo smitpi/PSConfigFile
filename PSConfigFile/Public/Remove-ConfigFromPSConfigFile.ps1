@@ -81,10 +81,6 @@ Removes the 'ProdMods' PSDrive from the config file.
 Remove-ConfigFromPSConfigFile -Variable AzureToken -Force
 Removes the 'AzureToken' variable, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to keep your configuration file clean and up to date.
 #>
 function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]

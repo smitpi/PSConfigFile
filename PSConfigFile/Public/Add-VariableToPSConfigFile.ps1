@@ -63,10 +63,6 @@ Adds the 'AzureToken' variable to the config file for automatic import in future
 Add-VariableToPSConfigFile -VariableNames Path1,Path2 -Force
 Adds both 'Path1' and 'Path2' variables, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to persist important variables between PowerShell sessions.
 #>
 function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]

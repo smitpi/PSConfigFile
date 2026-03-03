@@ -66,10 +66,6 @@ Adds the config execution command with detailed output to your PowerShell profil
 Set-PSConfigFileExecution -PSProfile RemoveScript
 Removes the config execution command from your PowerShell profile.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to automate your environment setup every time you launch PowerShell.
 #>
 
 function Set-PSConfigFileExecution {

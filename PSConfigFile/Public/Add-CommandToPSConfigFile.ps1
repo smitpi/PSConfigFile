@@ -70,10 +70,6 @@ Adds a script block named 'DriveC' that lists the contents of the C drive every 
 Add-CommandToPSConfigFile -ScriptBlockName Startup -ScriptBlock "Write-Host 'Welcome!'" -Force
 Adds a script block named 'Startup' that displays a welcome message, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation.
 #>
 function Add-CommandToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]

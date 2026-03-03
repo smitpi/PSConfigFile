@@ -53,10 +53,6 @@ This function generates a new self-signed certificate (or renews an existing one
 New-PSConfigCertificate
 Creates or renews the self-signed certificate for credential encryption and re-encrypts all saved credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Run this if your certificate is expiring or you need to reset credential encryption.
 #>
 function New-PSConfigCertificate {
 	[Cmdletbinding(DefaultParameterSetName = 'Set1', HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigCertificate')]

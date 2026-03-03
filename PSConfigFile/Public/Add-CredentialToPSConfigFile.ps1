@@ -68,10 +68,6 @@ Prompts for credentials and saves them securely in the config file under the nam
 Add-CredentialToPSConfigFile -Name AdminUser -Credential (Get-Credential) -Force
 Saves a credential named 'AdminUser', overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Credentials are encrypted using a self-signed certificate for security and portability.
 #>
 function Add-CredentialToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile')]

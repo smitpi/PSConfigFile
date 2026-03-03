@@ -64,10 +64,6 @@ Prompts to renew all saved credentials in the config file.
 Update-PSConfigFileCredentials -RenewSavedPasswords AdminUser,LabTest
 Renews only the 'AdminUser' and 'LabTest' credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to keep your credential storage secure and up to date.
 #>
 function Update-PSConfigFileCredentials {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials')]

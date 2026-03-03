@@ -70,10 +70,6 @@ Registers the 'TempDir' PSDrive in the config file for automatic use in future s
 Add-PSDriveToPSConfigFile -DriveName ProdModules -Force
 Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure custom drives are always available in your PowerShell environment.
 #>
 function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]

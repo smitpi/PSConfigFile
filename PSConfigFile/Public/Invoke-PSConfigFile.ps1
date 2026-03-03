@@ -68,10 +68,6 @@ Loads and applies all settings from the specified config file.
 Invoke-PSConfigFile -ConfigFile .\PSConfigFile.xml -DisplayOutput
 Runs the config file and displays detailed output for each step.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to automate and standardize your PowerShell environment setup.
 #>
 function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]

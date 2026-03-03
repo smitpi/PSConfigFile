@@ -66,10 +66,6 @@ Creates a new config file in C:\Temp\config and keeps up to 3 backup copies.
 New-PSConfigFile -ConfigDir .
 Creates a new config file in the current directory with the default number of backups.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to start managing your PowerShell environment with a portable, versioned config file.
 #>
 function New-PSConfigFile {
     [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]

@@ -67,10 +67,6 @@ Imports the certificate from C:\temp, using the provided credentials for decrypt
 Import-PSConfigFilePFX -Path .\PSConfigFileCert.pfx -Credential (Get-Credential) -Force
 Imports and overwrites any existing certificate with the same name.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to restore credential decryption capability on new or rebuilt systems.
 #>
 function Import-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX')]

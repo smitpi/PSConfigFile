@@ -60,10 +60,6 @@ $creds = Get-Credential
 Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 Exports the certificate to C:\temp, protected by the provided credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to securely transfer your credential encryption certificate to other systems.
 #>
 function Export-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX')]

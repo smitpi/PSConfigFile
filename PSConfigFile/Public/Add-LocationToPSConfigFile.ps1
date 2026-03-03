@@ -71,13 +71,6 @@ Sets the default location to the 'temp' PSDrive when the config is invoked.
 Add-LocationToPSConfigFile -FolderPath C:\temp
 Sets the default location to the 'C:\temp' folder when the config is invoked.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure your PowerShell session always starts in the correct directory or drive.
-
-.LINK
-https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile
 #>
 
 function Add-LocationToPSConfigFile {
