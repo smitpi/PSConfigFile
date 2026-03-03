@@ -53,6 +53,7 @@ You can execute this config automatically when your profile loads, or manually a
 - removed
 - instructions.md
 - LICENSE
+- README.md
  
 ## Functions
 - [`Add-CommandToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile) -- Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.
