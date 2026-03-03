@@ -44,15 +44,6 @@ You can execute this config automatically when your profile loads, or manually a
   Documentation can be found at: [Github_Pages](https://smitpi.github.io/PSConfigFile)
  
 ## PS Controller Scripts
-- .git
-- .github
-- .vscode
-- docs
-- Output
-- PSConfigFile
-- removed
-- instructions.md
-- LICENSE
  
 ## Functions
 - [`Add-CommandToPSConfigFile`](https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile) -- Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.
