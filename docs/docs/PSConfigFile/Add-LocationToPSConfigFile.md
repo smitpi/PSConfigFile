@@ -31,27 +31,29 @@ This cmdlet has the following aliases,
 
 ## DESCRIPTION
 
-Use this function to specify a default working location for your PowerShell session, either as a folder path or a PSDrive.
+Specifies a default working location for your PowerShell session, either as a folder path or a PSDrive.
 When the config file is invoked using Invoke-PSConfigFile, your session will automatically change to this location.
-This is useful for streamlining your workflow and ensuring you always start in the correct directory or drive.
+This streamlines your workflow and ensures you always start in the correct directory or drive.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
-Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
+Add-LocationToPSConfigFile -PSDriveName temp
 Sets the default location to the 'temp' PSDrive when the config is invoked.
 
 ### EXAMPLE 2
 
-Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
-Sets the default location to the 'c:\temp' folder when the config is invoked.
+Add-LocationToPSConfigFile -FolderPath C:\temp
+Sets the default location to the 'C:\temp' folder when the config is invoked.
 
 ## PARAMETERS
 
 ### -FolderPath
 
-{{ Fill FolderPath Description }}
+The path to the folder to set as the default location.
+Must be a valid directory.
+Use this parameter if you want to set a filesystem folder as the start-up location.
 
 ```yaml
 Type: DirectoryInfo
@@ -94,7 +96,9 @@ HelpMessage: ''
 
 ### -PSDriveName
 
-{{ Fill PSDriveName Description }}
+The name of the PowerShell drive to set as the default location.
+Must be a valid PSDrive.
+Use this parameter if you want to set a PSDrive as the start-up location.
 
 ```yaml
 Type: String
@@ -134,5 +138,4 @@ Use this to ensure your PowerShell session always starts in the correct director
 
 ## RELATED LINKS
 
-{{ Fill in the related links here }}
-
+- [](https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile)

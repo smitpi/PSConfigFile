@@ -425,7 +425,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:09 AM
-# ModifiedOn:       3/3/2026 1:18:39 PM
+# ModifiedOn:       3/3/2026 2:02:45 PM
 # Synopsis:         Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
 #############################################
  
@@ -434,29 +434,32 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
 
 .DESCRIPTION
-Use this function to specify a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked using Invoke-PSConfigFile, your session will automatically change to this location. This is useful for streamlining your workflow and ensuring you always start in the correct directory or drive.
+Specifies a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked using Invoke-PSConfigFile, your session will automatically change to this location. This streamlines your workflow and ensures you always start in the correct directory or drive.
 
-.PARAMETER LocationType
-Specifies the type of location to add. Accepts 'PSDrive' for a PowerShell drive or 'Folder' for a filesystem path.
+.PARAMETER PSDriveName
+The name of the PowerShell drive to set as the default location. Must be a valid PSDrive. Use this parameter if you want to set a PSDrive as the start-up location.
 
-.PARAMETER Path
-The path to the folder or the name of the PSDrive to set as the default location. Must exist as a valid path or drive.
+.PARAMETER FolderPath
+The path to the folder to set as the default location. Must be a valid directory. Use this parameter if you want to set a filesystem folder as the start-up location.
 
 .PARAMETER Force
 If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
 
 .EXAMPLE
-Add-LocationToPSConfigFile -LocationType PSDrive -Path temp
+Add-LocationToPSConfigFile -PSDriveName temp
 Sets the default location to the 'temp' PSDrive when the config is invoked.
 
 .EXAMPLE
-Add-LocationToPSConfigFile -LocationType Folder -Path c:\temp
-Sets the default location to the 'c:\temp' folder when the config is invoked.
+Add-LocationToPSConfigFile -FolderPath C:\temp
+Sets the default location to the 'C:\temp' folder when the config is invoked.
 
 .NOTES
 Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
 This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure your PowerShell session always starts in the correct directory or drive.
+
+.LINK
+https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile
 #>
 
 function Add-LocationToPSConfigFile {
@@ -470,7 +473,7 @@ function Add-LocationToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-   } catch {
+    } catch {
         if ($IsWindows) {
             Add-Type -AssemblyName System.Windows.Forms
             $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
