@@ -3,11 +3,11 @@
 
 .VERSION 0.1.0
 
-.GUID 9498b5e9-5aba-4295-9c0e-e7754a7e1db9
+.GUID 23d79e04-6c65-4fff-841c-4dc2c6b3576c
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -26,17 +26,18 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Created [01/03/2026_07:22] Initial Script
+Created [03/03/2026_09:56] Initial Script
 
 .PRIVATEDATA
 
 #>
-<#
 
-.DESCRIPTION
-This function generates a new self-signed certificate (or renews an existing one) used to encrypt and decrypt credentials stored in your configuration file. This ensures your sensitive data remains secure and portable across trusted systems. After creating the certificate, all saved credentials are re-encrypted for continued security.
+<# 
 
-#>
+.DESCRIPTION 
+ Creates a new self signed certificate 
+
+#> 
 
 
 <#
@@ -82,4 +83,3 @@ function New-PSConfigCertificate {
 
 	Update-PSConfigFileCredentials -RenewSavedPasswords 'All'
 } #end Function
-
