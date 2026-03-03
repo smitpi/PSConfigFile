@@ -1,0 +1,1545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<helpItems xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:maml="http://schemas.microsoft.com/maml/2004/10" schema="maml" xmlns="http://msh">
+  <command:command>
+    <command:details>
+      <command:name>Add-CommandToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>CommandToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to store custom commands or script blocks in your configuration file. These commands will be executed every time the config file is invoked using Invoke-PSConfigFile. This is useful for automating environment setup, running startup tasks, or ensuring certain commands always run in your PowerShell environment.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-CommandToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>ScriptBlock</maml:name>
+          <maml:description>
+            <maml:para>The PowerShell command(s) or script block to be executed.
+Provide as a string.
+Example: "Get-ChildItem C:\\\\Logs | Out-File C:\\\\log.txt"</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>ScriptBlockName</maml:name>
+          <maml:description>
+            <maml:para>The unique name to assign to the script block.
+This name is used to identify and manage the command within the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>ScriptBlock</maml:name>
+        <maml:description>
+          <maml:para>The PowerShell command(s) or script block to be executed.
+Provide as a string.
+Example: "Get-ChildItem C:\\\\Logs | Out-File C:\\\\log.txt"</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>ScriptBlockName</maml:name>
+        <maml:description>
+          <maml:para>The unique name to assign to the script block.
+This name is used to identify and manage the command within the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-CommandToPSConfigFile -ScriptBlockName DriveC -ScriptBlock "Get-ChildItem c:\\"
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds a script block named 'DriveC' that lists the contents of the C drive every time the config is invoked.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-CommandToPSConfigFile -ScriptBlockName Startup -ScriptBlock "Write-Host 'Welcome!'" -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds a script block named 'Startup' that displays a welcome message, overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-CredentialToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>CredentialToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to securely store a PowerShell credential object in your configuration file. A self-signed certificate is created (if one does not already exist) and used to encrypt the credential. The certificate can be exported and installed on other machines, allowing you to decrypt and use the credential securely across trusted systems. This is ideal for automating scripts that require credentials without exposing sensitive information in plain text.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-CredentialToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>The PowerShell credential object to be securely stored.
+Use Get-Credential to create this object first.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The unique variable name to assign to the credential in the config file.
+This name is used to reference the credential when invoking commands from the config.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>The PowerShell credential object to be securely stored.
+Use Get-Credential to create this object first.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The unique variable name to assign to the credential in the config file.
+This name is used to reference the credential when invoking commands from the config.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Object</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+$labcred = Get-Credential
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Add-CredentialToPSConfigFile -Name LabTest -Credential $labcred
+Prompts for credentials and saves them securely in the config file under the name 'LabTest'.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-CredentialToPSConfigFile -Name AdminUser -Credential (Get-Credential) -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Saves a credential named 'AdminUser', overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-FunctionToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds a named PowerShell function (shortcut) to the PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>FunctionToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to define named PowerShell functions (shortcuts) that execute specific commands or script blocks. These functions are stored in your configuration file and can be invoked automatically or manually, streamlining repetitive tasks and environment setup. This is useful for automating environment setup, running startup tasks, or ensuring certain commands always run in your PowerShell environment.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-FunctionToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>CommandToRun</maml:name>
+          <maml:description>
+            <maml:para>The PowerShell command(s) or script block to be executed by the function.
+Provide as a string.
+Example: "Import-Module .\*.psm1 -Force -Verbose"</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>FunctionName</maml:name>
+          <maml:description>
+            <maml:para>The unique name to assign to the custom function.
+This name is used to identify and manage the function within the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>CommandToRun</maml:name>
+        <maml:description>
+          <maml:para>The PowerShell command(s) or script block to be executed by the function.
+Provide as a string.
+Example: "Import-Module .\*.psm1 -Force -Verbose"</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>FunctionName</maml:name>
+        <maml:description>
+          <maml:para>The unique name to assign to the custom function.
+This name is used to identify and manage the function within the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-FunctionToPSConfigFile -FunctionName psml -CommandToRun "Import-Module .\*.psm1 -Force -Verbose"
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds a function named 'psml' that imports all PowerShell modules in the current directory with force and verbose options.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-FunctionToPSConfigFile -FunctionName CleanLogs -CommandToRun "Remove-Item C:\\Logs\\* -Recurse -Force" -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds a function named 'CleanLogs' to delete all log files, overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-LocationToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>LocationToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Specifies a default working location for your PowerShell session, either as a folder path or a PSDrive. When the config file is invoked using Invoke-PSConfigFile, your session will automatically change to this location. This streamlines your workflow and ensures you always start in the correct directory or drive.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-LocationToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>FolderPath</maml:name>
+          <maml:description>
+            <maml:para>The path to the folder to set as the default location.
+Must be a valid directory.
+Use this parameter if you want to set a filesystem folder as the start-up location.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">DirectoryInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>PSDriveName</maml:name>
+          <maml:description>
+            <maml:para>The name of the PowerShell drive to set as the default location.
+Must be a valid PSDrive.
+Use this parameter if you want to set a PSDrive as the start-up location.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>FolderPath</maml:name>
+        <maml:description>
+          <maml:para>The path to the folder to set as the default location.
+Must be a valid directory.
+Use this parameter if you want to set a filesystem folder as the start-up location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">DirectoryInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>PSDriveName</maml:name>
+        <maml:description>
+          <maml:para>The name of the PowerShell drive to set as the default location.
+Must be a valid PSDrive.
+Use this parameter if you want to set a PSDrive as the start-up location.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-LocationToPSConfigFile -PSDriveName temp
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Sets the default location to the 'temp' PSDrive when the config is invoked.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-LocationToPSConfigFile -FolderPath C:\temp
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Sets the default location to the 'C:\temp' folder when the config is invoked.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-PSDefaultParameterToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds a default parameter value for a function to the PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>PSDefaultParameterToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function allows you to specify default parameter values for any PowerShell function. These defaults are stored in your configuration file and will be automatically applied in your session, saving you from repeatedly specifying common parameters. Wildcards can be used to apply defaults to multiple functions or parameters.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-PSDefaultParameterToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>Function</maml:name>
+          <maml:description>
+            <maml:para>The name of the function to add a default parameter for.
+Wildcards are supported to match multiple functions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>Parameter</maml:name>
+          <maml:description>
+            <maml:para>The name of the parameter to set a default value for.
+Wildcards are supported to match multiple parameters.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="3" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>Value</maml:name>
+          <maml:description>
+            <maml:para>The value to assign as the default for the specified parameter.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>Function</maml:name>
+        <maml:description>
+          <maml:para>The name of the function to add a default parameter for.
+Wildcards are supported to match multiple functions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>Parameter</maml:name>
+        <maml:description>
+          <maml:para>The name of the parameter to set a default value for.
+Wildcards are supported to match multiple parameters.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="3" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>Value</maml:name>
+        <maml:description>
+          <maml:para>The value to assign as the default for the specified parameter.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Object</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-PSDefaultParameterToPSConfigFile -Function Start-PSLauncher -Parameter PSLauncherConfigFile -Value C:\\temp\\PSLauncherConfig.json
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Sets a default value for the 'PSLauncherConfigFile' parameter of the 'Start-PSLauncher' function.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\\Data -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Sets a default 'Path' for all functions ending with '-Item', overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-PSDriveToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>PSDriveToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to register a PowerShell drive (PSDrive) in your configuration file. When the config is invoked, the drive will be automatically available in your session, streamlining access to file systems, registries, or other providers. The PSDrive must already exist (use New-PSDrive to create it first).</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-PSDriveToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>DriveName</maml:name>
+          <maml:description>
+            <maml:para>The name of the PSDrive to add.
+The drive must already exist in the current session.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>DriveName</maml:name>
+        <maml:description>
+          <maml:para>The name of the PSDrive to add.
+The drive must already exist in the current session.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+New-PSDrive -Name TempDir -PSProvider FileSystem -Root "C:\\Temp"
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Add-PSDriveToPSConfigFile -DriveName TempDir
+Registers the 'TempDir' PSDrive in the config file for automatic use in future sessions.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-PSDriveToPSConfigFile -DriveName ProdModules -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Add-VariableToPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Adds one or more existing variables to the PSConfigFile configuration for automatic session import.</maml:para>
+      </maml:description>
+      <command:verb>Add</command:verb>
+      <command:noun>VariableToPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function allows you to store the values of existing variables in your configuration file. When the config is invoked, these variables will be automatically recreated in your session, making it easy to persist tokens, paths, or other important values across PowerShell sessions. SecureString and PSCredential types are not allowed for security reasons.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Add-VariableToPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>VariableNames</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the variable(s) to add.
+Each variable must already exist in the current session.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>VariableNames</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the variable(s) to add.
+Each variable must already exist in the current session.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-VariableToPSConfigFile -VariableNames AzureToken
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds the 'AzureToken' variable to the config file for automatic import in future sessions.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Add-VariableToPSConfigFile -VariableNames Path1,Path2 -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds both 'Path1' and 'Path2' variables, overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Export-PSConfigFilePFX</command:name>
+      <maml:description>
+        <maml:para>Exports the self-signed certificate (PFX) used for credential encryption in your PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Export</command:verb>
+      <command:noun>PSConfigFilePFX</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to export the self-signed certificate (in PFX format) that is used to encrypt and decrypt credentials in your PSConfigFile configuration. Exporting the certificate allows you to import it on other machines, enabling secure decryption of credentials across trusted systems. You must provide a credential to protect the exported PFX file.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Export-PSConfigFilePFX</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>The credential (username and password) used to protect the exported PFX file.
+Use Get-Credential to create this object.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">PSCredential</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The directory path where the exported PFX file will be saved.
+The directory will be created if it does not exist.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">DirectoryInfo</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>The credential (username and password) used to protect the exported PFX file.
+Use Get-Credential to create this object.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">PSCredential</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>The directory path where the exported PFX file will be saved.
+The directory will be created if it does not exist.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">DirectoryInfo</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Object</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+$creds = Get-Credential
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Export-PSConfigFilePFX -Path C:\temp -Credential $creds
+Exports the certificate to C:\temp, protected by the provided credentials.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Import-PSConfigFilePFX</command:name>
+      <maml:description>
+        <maml:para>Imports a self-signed certificate (PFX) for credential decryption in your PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Import</command:verb>
+      <command:noun>PSConfigFilePFX</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to import a self-signed certificate (in PFX format) that is used to decrypt credentials in your PSConfigFile configuration. This is useful when moving your configuration to a new system or restoring access to encrypted credentials. You must provide the credential used to protect the PFX file. Optionally, you can force the import to override existing certificates.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-PSConfigFilePFX</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>The credential (username and password) that was used to protect the PFX file.
+Use Get-Credential to create this object.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">PSCredential</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, will override any existing certificates with the same name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The path to the PFX file to import.
+Must be a valid .pfx file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">FileInfo</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>The credential (username and password) that was used to protect the PFX file.
+Use Get-Credential to create this object.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">PSCredential</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, will override any existing certificates with the same name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>The path to the PFX file to import.
+Must be a valid .pfx file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">FileInfo</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Object</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+$creds = Get-Credential
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Import-PSConfigFilePFX -Path C:\temp\PSConfigFileCert.pfx -Credential $creds
+Imports the certificate from C:\temp, using the provided credentials for decryption.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Import-PSConfigFilePFX -Path .\PSConfigFileCert.pfx -Credential (Get-Credential) -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Imports and overwrites any existing certificate with the same name.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Invoke-PSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.</maml:para>
+      </maml:description>
+      <command:verb>Invoke</command:verb>
+      <command:noun>PSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to load a PSConfigFile XML configuration file and apply all stored settings to your current session. This includes setting variables, creating PSDrives, defining functions, importing credentials, applying default parameters, setting the working directory, and executing startup commands. Use this to quickly restore your preferred environment or automate session setup across systems.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-PSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>ConfigFile</maml:name>
+          <maml:description>
+            <maml:para>The path to the configuration XML file created by New-PSConfigFile.
+Must have a .xml extension.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>DisplayOutput</maml:name>
+          <maml:description>
+            <maml:para>If specified, displays detailed output of each configuration step.
+Otherwise, only completion status is shown.
+Use Show-PSConfigFile to display the last execution output.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>ConfigFile</maml:name>
+        <maml:description>
+          <maml:para>The path to the configuration XML file created by New-PSConfigFile.
+Must have a .xml extension.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">FileInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>DisplayOutput</maml:name>
+        <maml:description>
+          <maml:para>If specified, displays detailed output of each configuration step.
+Otherwise, only completion status is shown.
+Use Show-PSConfigFile to display the last execution output.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Loads and applies all settings from the specified config file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Invoke-PSConfigFile -ConfigFile .\PSConfigFile.xml -DisplayOutput
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Runs the config file and displays detailed output for each step.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>New-PSConfigCertificate</command:name>
+      <maml:description>
+        <maml:para>Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>New</command:verb>
+      <command:noun>PSConfigCertificate</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function generates a new self-signed certificate (or renews an existing one) used to encrypt and decrypt credentials stored in your configuration file. This ensures your sensitive data remains secure and portable across trusted systems. After creating the certificate, all saved credentials are re-encrypted for continued security.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-PSConfigCertificate</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters />
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Object</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+New-PSConfigCertificate
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Creates or renews the self-signed certificate for credential encryption and re-encrypts all saved credentials.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>New-PSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.</maml:para>
+      </maml:description>
+      <command:verb>New</command:verb>
+      <command:noun>PSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function initializes a new configuration file in the specified directory, capturing your environment's settings, drives, functions, credentials, variables, and more. If a config file already exists in the folder, it will be renamed as a backup before creating the new one. You can specify how many backup copies to keep when the config changes.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-PSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>BackupsToKeep</maml:name>
+          <maml:description>
+            <maml:para>The number of backup copies to keep when the config file is changed.
+Older backups beyond this number will be deleted automatically.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+          <maml:name>ConfigDir</maml:name>
+          <maml:description>
+            <maml:para>The directory where the new config file will be created.
+The directory will be created if it does not exist.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">DirectoryInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>BackupsToKeep</maml:name>
+        <maml:description>
+          <maml:para>The number of backup copies to keep when the config file is changed.
+Older backups beyond this number will be deleted automatically.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">Int32</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="true" variableLength="false" globbing="false">
+        <maml:name>ConfigDir</maml:name>
+        <maml:description>
+          <maml:para>The directory where the new config file will be created.
+The directory will be created if it does not exist.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">DirectoryInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+New-PSConfigFile -ConfigDir C:\\Temp\\config -BackupsToKeep 3
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Creates a new config file in C:\Temp\config and keeps up to 3 backup copies.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+New-PSConfigFile -ConfigDir .
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Creates a new config file in the current directory with the default number of backups.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Remove-ConfigFromPSConfigFile</command:name>
+      <maml:description>
+        <maml:para>Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Remove</command:verb>
+      <command:noun>ConfigFromPSConfigFile</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Use this function to remove a specific configuration item from your config file, such as a PSDrive, function, variable, command, credential, default parameter, or location. This is useful for cleaning up or updating your configuration as your environment changes. You can optionally force the config file to be deleted before saving the new one.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-ConfigFromPSConfigFile</maml:name>
+        <command:parameter pipelineInput="false" position="4" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Command</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the command(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="5" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the credential(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="3" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Function</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the function(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="7" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Location</maml:name>
+          <maml:description>
+            <maml:para>If specified, removes the default location from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="6" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>PSDefaults</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the default parameter(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>PSDrive</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the PSDrive(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Variable</maml:name>
+          <maml:description>
+            <maml:para>The name(s) of the variable(s) to remove from the config file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="4" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Command</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the command(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="5" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the credential(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="3" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Function</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the function(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="7" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Location</maml:name>
+        <maml:description>
+          <maml:para>If specified, removes the default location from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="6" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>PSDefaults</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the default parameter(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="2" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>PSDrive</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the PSDrive(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Variable</maml:name>
+        <maml:description>
+          <maml:para>The name(s) of the variable(s) to remove from the config file.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Remove-ConfigFromPSConfigFile -PSDrive ProdMods
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Removes the 'ProdMods' PSDrive from the config file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Remove-ConfigFromPSConfigFile -Variable AzureToken -Force
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Removes the 'AzureToken' variable, overwriting the config file if it exists.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Set-PSConfigFileExecution</command:name>
+      <maml:description>
+        <maml:para>Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.</maml:para>
+      </maml:description>
+      <command:verb>Set</command:verb>
+      <command:noun>PSConfigFileExecution</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function adds or removes the command to invoke your PSConfigFile configuration from your PowerShell profile or a specified module. This ensures your environment is set up automatically every time you start a new session. You can also choose to include the DisplayOutput parameter for verbose startup information.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-PSConfigFileExecution</maml:name>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>DisplayOutput</maml:name>
+          <maml:description>
+            <maml:para>If specified, adds the DisplayOutput parameter to the invoke command in your profile for detailed output at startup.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>PSProfile</maml:name>
+          <maml:description>
+            <maml:para>Specifies whether to add or remove the config execution command from your PowerShell profile.
+Accepts values like 'AddScript' or 'RemoveScript'.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>DisplayOutput</maml:name>
+        <maml:description>
+          <maml:para>If specified, adds the DisplayOutput parameter to the invoke command in your profile for detailed output at startup.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>PSProfile</maml:name>
+        <maml:description>
+          <maml:para>Specifies whether to add or remove the config execution command from your PowerShell profile.
+Accepts values like 'AddScript' or 'RemoveScript'.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Adds the config execution command with detailed output to your PowerShell profile.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Set-PSConfigFileExecution -PSProfile RemoveScript
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Removes the config execution command from your PowerShell profile.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Update-PSConfigFileCredentials</command:name>
+      <maml:description>
+        <maml:para>Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.</maml:para>
+      </maml:description>
+      <command:verb>Update</command:verb>
+      <command:noun>PSConfigFileCredentials</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>This function allows you to renew the self-signed certificate used for credential encryption, and to re-encrypt or update saved credentials for your PowerShell environment. This is useful when certificates expire, passwords change, or you need to ensure compatibility across PowerShell editions (Core/Desktop). You can renew all credentials or select specific ones by name.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-PSConfigFileCredentials</maml:name>
+        <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+          <maml:name>RenewSavedPasswords</maml:name>
+          <maml:description>
+            <maml:para>Specifies which saved credentials to renew.
+Use 'All' to renew all credentials, or provide an array of credential names.
+Run in both PowerShell Core and Desktop to ensure compatibility.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter pipelineInput="false" position="Named" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>Force</maml:name>
+        <maml:description>
+          <maml:para>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter pipelineInput="false" position="1" aliases="none" required="false" variableLength="false" globbing="false">
+        <maml:name>RenewSavedPasswords</maml:name>
+        <maml:description>
+          <maml:para>Specifies which saved credentials to renew.
+Use 'All' to renew all credentials, or provide an array of credential names.
+Run in both PowerShell Core and Desktop to ensure compatibility.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">String[]</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- EXAMPLE 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Update-PSConfigFileCredentials -RenewSavedPasswords All
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Prompts to renew all saved credentials in the config file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>```
+Update-PSConfigFileCredentials -RenewSavedPasswords AdminUser,LabTest
+```</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Renews only the 'AdminUser' and 'LabTest' credentials.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+</helpItems>

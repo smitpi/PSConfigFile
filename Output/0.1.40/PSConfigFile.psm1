@@ -1,4 +1,4 @@
-#region Public Functions
+﻿#region Public Functions
 #region Add-CommandToPSConfigFile.ps1
 ######## Function 1 of 15 ##################
 # Function:         Add-CommandToPSConfigFile
@@ -7,7 +7,7 @@
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:27 AM
-# ModifiedOn:       3/3/2026 1:18:24 PM
+# ModifiedOn:       3/3/2026 2:14:24 PM
 # Synopsis:         Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.
 #############################################
  
@@ -35,10 +35,6 @@ Adds a script block named 'DriveC' that lists the contents of the C drive every 
 Add-CommandToPSConfigFile -ScriptBlockName Startup -ScriptBlock "Write-Host 'Welcome!'" -Force
 Adds a script block named 'Startup' that displays a welcome message, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation.
 #>
 function Add-CommandToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile')]
@@ -135,7 +131,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:23 AM
-# ModifiedOn:       3/3/2026 1:07:16 PM
+# ModifiedOn:       3/3/2026 2:14:33 PM
 # Synopsis:         Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.
 #############################################
  
@@ -164,10 +160,6 @@ Prompts for credentials and saves them securely in the config file under the nam
 Add-CredentialToPSConfigFile -Name AdminUser -Credential (Get-Credential) -Force
 Saves a credential named 'AdminUser', overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Credentials are encrypted using a self-signed certificate for security and portability.
 #>
 function Add-CredentialToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile')]
@@ -299,7 +291,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:06 AM
-# ModifiedOn:       3/3/2026 1:18:39 PM
+# ModifiedOn:       3/3/2026 2:14:44 PM
 # Synopsis:         Adds a named PowerShell function (shortcut) to the PSConfigFile configuration.
 #############################################
  
@@ -327,10 +319,6 @@ Adds a function named 'psml' that imports all PowerShell modules in the current 
 Add-FunctionToPSConfigFile -FunctionName CleanLogs -CommandToRun "Remove-Item C:\\Logs\\* -Recurse -Force" -Force
 Adds a function named 'CleanLogs' to delete all log files, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation.
 #>
 function Add-FunctionToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile')]
@@ -425,7 +413,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:09 AM
-# ModifiedOn:       3/3/2026 2:02:45 PM
+# ModifiedOn:       3/3/2026 2:14:55 PM
 # Synopsis:         Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
 #############################################
  
@@ -453,13 +441,6 @@ Sets the default location to the 'temp' PSDrive when the config is invoked.
 Add-LocationToPSConfigFile -FolderPath C:\temp
 Sets the default location to the 'C:\temp' folder when the config is invoked.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure your PowerShell session always starts in the correct directory or drive.
-
-.LINK
-https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile
 #>
 
 function Add-LocationToPSConfigFile {
@@ -570,7 +551,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:24 AM
-# ModifiedOn:       3/3/2026 1:02:28 PM
+# ModifiedOn:       3/3/2026 2:15:09 PM
 # Synopsis:         Adds a default parameter value for a function to the PSConfigFile configuration.
 #############################################
  
@@ -601,10 +582,6 @@ Sets a default value for the 'PSLauncherConfigFile' parameter of the 'Start-PSLa
 Add-PSDefaultParameterToPSConfigFile -Function *-Item -Parameter Path -Value C:\\Data -Force
 Sets a default 'Path' for all functions ending with '-Item', overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to streamline your PowerShell workflow with persistent default parameters.
 #>
 function Add-PSDefaultParameterToPSConfigFile {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile')]
@@ -693,7 +670,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:45:55 AM
-# ModifiedOn:       3/3/2026 1:18:39 PM
+# ModifiedOn:       3/3/2026 2:15:21 PM
 # Synopsis:         Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
 #############################################
  
@@ -719,10 +696,6 @@ Registers the 'TempDir' PSDrive in the config file for automatic use in future s
 Add-PSDriveToPSConfigFile -DriveName ProdModules -Force
 Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to ensure custom drives are always available in your PowerShell environment.
 #>
 function Add-PSDriveToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile')]
@@ -811,7 +784,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:45:53 AM
-# ModifiedOn:       3/3/2026 12:59:07 PM
+# ModifiedOn:       3/3/2026 2:15:27 PM
 # Synopsis:         Adds one or more existing variables to the PSConfigFile configuration for automatic session import.
 #############################################
  
@@ -836,10 +809,6 @@ Adds the 'AzureToken' variable to the config file for automatic import in future
 Add-VariableToPSConfigFile -VariableNames Path1,Path2 -Force
 Adds both 'Path1' and 'Path2' variables, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to persist important variables between PowerShell sessions.
 #>
 function Add-VariableToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile')]
@@ -943,7 +912,7 @@ Export-ModuleMember -Function Add-VariableToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:04 AM
-# ModifiedOn:       3/3/2026 10:00:48 AM
+# ModifiedOn:       3/3/2026 2:15:33 PM
 # Synopsis:         Exports the self-signed certificate (PFX) used for credential encryption in your PSConfigFile configuration.
 #############################################
  
@@ -965,10 +934,6 @@ $creds = Get-Credential
 Export-PSConfigFilePFX -Path C:\temp -Credential $creds
 Exports the certificate to C:\temp, protected by the provided credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to securely transfer your credential encryption certificate to other systems.
 #>
 function Export-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX')]
@@ -1004,7 +969,7 @@ Export-ModuleMember -Function Export-PSConfigFilePFX
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:45:58 AM
-# ModifiedOn:       3/3/2026 10:00:48 AM
+# ModifiedOn:       3/3/2026 2:15:40 PM
 # Synopsis:         Imports a self-signed certificate (PFX) for credential decryption in your PSConfigFile configuration.
 #############################################
  
@@ -1033,10 +998,6 @@ Imports the certificate from C:\temp, using the provided credentials for decrypt
 Import-PSConfigFilePFX -Path .\PSConfigFileCert.pfx -Credential (Get-Credential) -Force
 Imports and overwrites any existing certificate with the same name.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to restore credential decryption capability on new or rebuilt systems.
 #>
 function Import-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX')]
@@ -1072,7 +1033,7 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:00 AM
-# ModifiedOn:       3/3/2026 12:46:08 PM
+# ModifiedOn:       3/3/2026 2:15:47 PM
 # Synopsis:         Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
 #############################################
  
@@ -1097,10 +1058,6 @@ Loads and applies all settings from the specified config file.
 Invoke-PSConfigFile -ConfigFile .\PSConfigFile.xml -DisplayOutput
 Runs the config file and displays detailed output for each step.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to automate and standardize your PowerShell environment setup.
 #>
 function Invoke-PSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile')]
@@ -1370,7 +1327,7 @@ Export-ModuleMember -Function Invoke-PSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        3/3/2026 9:56:58 AM
-# ModifiedOn:       3/3/2026 10:00:50 AM
+# ModifiedOn:       3/3/2026 2:15:53 PM
 # Synopsis:         Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.
 #############################################
  
@@ -1385,10 +1342,6 @@ This function generates a new self-signed certificate (or renews an existing one
 New-PSConfigCertificate
 Creates or renews the self-signed certificate for credential encryption and re-encrypts all saved credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Run this if your certificate is expiring or you need to reset credential encryption.
 #>
 function New-PSConfigCertificate {
 	[Cmdletbinding(DefaultParameterSetName = 'Set1', HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigCertificate')]
@@ -1429,7 +1382,7 @@ Export-ModuleMember -Function New-PSConfigCertificate
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:10 AM
-# ModifiedOn:       3/3/2026 10:00:50 AM
+# ModifiedOn:       3/3/2026 2:15:59 PM
 # Synopsis:         Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
 #############################################
  
@@ -1454,10 +1407,6 @@ Creates a new config file in C:\Temp\config and keeps up to 3 backup copies.
 New-PSConfigFile -ConfigDir .
 Creates a new config file in the current directory with the default number of backups.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to start managing your PowerShell environment with a portable, versioned config file.
 #>
 function New-PSConfigFile {
     [Cmdletbinding(SupportsShouldProcess = $true, HelpURI = 'https://smitpi.github.io/PSConfigFile/New-PSConfigFile')]
@@ -1544,7 +1493,7 @@ Export-ModuleMember -Function New-PSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:01 AM
-# ModifiedOn:       3/3/2026 1:18:39 PM
+# ModifiedOn:       3/3/2026 2:16:07 PM
 # Synopsis:         Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 #############################################
  
@@ -1587,10 +1536,6 @@ Removes the 'ProdMods' PSDrive from the config file.
 Remove-ConfigFromPSConfigFile -Variable AzureToken -Force
 Removes the 'AzureToken' variable, overwriting the config file if it exists.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to keep your configuration file clean and up to date.
 #>
 function Remove-ConfigFromPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile')]
@@ -1758,7 +1703,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:16 AM
-# ModifiedOn:       3/3/2026 1:18:39 PM
+# ModifiedOn:       3/3/2026 2:16:16 PM
 # Synopsis:         Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
 #############################################
  
@@ -1783,10 +1728,6 @@ Adds the config execution command with detailed output to your PowerShell profil
 Set-PSConfigFileExecution -PSProfile RemoveScript
 Removes the config execution command from your PowerShell profile.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to automate your environment setup every time you launch PowerShell.
 #>
 
 function Set-PSConfigFileExecution {
@@ -1879,7 +1820,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        3/3/2026 9:15:04 AM
-# ModifiedOn:       3/3/2026 1:03:37 PM
+# ModifiedOn:       3/3/2026 2:16:18 PM
 # Synopsis:         Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.
 #############################################
  
@@ -1904,10 +1845,6 @@ Prompts to renew all saved credentials in the config file.
 Update-PSConfigFileCredentials -RenewSavedPasswords AdminUser,LabTest
 Renews only the 'AdminUser' and 'LabTest' credentials.
 
-.NOTES
-Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Use this to keep your credential storage secure and up to date.
 #>
 function Update-PSConfigFileCredentials {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials')]
