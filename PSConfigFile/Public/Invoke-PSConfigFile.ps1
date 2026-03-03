@@ -92,7 +92,7 @@ function Invoke-PSConfigFile {
             $confile = Get-Item $FileBrowser.FileName
         } else {
             Write-Error 'No valid Config file found.'
-            exit
+            return
         }
     }
     #region import file

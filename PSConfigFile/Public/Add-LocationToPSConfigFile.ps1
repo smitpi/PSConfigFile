@@ -170,6 +170,7 @@ function Add-LocationToPSConfigFile {
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Host 'Working Directory Changed: ' -ForegroundColor Green -NoNewline
+        Write-Host "$($PathName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 

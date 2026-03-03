@@ -122,7 +122,7 @@ function Add-FunctionToPSConfigFile {
                 Command = $CommandToRun
             })
     } else {
-        $XMLData.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
+        $XMLData.PSFunction | Where-Object {$_.Name -notlike $FunctionName} | ForEach-Object {$FunctionObject.Add($_)}
         $FunctionObject.Add([PSCustomObject]@{
                 Name    = $FunctionName 
                 Command = $CommandToRun

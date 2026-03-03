@@ -54,7 +54,7 @@ Use this function to securely store a PowerShell credential object in your confi
 The unique variable name to assign to the credential in the config file. This name is used to reference the credential when invoking commands from the config.
 
 .PARAMETER Credential
-The PowerShell credential object to be securely stored. Use Get-Credential to create this object.
+The PowerShell credential object to be securely stored. Use Get-Credential to create this object first.
 
 .PARAMETER Force
 If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
@@ -78,7 +78,7 @@ function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	param(
 		[string]$Name,
-		[pscredential]$Credential,
+		[string]$Credential,
 		[switch]$Force
 	)
 
@@ -106,6 +106,7 @@ function Add-CredentialToPSConfigFile {
 			ModifiedAction = "Added Credencial: $($Name)"
 		}
 	}
+	[pscredential]$FindCred = (Get-Variable -Name "$($Credential)").Value
 
 	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 	if (-not($selfcert)) {
@@ -127,12 +128,12 @@ function Add-CredentialToPSConfigFile {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 	}
 
-	$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
+	$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($FindCred.Password)
 	$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
 	[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 	if ($PSVersionTable.PSEdition -eq 'PSDesktop') {
 		Write-Error 'Credentials is only a feature of Powershell core.'
-		exit
+		return
 	} else {
 		$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 		$Edition = 'PSCore'
@@ -147,15 +148,15 @@ function Add-CredentialToPSConfigFile {
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
-				UserName     = $Credential.UserName
+				UserName     = $FindCred.UserName
 				EncryptedPwd = $EncryptedPwd
 			})
 	} else {
-		$XMLData.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
+		$XMLData.PSCreds | Where-Object {$_.Name -notlike $Name} | ForEach-Object {[void]$SetCreds.Add($_)}
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
-				UserName     = $Credential.UserName
+				UserName     = $FindCred.UserName
 				EncryptedPwd = $EncryptedPwd
 			})
 	}
@@ -185,3 +186,8 @@ function Add-CredentialToPSConfigFile {
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
 
+$scriptblock = {
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+	Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
+}
+Register-ArgumentCompleter -CommandName Add-CredentialToPSConfigFile -ParameterName Credential -ScriptBlock $scriptBlock

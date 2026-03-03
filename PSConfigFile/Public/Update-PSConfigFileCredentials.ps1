@@ -109,8 +109,6 @@ function Update-PSConfigFileCredentials {
 		$Update = @()
 		[System.Collections.generic.List[PSObject]]$CredsObject = @()
 		[System.Collections.generic.List[PSObject]]$RenewCredsObject = @()
-		[System.Collections.generic.List[PSObject]]$ThisEdition = @()
-		[System.Collections.generic.List[PSObject]]$OtherEdition = @()
 		$AllCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique 
 
 		if ($RenewSavedPasswords -like 'All') {
@@ -130,7 +128,7 @@ function Update-PSConfigFileCredentials {
 			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
 				Write-Error 'Credentials is only a feature of Powershell core.'
-				exit
+				return
 			} else {
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
@@ -171,10 +169,13 @@ function Update-PSConfigFileCredentials {
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
 } #end Function
-$scriptblock = {
+
+$PSCredential = {
 	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+	$confile = Get-Item $PSConfigFile
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$var = @('All')
-	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
+	$var += $XMLData.PSCreds | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { "$($_.name)" }
 	$var
 }
-Register-ArgumentCompleter -CommandName Update-PSConfigFileCredentials -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
+Register-ArgumentCompleter -CommandName Update-PSConfigFileCredentials -ParameterName RenewSavedPasswords -ScriptBlock $PSCredential

@@ -117,7 +117,7 @@ function Add-PSDefaultParameterToPSConfigFile {
 				Value = $Value
 			})
 	} else {
-		$XMLData.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
+		$XMLData.PSDefaults | Where-Object {$_.Name -notlike "$($Function):$($Parameter)"} | ForEach-Object {[void]$PSDefaultObject.Add($_)}
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value

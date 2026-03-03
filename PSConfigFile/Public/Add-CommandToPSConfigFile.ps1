@@ -121,7 +121,7 @@ function Add-CommandToPSConfigFile {
                 ScriptBlock = $ScriptBlock
             })
     } else {
-        $XMLData.Execute | ForEach-Object {$ExecuteObject.Add($_)}
+        $XMLData.Execute | Where-Object {$_.Name -notlike $ScriptBlockName} | ForEach-Object {$ExecuteObject.Add($_)}
         $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = ($IndexID + 1 )

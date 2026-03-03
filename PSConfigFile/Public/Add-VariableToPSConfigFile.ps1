@@ -85,7 +85,7 @@ function Add-VariableToPSConfigFile {
             $confile = Get-Item $FileBrowser.FileName
         } else {
             Write-Error 'No valid Config file found.'
-            exit
+            return
         }
     }
 
@@ -118,7 +118,7 @@ function Add-VariableToPSConfigFile {
                     value = $InputVar.Value
                 })        
         } else {
-            $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $XMLData.SetVariable | Where-Object {$_.Name -notlike $InputVar.Name.ToString()} | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
                     Name  = $InputVar.Name.ToString()
                     value = $InputVar.Value

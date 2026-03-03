@@ -17,22 +17,18 @@ Add-CommandToPSConfigFile -ScriptBlockName childitem -ScriptBlock "get-childitem
 
 $cred = Get-Credential
 Add-CredentialToPSConfigFile -Name Cred -Credential $cred
-#TODO AutoComplete does not work
-Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
+#TODO Should not ask for the password again.
 
 Add-FunctionToPSConfigFile -FunctionName cdt -CommandToRun "cd \temp"
-Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 
 New-PSDrive -Name tmp -PSProvider FileSystem -Root C:\temp\tmp
 Add-LocationToPSConfigFile -LocationType Folder -Path C:\temp\tmp2
-#TODO Folder fails:   } catch { throw 'Could not find path' } 
-Add-LocationToPSConfigFile -LocationType PSDrive -Path tmp
+
+Add-LocationToPSConfigFile -PSDriveName tmp
 
 Add-PSDriveToPSConfigFile -DriveName tmp
-Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 
 Add-PSDefaultParameterToPSConfigFile -Function Start-PSSysTray -Parameter PSSysTrayConfigFile -Value "C:\Users\ladmin\Dropbox\#Profile\Documents\PowerShell\ProdModules\@Lab-Scripts\LabScripts\Private\App_Setup\PSLauncher\PSSysTrayConfig.csv"
-Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
 
 [int]$blah = 1
 [string]$blah2 = "11"
@@ -41,13 +37,12 @@ $object = [pscustomobject]@{
     Blah = $blah
     Blah2 = $blah2
 }
-Add-VariableToPSConfigFile -VariableNames blah
-Add-VariableToPSConfigFile -VariableNames blah2
-Add-VariableToPSConfigFile -VariableNames object
+Add-VariableToPSConfigFile -VariableNames blah -Force
+Add-VariableToPSConfigFile -VariableNames blah2  -Force
+Add-VariableToPSConfigFile -VariableNames object  -Force
+#TODO Check for duplicate config first.
 
 Remove-Variable blah,blah2,object
-Invoke-PSConfigFile -ConfigFile $psconfigfile -DisplayOutput
-
 
 Export-PSConfigFilePFX -Path c:\temp\tmp -Credential $cred
 Import-PSConfigFilePFX -Path C:\temp\tmp\PSConfigFileCert.pfx -Credential $cred -Force
@@ -58,6 +53,7 @@ New-PSConfigCertificate
 Set-PSConfigFileExecution -PSProfile AddScript -DisplayOutput
 notepad $profile
 
+Invoke-PSConfigFile -ConfigFile C:\temp\tmp2\PSConfigFile.xml -DisplayOutput
 
 
 ###################################

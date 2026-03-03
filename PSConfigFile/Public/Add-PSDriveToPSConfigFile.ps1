@@ -118,7 +118,7 @@ function Add-PSDriveToPSConfigFile {
                 Root = $InputDrive.Root
             })
     } else {
-        $XMLData.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $XMLData.PSDrive | Where-Object {$_.Name -notlike $InputDrive.Name} | ForEach-Object {$PSDriveObject.Add($_)}
         $PSDriveObject.Add([PSCustomObject]@{
                 Name = $InputDrive.Name
                 Root = $InputDrive.Root
