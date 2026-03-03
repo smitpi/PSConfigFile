@@ -1,13 +1,13 @@
 
 <#PSScriptInfo
 
-.VERSION 0.1.0
+.VERSION 1.1.5
 
 .GUID 23d79e04-6c65-4fff-841c-4dc2c6b3576c
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -30,7 +30,9 @@ Created [03/03/2026_09:56] Initial Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 <# 
 

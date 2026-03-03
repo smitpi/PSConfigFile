@@ -1,12 +1,12 @@
-﻿<#PSScriptInfo
+<#PSScriptInfo
 
-.VERSION 1.1.4
+.VERSION 1.1.5
 
 .GUID b282e3bd-08f5-41ba-9c63-8306ce5c45a6
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -18,7 +18,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
@@ -33,7 +33,9 @@ Updated [13/11/2021_16:30] Added Function Script
 
 .PRIVATEDATA
 
-#>
+#> 
+
+
 
 
 

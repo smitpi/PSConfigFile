@@ -1,13 +1,13 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 0.1.2
+.VERSION 1.1.5
 
 .GUID c3886845-ff95-4e7c-9284-5b297fcb102a
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
@@ -30,7 +30,11 @@ Created [13/11/2021_15:18] Initial Script Creating
 Updated [13/11/2021_16:30] Added Function Script
 Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
-#>
+.PRIVATEDATA
+
+#> 
+
+
 
 
 

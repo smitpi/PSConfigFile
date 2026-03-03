@@ -1,13 +1,13 @@
-﻿
+
 <#PSScriptInfo
 
-.VERSION 0.1.1
+.VERSION 1.1.5
 
 .GUID e01db8ba-089a-4bbf-a255-4db496569215
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME HTPCZA Tech
+.COMPANYNAME Private
 
 .COPYRIGHT
 
@@ -19,7 +19,7 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES
+.EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
 
@@ -29,11 +29,14 @@
 Created [18/11/2021_08:26] Initial Script Creating
 Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
-#>
+.PRIVATEDATA
 
-
+#> 
 
 #Requires -Module PSWriteColor
+
+
+
 
 <#
 
