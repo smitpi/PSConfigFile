@@ -12,26 +12,28 @@
         <meta name="author" content="Pierre Smit">
       
       
-        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/">
+        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/PSConfigFile/Add-PSDriveToPSConfigFile/">
       
       
+        <link rel="prev" href="../Add-PSDefaultParameterToPSConfigFile/">
       
-        <link rel="next" href="PSConfigFile/Add-CommandToPSConfigFile/">
+      
+        <link rel="next" href="../Add-VariableToPSConfigFile/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>PSConfigFile</title>
+        <title>Add-PSDriveToPSConfigFile - PSConfigFile</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -50,7 +52,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -68,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#psconfigfile" class="md-skip">
+        <a href="#add-psdrivetopsconfigfile" class="md-skip">
           Skip to content
         </a>
       
@@ -84,7 +86,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="PSConfigFile" class="md-header__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
+    <a href="../.." title="PSConfigFile" class="md-header__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -104,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PSConfigFile
+              Add-PSDriveToPSConfigFile
             
           </span>
         </div>
@@ -194,7 +196,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="PSConfigFile" class="md-nav__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
+    <a href="../.." title="PSConfigFile" class="md-nav__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -221,37 +223,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    PSConfigFile
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -267,70 +242,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Getting Started
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ps-controller-scripts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PS Controller Scripts
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Functions
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -339,18 +250,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -371,7 +284,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -389,7 +302,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-CommandToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-CommandToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -417,7 +330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-CredentialToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-CredentialToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -445,7 +358,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-FunctionToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-FunctionToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -473,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-LocationToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-LocationToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -501,7 +414,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-PSDefaultParameterToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-PSDefaultParameterToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -526,10 +439,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="PSConfigFile/Add-PSDriveToPSConfigFile/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add-PSDriveToPSConfigFile
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -545,6 +485,220 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNOPSIS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNTAX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SYNTAX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#__allparametersets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __AllParameterSets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ALIASES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DESCRIPTION
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLES
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EXAMPLES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PARAMETERS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PARAMETERS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-drivename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -DriveName
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-force" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -Force
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commonparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommonParameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        INPUTS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OUTPUTS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOTES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RELATED LINKS
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -557,7 +711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Add-VariableToPSConfigFile/" class="md-nav__link">
+      <a href="../Add-VariableToPSConfigFile/" class="md-nav__link">
         
   
   
@@ -585,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Export-PSConfigFilePFX/" class="md-nav__link">
+      <a href="../Export-PSConfigFilePFX/" class="md-nav__link">
         
   
   
@@ -613,7 +767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Import-PSConfigFilePFX/" class="md-nav__link">
+      <a href="../Import-PSConfigFilePFX/" class="md-nav__link">
         
   
   
@@ -641,7 +795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Invoke-PSConfigFile/" class="md-nav__link">
+      <a href="../Invoke-PSConfigFile/" class="md-nav__link">
         
   
   
@@ -669,7 +823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/New-PSConfigCertificate/" class="md-nav__link">
+      <a href="../New-PSConfigCertificate/" class="md-nav__link">
         
   
   
@@ -697,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/New-PSConfigFile/" class="md-nav__link">
+      <a href="../New-PSConfigFile/" class="md-nav__link">
         
   
   
@@ -725,7 +879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Remove-ConfigFromPSConfigFile/" class="md-nav__link">
+      <a href="../Remove-ConfigFromPSConfigFile/" class="md-nav__link">
         
   
   
@@ -753,7 +907,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Set-PSConfigFileExecution/" class="md-nav__link">
+      <a href="../Set-PSConfigFileExecution/" class="md-nav__link">
         
   
   
@@ -781,7 +935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="PSConfigFile/Update-PSConfigFileCredentials/" class="md-nav__link">
+      <a href="../Update-PSConfigFileCredentials/" class="md-nav__link">
         
   
   
@@ -836,10 +990,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNOPSIS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNTAX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SYNTAX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#__allparametersets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __AllParameterSets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ALIASES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#description" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Description
+        DESCRIPTION
       
     </span>
   </a>
@@ -847,10 +1051,99 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        EXAMPLES
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EXAMPLES">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PARAMETERS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PARAMETERS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-drivename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -DriveName
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-force" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -Force
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commonparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommonParameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        INPUTS
       
     </span>
   </a>
@@ -858,10 +1151,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ps-controller-scripts" class="md-nav__link">
+  <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PS Controller Scripts
+        OUTPUTS
       
     </span>
   </a>
@@ -869,10 +1162,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
+  <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Functions
+        NOTES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RELATED LINKS
       
     </span>
   </a>
@@ -899,58 +1203,88 @@
   
 
 
-<h1 id="psconfigfile">PSConfigFile</h1>
-<h2 id="description">Description</h2>
-<p>PSConfigFile is an extension to your PowerShell profile that enables advanced, portable, and modular environment management. </p>
-<p>It creates a configuration file containing Variables, PSDrives, Credentials, Shortcuts (Functions), PSDefaultParameters, and a Starting Location. </p>
-<p>You can execute this config automatically when your profile loads, or manually at any time, making all your environment settings instantly available in your session. Effortlessly switch between different environment setups, share configurations across systems, and keep your PowerShell experience consistent and efficient.</p>
-<h2 id="getting-started">Getting Started</h2>
-<ul>
-<li>Install from PowerShell Gallery <a href="https://www.powershellgallery.com/packages/PSConfigFile">PS Gallery</a></li>
-</ul>
-<p><div class="highlight"><pre><span></span><code>Install-Module -Name PSConfigFile -Verbose
+<h1 id="add-psdrivetopsconfigfile">Add-PSDriveToPSConfigFile</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p>Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.</p>
+<h2 id="syntax">SYNTAX</h2>
+<h3 id="__allparametersets">__AllParameterSets</h3>
+<div class="highlight"><pre><span></span><code>Add-PSDriveToPSConfigFile [[-DriveName] &lt;string&gt;] [-Force] [&lt;CommonParameters&gt;]
 </code></pre></div>
-- or run this script to install from GitHub <a href="https://github.com/smitpi/PSConfigFile">GitHub Repo</a></p>
-<p><div class="highlight"><pre><span></span><code>$CurrentLocation = Get-Item .
-$ModuleDestination = (Join-Path (Get-Item (Join-Path (Get-Item $profile).Directory &#39;Modules&#39;)).FullName -ChildPath PSConfigFile)
-git clone --depth 1 https://github.com/smitpi/PSConfigFile $ModuleDestination 2&gt;&amp;1 | Write-Host -ForegroundColor Yellow
-Set-Location $ModuleDestination
-git filter-branch --prune-empty --subdirectory-filter Output HEAD 2&gt;&amp;1 | Write-Host -ForegroundColor Yellow
-Set-Location $CurrentLocation
+<h2 id="aliases">ALIASES</h2>
+<p>This cmdlet has the following aliases,
+  {{Insert list of aliases}}</p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Use this function to register a PowerShell drive (PSDrive) in your configuration file.
+When the config is invoked, the drive will be automatically available in your session, streamlining access to file systems, registries, or other providers.
+The PSDrive must already exist (use New-PSDrive to create it first).</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="example-1">EXAMPLE 1</h3>
+<p>New-PSDrive -Name TempDir -PSProvider FileSystem -Root "C:\Temp"
+Add-PSDriveToPSConfigFile -DriveName TempDir
+Registers the 'TempDir' PSDrive in the config file for automatic use in future sessions.</p>
+<h3 id="example-2">EXAMPLE 2</h3>
+<p>Add-PSDriveToPSConfigFile -DriveName ProdModules -Force
+Adds the 'ProdModules' PSDrive, overwriting the config file if it exists.</p>
+<h2 id="parameters">PARAMETERS</h2>
+<h3 id="-drivename">-DriveName</h3>
+<p>The name of the PSDrive to add.
+The drive must already exist in the current session.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">String</span>
+<span class="nt">DefaultValue</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<span class="nt">SupportsWildcards</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="nt">ParameterSets</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="w">  </span><span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">IsRequired</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromPipeline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromPipelineByPropertyName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromRemainingArguments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">DontShow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">AcceptedValues</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="nt">HelpMessage</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 </code></pre></div>
-- Then import the module into your session</p>
-<p><div class="highlight"><pre><span></span><code>Import-Module PSConfigFile -Verbose -Force
+<h3 id="-force">-Force</h3>
+<p>If specified, the config file will be deleted before saving the new one.
+If not specified and a config file exists, it will be renamed as a backup before saving the new version.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span>
+<span class="nt">DefaultValue</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">SupportsWildcards</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">Aliases</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="nt">ParameterSets</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="w">  </span><span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span>
+<span class="w">  </span><span class="nt">IsRequired</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromPipeline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromPipelineByPropertyName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">ValueFromRemainingArguments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">DontShow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">AcceptedValues</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="nt">HelpMessage</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 </code></pre></div>
-- or run these commands for more help and details.</p>
-<div class="highlight"><pre><span></span><code>Get-Command -Module PSConfigFile
-Get-Help about_PSConfigFile
-</code></pre></div>
-<p>Documentation can be found at: <a href="https://smitpi.github.io/PSConfigFile">Github_Pages</a></p>
-<h2 id="ps-controller-scripts">PS Controller Scripts</h2>
-<h2 id="functions">Functions</h2>
-<ul>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-CommandToPSConfigFile"><code>Add-CommandToPSConfigFile</code></a> -- Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-CredentialToPSConfigFile"><code>Add-CredentialToPSConfigFile</code></a> -- Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-FunctionToPSConfigFile"><code>Add-FunctionToPSConfigFile</code></a> -- Adds a named PowerShell function (shortcut) to the PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile"><code>Add-LocationToPSConfigFile</code></a> -- Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-PSDefaultParameterToPSConfigFile"><code>Add-PSDefaultParameterToPSConfigFile</code></a> -- Adds a default parameter value for a function to the PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-PSDriveToPSConfigFile"><code>Add-PSDriveToPSConfigFile</code></a> -- Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Add-VariableToPSConfigFile"><code>Add-VariableToPSConfigFile</code></a> -- Adds one or more existing variables to the PSConfigFile configuration for automatic session import.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Export-PSConfigFilePFX"><code>Export-PSConfigFilePFX</code></a> -- Exports the self-signed certificate (PFX) used for credential encryption in your PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX"><code>Import-PSConfigFilePFX</code></a> -- Imports a self-signed certificate (PFX) for credential decryption in your PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile"><code>Invoke-PSConfigFile</code></a> -- Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/New-PSConfigCertificate"><code>New-PSConfigCertificate</code></a> -- Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/New-PSConfigFile"><code>New-PSConfigFile</code></a> -- Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile"><code>Remove-ConfigFromPSConfigFile</code></a> -- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution"><code>Set-PSConfigFileExecution</code></a> -- Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.</li>
-<li><a href="https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials"><code>Update-PSConfigFileCredentials</code></a> -- Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.</li>
-</ul>
+<h3 id="commonparameters">CommonParameters</h3>
+<p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+<a href="https://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
+<h2 id="inputs">INPUTS</h2>
+<h2 id="outputs">OUTPUTS</h2>
+<h2 id="notes">NOTES</h2>
+<p>Author: Pierre Smit
+Website: https://smitpi.github.io/PSConfigFile
+This function is part of the PSConfigFile module for managing PowerShell configuration automation.
+Use this to ensure custom drives are always available in your PowerShell environment.</p>
+<h2 id="related-links">RELATED LINKS</h2>
+<p>{{ Fill in the related links here }}</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1014,10 +1348,10 @@ Get-Help about_PSConfigFile
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
