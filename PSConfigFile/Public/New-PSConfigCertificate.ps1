@@ -1,3 +1,4 @@
+
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -30,6 +31,13 @@ Created [01/03/2026_07:22] Initial Script
 .PRIVATEDATA
 
 #>
+<#
+
+.DESCRIPTION
+This function generates a new self-signed certificate (or renews an existing one) used to encrypt and decrypt credentials stored in your configuration file. This ensures your sensitive data remains secure and portable across trusted systems. After creating the certificate, all saved credentials are re-encrypted for continued security.
+
+#>
+
 
 <#
 .SYNOPSIS
@@ -74,3 +82,4 @@ function New-PSConfigCertificate {
 
 	Update-PSConfigFileCredentials -RenewSavedPasswords 'All'
 } #end Function
+

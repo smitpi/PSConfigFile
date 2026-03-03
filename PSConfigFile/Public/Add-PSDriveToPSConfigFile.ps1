@@ -1,3 +1,4 @@
+﻿
 <#PSScriptInfo
 
 .VERSION 1.0.2
@@ -6,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -35,6 +36,14 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 
+
+
+<#
+
+.DESCRIPTION
+Add PSDrive to the config file
+
+#>
 
 
 <#
@@ -132,4 +141,5 @@ function Add-PSDriveToPSConfigFile {
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
+
 

@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -31,6 +31,14 @@ Created [21/05/2022_03:47] Initial Script Creating
 .PRIVATEDATA
 
 #>
+
+
+<# 
+
+.DESCRIPTION 
+ Creates a self signed cert, then uses it to securely save a credential to the config file. 
+
+#> 
 
 
 <#

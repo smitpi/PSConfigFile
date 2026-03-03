@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -42,6 +42,14 @@ Updated [13/11/2021_16:30] Added Function Script
 
 
 
+
+
+<#
+
+.DESCRIPTION
+Add a command to the config file
+
+#>
 
 
 <#

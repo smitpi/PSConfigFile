@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 1.1.4
@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -36,13 +36,12 @@ Updated [13/11/2021_16:30] Added Function Script
 
 #>
 
+<#
 
+.DESCRIPTION
+To store your settings
 
-
-
-
-
-
+#>
 
 <#
 .SYNOPSIS
@@ -142,3 +141,4 @@ function New-PSConfigFile {
     }
     Invoke-PSConfigFile -ConfigFile (Join-Path $Fullpath -ChildPath \PSConfigFile.xml) -DisplayOutput
 }
+

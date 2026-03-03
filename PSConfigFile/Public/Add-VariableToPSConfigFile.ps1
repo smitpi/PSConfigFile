@@ -1,3 +1,4 @@
+
 <#PSScriptInfo
 
 .VERSION 1.1.4
@@ -6,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -30,6 +31,14 @@
 .PRIVATEDATA
 
 #>
+
+<# 
+
+.DESCRIPTION 
+ Adds variable to the config file. 
+
+#> 
+
 
 <#
 .SYNOPSIS
@@ -68,12 +77,12 @@ function Add-VariableToPSConfigFile {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
         if ($IsWindows) {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
         } else {
-            Write-Error "No valid Config file found."
+            Write-Error 'No valid Config file found.'
             exit
         }
     }
@@ -146,3 +155,4 @@ $scriptblock = {
     Get-Variable | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object {"$($_.name)"}  
 }
 Register-ArgumentCompleter -CommandName Add-VariableToPSConfigFile -ParameterName VariableNames -ScriptBlock $scriptBlock
+

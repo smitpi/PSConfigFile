@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -33,6 +33,15 @@ Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecutio
 #>
 
 
+
+
+
+<#
+
+.DESCRIPTION
+Add Function to the config file.
+
+#>
 
 
 
@@ -140,14 +149,4 @@ function Add-FunctionToPSConfigFile {
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 } #end Function
-            Rename-Item -Path $confile -NewName "Outdated_PSConfigFile_$(Get-Date -Format yyyyMMdd_HHmm)_$(Get-Random -Maximum 50).xml" -Force
-            Write-Host 'Original ConfigFile Renamed' -ForegroundColor Yellow
-        }
-        $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
-        Write-Host 'Function Added: ' -ForegroundColor Green -NoNewline
-        Write-Host "$($FunctionName)" -ForegroundColor Yellow
-        Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
-    } catch { Write-Error "Error: `n $_" }
 
-
-} #end Function

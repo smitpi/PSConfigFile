@@ -7,18 +7,49 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
 .TAGS powershell ps
 
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+Created [04/10/2021_19:06] Initial Script Creating
+Updated [05/10/2021_08:30] Spit into more functions
+Updated [08/10/2021_20:51] Getting ready to upload
+Updated [14/10/2021_19:32] Added PSDrive Script
+Updated [13/11/2021_16:30] Added Function Script
+
+.PRIVATEDATA
+
+#>
+
+
+
+
+
+
+
+
+
+<#
 
 .DESCRIPTION
 Add a start-up location to the config file
 
 #>
-
 
 
 

@@ -1,4 +1,4 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.0
@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -32,6 +32,13 @@ Created [22/05/2022_07:47] Initial Script Creating
 
 #>
 
+
+<# 
+
+.DESCRIPTION 
+ Will display existing config with the option to remove it from the config file 
+
+#> 
 
 <#
 .SYNOPSIS

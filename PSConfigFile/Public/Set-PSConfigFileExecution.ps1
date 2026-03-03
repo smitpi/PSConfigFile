@@ -1,17 +1,17 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.1
 
-.GUID c9a080fb-962b-4f23-a9ea-defb81e835cd
+.GUID e01db8ba-089a-4bbf-a255-4db496569215
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
-.TAGS
+.TAGS ps
 
 .LICENSEURI
 
@@ -19,31 +19,28 @@
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-
-
-.PRIVATEDATA
+Created [18/11/2021_08:26] Initial Script Creating
+Updated [18/11/2021_08:31] Changed the update script to Set-PSConfigFileExecution
 
 #>
 
+
+
 #Requires -Module PSWriteColor
 
-<# 
+<#
 
-.DESCRIPTION 
- 
-Set-PSConfigFileExecution [-PSProfile <string>] [-DisplayOutput] [-WhatIf] [-Confirm] [<CommonParameters>]
- 
+.DESCRIPTION
+Adds functionality to add the execution to youttprafitmatrca PywerShull module
 
-#> 
-
-
+#>
 
 <#
 .SYNOPSIS

@@ -1,4 +1,47 @@
 
+<#PSScriptInfo
+
+.VERSION 0.1.0
+
+.GUID e7d4d90b-fd4b-433d-bd88-de782bbd6692
+
+.AUTHOR Pierre Smit
+
+.COMPANYNAME Private
+
+.COPYRIGHT
+
+.TAGS ps
+
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+Created [01/09/2022_18:30] Initial Script Creating
+
+.PRIVATEDATA
+
+#>
+
+#Requires -Module PSWriteColor
+
+<# 
+
+.DESCRIPTION 
+ Update the certificate or credentials from the config file 
+
+#> 
+
+
 <#
 .SYNOPSIS
 Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.

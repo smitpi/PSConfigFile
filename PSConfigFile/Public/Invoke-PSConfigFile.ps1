@@ -1,4 +1,4 @@
-<#PSScriptInfo
+﻿<#PSScriptInfo
 
 .VERSION 1.1.4
 
@@ -6,7 +6,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -35,7 +35,14 @@ Updated [13/11/2021_16:30] Added Function Script
 
 #>
 
-#Requires -Module PSWriteColor
+
+
+<#
+
+.DESCRIPTION
+Read and execute the config file
+
+#>
 
 
 <#
@@ -318,3 +325,4 @@ function Invoke-PSConfigFile {
     }
     
 } #end Function
+

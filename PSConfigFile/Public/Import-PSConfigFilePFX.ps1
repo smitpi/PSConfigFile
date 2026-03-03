@@ -7,11 +7,38 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
-#
+.TAGS ps
+
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+Created [18/08/2022_09:38] Initial Script Creating
+
+.PRIVATEDATA
+
+#>
+
+
+<# 
+
+.DESCRIPTION 
+ Import the PFX file for credentials 
+
+#> 
 
 <#
 .SYNOPSIS
@@ -43,8 +70,6 @@ Author: Pierre Smit
 Website: https://smitpi.github.io/PSConfigFile
 This function is part of the PSConfigFile module for managing PowerShell configuration automation. Use this to restore credential decryption capability on new or rebuilt systems.
 #>
-#>
-
 function Import-PSConfigFilePFX {
 	[Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Import-PSConfigFilePFX')]
 	[OutputType([System.Object[]])]

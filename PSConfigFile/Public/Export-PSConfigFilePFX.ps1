@@ -7,7 +7,7 @@
 
 .AUTHOR Pierre Smit
 
-.COMPANYNAME Private
+.COMPANYNAME HTPCZA Tech
 
 .COPYRIGHT
 
@@ -17,7 +17,28 @@
 
 .PROJECTURI
 
-#
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+Created [18/08/2022_09:33] Initial Script Creating
+
+.PRIVATEDATA
+
+#>
+
+
+<# 
+
+.DESCRIPTION 
+ Export the PFX file for credentials 
+
+#> 
 
 <#
 .SYNOPSIS
