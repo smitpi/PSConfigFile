@@ -60,5 +60,4 @@ You can execute this config automatically when your profile loads, or manually a
 - [`New-PSConfigFile`](https://smitpi.github.io/PSConfigFile/New-PSConfigFile) -- Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
 - [`Remove-ConfigFromPSConfigFile`](https://smitpi.github.io/PSConfigFile/Remove-ConfigFromPSConfigFile) -- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 - [`Set-PSConfigFileExecution`](https://smitpi.github.io/PSConfigFile/Set-PSConfigFileExecution) -- Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
-- [`Show-PSConfigFile`](https://smitpi.github.io/PSConfigFile/Show-PSConfigFile) -- Display what's configured in the config file.
 - [`Update-PSConfigFileCredentials`](https://smitpi.github.io/PSConfigFile/Update-PSConfigFileCredentials) -- Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.

@@ -38,8 +38,7 @@ body {
 | External Help | Set-PSConfigFileExecution            | Did not create the .md file |
 | External Help | Update-PSConfigFileCredentials       | Did not create the .md file |
 |               |                                      |                             |
-| Not Copied    | Show-PSConfigFile                    | <=                          |
 
 ---
 
-*Updated: Tuesday, March 3, 2026 9:13:40 AM UTC*
+*Updated: Tuesday, March 3, 2026 12:24:06 PM UTC*

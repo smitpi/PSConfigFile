@@ -20,7 +20,7 @@ Securely saves a credential to the PSConfigFile configuration using a self-signe
 ### __AllParameterSets
 
 ```
-Add-CredentialToPSConfigFile [[-Name] <string>] [[-Credential] <pscredential>] [-Force]
+Add-CredentialToPSConfigFile [[-Name] <string>] [[-Credential] <string>] [-Force]
  [<CommonParameters>]
 ```
 
@@ -54,10 +54,10 @@ Saves a credential named 'AdminUser', overwriting the config file if it exists.
 ### -Credential
 
 The PowerShell credential object to be securely stored.
-Use Get-Credential to create this object.
+Use Get-Credential to create this object first.
 
 ```yaml
-Type: PSCredential
+Type: String
 DefaultValue: ''
 SupportsWildcards: false
 Aliases: []

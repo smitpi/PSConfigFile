@@ -20,7 +20,8 @@ Adds a default start-up location (folder or PSDrive) to the PSConfigFile configu
 ### __AllParameterSets
 
 ```
-Add-LocationToPSConfigFile [-LocationType] <string> [-Path] <string> [-Force] [<CommonParameters>]
+Add-LocationToPSConfigFile [[-PSDriveName] <string>] [[-FolderPath] <DirectoryInfo>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## ALIASES
@@ -48,6 +49,27 @@ Sets the default location to the 'c:\temp' folder when the config is invoked.
 
 ## PARAMETERS
 
+### -FolderPath
+
+{{ Fill FolderPath Description }}
+
+```yaml
+Type: DirectoryInfo
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: 1
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -Force
 
 If specified, the config file will be deleted before saving the new one.
@@ -70,10 +92,9 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
-### -LocationType
+### -PSDriveName
 
-Specifies the type of location to add.
-Accepts 'PSDrive' for a PowerShell drive or 'Folder' for a filesystem path.
+{{ Fill PSDriveName Description }}
 
 ```yaml
 Type: String
@@ -83,29 +104,7 @@ Aliases: []
 ParameterSets:
 - Name: (All)
   Position: 0
-  IsRequired: true
-  ValueFromPipeline: false
-  ValueFromPipelineByPropertyName: false
-  ValueFromRemainingArguments: false
-DontShow: false
-AcceptedValues: []
-HelpMessage: ''
-```
-
-### -Path
-
-The path to the folder or the name of the PSDrive to set as the default location.
-Must exist as a valid path or drive.
-
-```yaml
-Type: String
-DefaultValue: ''
-SupportsWildcards: false
-Aliases: []
-ParameterSets:
-- Name: (All)
-  Position: 1
-  IsRequired: true
+  IsRequired: false
   ValueFromPipeline: false
   ValueFromPipelineByPropertyName: false
   ValueFromRemainingArguments: false

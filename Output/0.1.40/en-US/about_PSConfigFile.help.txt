@@ -22,7 +22,6 @@ Functions in this module:
 	 New-PSConfigFile -- Creates a new PSConfigFile XML configuration file to store your PowerShell environment settings.
 	 Remove-ConfigFromPSConfigFile -- Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 	 Set-PSConfigFileExecution -- Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
-	 Show-PSConfigFile -- Display what's configured in the config file.
 	 Update-PSConfigFileCredentials -- Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.
  
 SEE ALSO

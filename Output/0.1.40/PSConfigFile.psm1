@@ -7,7 +7,7 @@
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:27 AM
-# ModifiedOn:       3/3/2026 10:00:41 AM
+# ModifiedOn:       3/3/2026 1:18:24 PM
 # Synopsis:         Adds a named command or script block to the PSConfigFile configuration to be executed automatically when the config is invoked.
 #############################################
  
@@ -53,10 +53,15 @@ function Add-CommandToPSConfigFile {
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
 
     $XMLData = Import-Clixml -Path $confile.FullName
@@ -72,10 +77,7 @@ function Add-CommandToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedUser   = "$($env:USERNAME.ToLower())@$($env:USERDNSDOMAIN.ToLower())"
             ModifiedAction = "Added Command: $($ScriptBlockName)"
-            Path           = "$confile"
-            Hostname       = ([System.Net.Dns]::GetHostEntry(($($env:COMPUTERNAME)))).HostName
         }
     }
 
@@ -89,7 +91,7 @@ function Add-CommandToPSConfigFile {
                 ScriptBlock = $ScriptBlock
             })
     } else {
-        $XMLData.Execute | ForEach-Object {$ExecuteObject.Add($_)}
+        $XMLData.Execute | Where-Object {$_.Name -notlike $ScriptBlockName} | ForEach-Object {$ExecuteObject.Add($_)}
         $IndexID = $ExecuteObject.IndexID | Sort-Object -Descending | Select-Object -First 1
         $ExecuteObject.Add([PSCustomObject]@{
                 IndexID     = ($IndexID + 1 )
@@ -133,7 +135,7 @@ Export-ModuleMember -Function Add-CommandToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:23 AM
-# ModifiedOn:       3/3/2026 10:00:43 AM
+# ModifiedOn:       3/3/2026 1:07:16 PM
 # Synopsis:         Securely saves a credential to the PSConfigFile configuration using a self-signed certificate for encryption.
 #############################################
  
@@ -148,7 +150,7 @@ Use this function to securely store a PowerShell credential object in your confi
 The unique variable name to assign to the credential in the config file. This name is used to reference the credential when invoking commands from the config.
 
 .PARAMETER Credential
-The PowerShell credential object to be securely stored. Use Get-Credential to create this object.
+The PowerShell credential object to be securely stored. Use Get-Credential to create this object first.
 
 .PARAMETER Force
 If specified, the config file will be deleted before saving the new one. If not specified and a config file exists, it will be renamed as a backup before saving the new version.
@@ -172,7 +174,7 @@ function Add-CredentialToPSConfigFile {
 	[OutputType([System.Object[]])]
 	param(
 		[string]$Name,
-		[pscredential]$Credential,
+		[string]$Credential,
 		[switch]$Force
 	)
 
@@ -200,6 +202,7 @@ function Add-CredentialToPSConfigFile {
 			ModifiedAction = "Added Credencial: $($Name)"
 		}
 	}
+	[pscredential]$FindCred = (Get-Variable -Name "$($Credential)").Value
 
 	$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 	if (-not($selfcert)) {
@@ -221,12 +224,12 @@ function Add-CredentialToPSConfigFile {
 		$selfcert = Get-ChildItem Cert:\CurrentUser\My | Where-Object {$_.Subject -like 'CN=PSConfigFileCert*'} -ErrorAction SilentlyContinue
 	}
 
-	$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
+	$PasswordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($FindCred.Password)
 	$PlainText = [Runtime.InteropServices.Marshal]::PtrToStringAuto($PasswordPointer)
 	[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($PasswordPointer)
 	if ($PSVersionTable.PSEdition -eq 'PSDesktop') {
 		Write-Error 'Credentials is only a feature of Powershell core.'
-		exit
+		return
 	} else {
 		$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 		$Edition = 'PSCore'
@@ -241,15 +244,15 @@ function Add-CredentialToPSConfigFile {
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
-				UserName     = $Credential.UserName
+				UserName     = $FindCred.UserName
 				EncryptedPwd = $EncryptedPwd
 			})
 	} else {
-		$XMLData.PSCreds | ForEach-Object {[void]$SetCreds.Add($_)}
+		$XMLData.PSCreds | Where-Object {$_.Name -notlike $Name} | ForEach-Object {[void]$SetCreds.Add($_)}
 		[void]$SetCreds.Add([PSCustomObject]@{
 				Name         = $Name
 				Edition      = $Edition
-				UserName     = $Credential.UserName
+				UserName     = $FindCred.UserName
 				EncryptedPwd = $EncryptedPwd
 			})
 	}
@@ -279,6 +282,11 @@ function Add-CredentialToPSConfigFile {
 	} catch { Write-Error "Error: `n $_" }
 } #end Function
 
+$scriptblock = {
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+	Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
+}
+Register-ArgumentCompleter -CommandName Add-CredentialToPSConfigFile -ParameterName Credential -ScriptBlock $scriptBlock
  
 Export-ModuleMember -Function Add-CredentialToPSConfigFile
 #endregion
@@ -291,7 +299,7 @@ Export-ModuleMember -Function Add-CredentialToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:06 AM
-# ModifiedOn:       3/3/2026 10:00:44 AM
+# ModifiedOn:       3/3/2026 1:18:39 PM
 # Synopsis:         Adds a named PowerShell function (shortcut) to the PSConfigFile configuration.
 #############################################
  
@@ -337,10 +345,15 @@ function Add-FunctionToPSConfigFile {
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
 
     $XMLData = Import-Clixml -Path $confile.FullName
@@ -368,7 +381,7 @@ function Add-FunctionToPSConfigFile {
                 Command = $CommandToRun
             })
     } else {
-        $XMLData.PSFunction | ForEach-Object {$FunctionObject.Add($_)}
+        $XMLData.PSFunction | Where-Object {$_.Name -notlike $FunctionName} | ForEach-Object {$FunctionObject.Add($_)}
         $FunctionObject.Add([PSCustomObject]@{
                 Name    = $FunctionName 
                 Command = $CommandToRun
@@ -412,7 +425,7 @@ Export-ModuleMember -Function Add-FunctionToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:09 AM
-# ModifiedOn:       3/3/2026 10:00:44 AM
+# ModifiedOn:       3/3/2026 1:18:39 PM
 # Synopsis:         Adds a default start-up location (folder or PSDrive) to the PSConfigFile configuration.
 #############################################
  
@@ -449,43 +462,55 @@ This function is part of the PSConfigFile module for managing PowerShell configu
 function Add-LocationToPSConfigFile {
     [Cmdletbinding(HelpURI = 'https://smitpi.github.io/PSConfigFile/Add-LocationToPSConfigFile')]
     param(
-        [Parameter(Mandatory = $true)]
-        [validateSet('PSDrive', 'Folder')]
-        [string]$LocationType,
-        [Parameter(Mandatory = $true)]
-        [ValidateScript( { ( Test-Path $_) -or ( [bool](Get-PSDrive $_)) })]
-        [string]$Path,
+        [ValidateScript( {( [bool](Get-PSDrive $_)) })]
+        [string]$PSDriveName,
+        [ValidateScript( { ( Test-Path $_) })]
+        [System.IO.DirectoryInfo]$FolderPath,
         [switch]$Force
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+   } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
-    try {
-        if ($LocationType -like 'PSDrive') {
-            try {
-                $Drive = Get-PSDrive $Path -ErrorAction Stop
-                $PathName = $Drive.Name
-                $PathValue = $Drive.Root
-                $PathType = 'PSDrive'
-            } catch {
-                Write-Error 'PSDrive not found'
-                exit
-            }
+    if ((-not($PSBoundParameters.ContainsKey('PSDriveName'))) -and (-not($PSBoundParameters.ContainsKey('FolderPath')))) {
+        Write-Error 'Parameters are emty'
+    }
+    if ($PSBoundParameters.ContainsKey('PSDriveName')) {
+        try {
+            $Drive = Get-PSDrive $PSDriveName -ErrorAction Stop
+            $PathName = $Drive.Name
+            $PathValue = $Drive.Root
+            $PathType = 'PSDrive'
+        } catch {
+            Write-Error "PSDrive: Error: `n $_"
         }
-        if ($LocationType -like 'Folder') {
-            [System.IO.DirectoryInfo]$Dir = $Path
-            $AddPath = Get-Item $Dir
-            $PathName = $AddPath.Directory
-            $PathValue = $AddPath.FullName
+    }
+    if ($PSBoundParameters.ContainsKey('FolderPath')) {
+        try {
+            $PathName = $FolderPath.Name
+            $PathValue = $FolderPath.FullName
             $PathType = 'Folder'
-
+        } catch {
+            Write-Error "Folder: Error: `n $_"
         }
-    } catch { throw 'Could not find path' }
+
+    }
+    $Update = @()
+    [System.Collections.generic.List[PSObject]]$SetLocation = @()
+    $SetLocation.Add([PSCustomObject]@{
+            Name  = $PathName
+            value = $PathValue
+            Type  = $PathType
+        })
 
     $XMLData = Import-Clixml -Path $confile.FullName
     $userdata = [PSCustomObject]@{
@@ -499,17 +524,11 @@ function Add-LocationToPSConfigFile {
         BackupsToKeep     = $XMLData.Userdata.BackupsToKeep
         ModifiedData      = [PSCustomObject]@{
             ModifiedDate   = [datetime](Get-Date)
-            ModifiedAction = "Working Directory Changed: $($Path)"
+            ModifiedAction = "Working Directory Changed: $($PathName)"
         }
     }
 
-    $Update = @()
-    [System.Collections.generic.List[PSObject]]$SetLocation = @()
-    $SetLocation.Add([PSCustomObject]@{
-            Name  = $PathName
-            value = $PathValue
-            Type  = $PathType
-        })
+
     $Update = [psobject]@{
         Userdata    = $Userdata
         PSDrive     = $XMLData.PSDrive
@@ -530,7 +549,7 @@ function Add-LocationToPSConfigFile {
         }
         $Update | Export-Clixml -Depth 10 -Path $confile.FullName -NoClobber -Encoding utf8 -Force
         Write-Host 'Working Directory Changed: ' -ForegroundColor Green -NoNewline
-        Write-Host "$($Path)" -ForegroundColor Yellow
+        Write-Host "$($PathName)" -ForegroundColor Yellow
         Write-Host "ConfigFile: $($confile.FullName)" -ForegroundColor Cyan
     } catch { Write-Error "Error: `n $_" }
 
@@ -548,7 +567,7 @@ Export-ModuleMember -Function Add-LocationToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:24 AM
-# ModifiedOn:       3/3/2026 10:00:45 AM
+# ModifiedOn:       3/3/2026 1:02:28 PM
 # Synopsis:         Adds a default parameter value for a function to the PSConfigFile configuration.
 #############################################
  
@@ -628,7 +647,7 @@ function Add-PSDefaultParameterToPSConfigFile {
 				Value = $Value
 			})
 	} else {
-		$XMLData.PSDefaults | ForEach-Object {[void]$PSDefaultObject.Add($_)}
+		$XMLData.PSDefaults | Where-Object {$_.Name -notlike "$($Function):$($Parameter)"} | ForEach-Object {[void]$PSDefaultObject.Add($_)}
 		[void]$PSDefaultObject.Add([PSCustomObject]@{
 				Name  = "$($Function):$($Parameter)"
 				Value = $Value
@@ -671,7 +690,7 @@ Export-ModuleMember -Function Add-PSDefaultParameterToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:45:55 AM
-# ModifiedOn:       3/3/2026 10:00:46 AM
+# ModifiedOn:       3/3/2026 1:18:39 PM
 # Synopsis:         Adds an existing PSDrive to the PSConfigFile configuration for automatic session setup.
 #############################################
  
@@ -711,11 +730,16 @@ function Add-PSDriveToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+   } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
 
     $XMLData = Import-Clixml -Path $confile.FullName
@@ -745,7 +769,7 @@ function Add-PSDriveToPSConfigFile {
                 Root = $InputDrive.Root
             })
     } else {
-        $XMLData.PSDrive | ForEach-Object {$PSDriveObject.Add($_)}
+        $XMLData.PSDrive | Where-Object {$_.Name -notlike $InputDrive.Name} | ForEach-Object {$PSDriveObject.Add($_)}
         $PSDriveObject.Add([PSCustomObject]@{
                 Name = $InputDrive.Name
                 Root = $InputDrive.Root
@@ -784,7 +808,7 @@ Export-ModuleMember -Function Add-PSDriveToPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:45:53 AM
-# ModifiedOn:       3/3/2026 10:00:47 AM
+# ModifiedOn:       3/3/2026 12:59:07 PM
 # Synopsis:         Adds one or more existing variables to the PSConfigFile configuration for automatic session import.
 #############################################
  
@@ -831,7 +855,7 @@ function Add-VariableToPSConfigFile {
             $confile = Get-Item $FileBrowser.FileName
         } else {
             Write-Error 'No valid Config file found.'
-            exit
+            return
         }
     }
 
@@ -864,7 +888,7 @@ function Add-VariableToPSConfigFile {
                     value = $InputVar.Value
                 })        
         } else {
-            $XMLData.SetVariable | ForEach-Object {$VarObject.Add($_)}
+            $XMLData.SetVariable | Where-Object {$_.Name -notlike $InputVar.Name.ToString()} | ForEach-Object {$VarObject.Add($_)}
             $VarObject.Add([PSCustomObject]@{
                     Name  = $InputVar.Name.ToString()
                     value = $InputVar.Value
@@ -1045,7 +1069,7 @@ Export-ModuleMember -Function Import-PSConfigFilePFX
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:00 AM
-# ModifiedOn:       3/3/2026 10:00:49 AM
+# ModifiedOn:       3/3/2026 12:46:08 PM
 # Synopsis:         Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.
 #############################################
  
@@ -1094,7 +1118,7 @@ function Invoke-PSConfigFile {
             $confile = Get-Item $FileBrowser.FileName
         } else {
             Write-Error 'No valid Config file found.'
-            exit
+            return
         }
     }
     #region import file
@@ -1164,11 +1188,11 @@ function Invoke-PSConfigFile {
     #endregion
 
     #region Set Variables
-    if (-not [string]::IsNullOrEmpty($XMLData.SetVariable)) {
-        try {
-            $PSConfigFileOutput.Add('<h>  ')
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
-            $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
+    try {
+        $PSConfigFileOutput.Add('<h>  ')
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] #################### Config File Details: ####################")
+        $PSConfigFileOutput.Add("<h>[$((Get-Date -Format HH:mm:ss).ToString())] Setting Variables:")
+        if (-not [string]::IsNullOrEmpty($XMLData.SetVariable)) {
             foreach ($SetVariable in  ($XMLData.SetVariable | Where-Object {$_ -notlike $null})) {
                 $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f $($SetVariable.name), $($SetVariable.value)
                 $PSConfigFileOutput.Add($output)
@@ -1176,14 +1200,14 @@ function Invoke-PSConfigFile {
                     New-Variable -Name $($SetVariable.name) -Value $($SetVariable.value) -Force -Scope global -ErrorAction Stop
                 } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
             }
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
-            $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
-            $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
-            $PSConfigFileOutput.Add($output)
-            New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
-        } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
-    }
+        }
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFilePath', $(($confile.Directory).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFilePath' -Value ($confile.Directory).FullName -Scope global -Force -ErrorAction Stop
+        $output = "<b>[$((Get-Date -Format HH:mm:ss).ToString())]  {0,-28}: {1,-20}" -f 'PSConfigFile', $(($confile).FullName)
+        $PSConfigFileOutput.Add($output)
+        New-Variable -Name 'PSConfigFile' -Value $confile.FullName -Scope global -Force -ErrorAction Stop
+    } catch {Write-Warning "Error Variable: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Variable: Message:$($_.Exception.Message)")}
     #endregion
 
     #region Set PsDrives
@@ -1278,7 +1302,7 @@ function Invoke-PSConfigFile {
     #endregion
 
     #region Set Location
-    if (-not [string]::IsNullOrEmpty($XMLData.SetLocation)) {
+    if ($null -ne $XMLData.SetLocation) {
         try {
             $SetPath = $XMLData.SetLocation[0]
             $PSConfigFileOutput.Add('<h>  ')
@@ -1287,7 +1311,8 @@ function Invoke-PSConfigFile {
             $PSConfigFileOutput.Add($output)
             if ($SetPath.type -eq 'PSDrive') {
                 Set-Location "$($SetPath.Name):"
-                else { Set-Location $($SetPath.value)}
+            } else { 
+                Set-Location $($SetPath.value)
             }
         } catch {Write-Warning "Error Location: `n`tMessage:$($_.Exception.Message)"; $PSConfigFileOutput.Add("<e>Error Creds: Message:$($_.Exception.Message)")}
     }
@@ -1516,7 +1541,7 @@ Export-ModuleMember -Function New-PSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:01 AM
-# ModifiedOn:       3/3/2026 10:00:51 AM
+# ModifiedOn:       3/3/2026 1:18:39 PM
 # Synopsis:         Removes a specific item (variable, drive, function, command, credential, default, or location) from the PSConfigFile configuration.
 #############################################
  
@@ -1579,11 +1604,16 @@ function Remove-ConfigFromPSConfigFile {
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+   } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
     [System.Collections.Generic.List[pscustomobject]]$XMLData = @()
     $XMLData.Add((Import-Clixml -Path $confile.FullName))
@@ -1664,51 +1694,55 @@ function Remove-ConfigFromPSConfigFile {
     } catch { Write-Error "Error: `n $_" }
 } #end Function
 
-$SetVariable = {
+$PSVariable = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.SetVariable) {
-        $XMLData.SetVariable.Name
-    }
+    $XMLData.SetVariable | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Variable -ScriptBlock $PSVariable
 $PSDrive = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSDrive) {
-        $XMLData.PSDrive.Name
-    }
+    $XMLData.PSDrive | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-$Execute = {
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDrive -ScriptBlock $PSDrive
+$PSFunction = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.Command) {
-        $XMLData.Execute.Name
-    }
+    $XMLData.PSFunction | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-$PSCreds = {
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Function -ScriptBlock $PSFunction
+$PSCommand = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSCreds) {
-        $XMLData.PSCreds.Name
-    }
+    $XMLData.Execute | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Command -ScriptBlock $PSCommand
+$PSCredential = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    $XMLData.PSCreds | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
+}
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Credential -ScriptBlock $PSCredential
 $PSDefaults = {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     $confile = Get-Item $PSConfigFile
     $XMLData = Import-Clixml -Path $confile.FullName
-    if ($null -notlike $XMLData.PSDefaults) {
-        $XMLData.PSDefaults.Name
-    }
+    $XMLData.PSDefaults | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
 }
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Variable -ScriptBlock $SetVariable
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDrive -ScriptBlock $PSDrive
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Command -ScriptBlock $Execute
-Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Credential -ScriptBlock $PSCreds
 Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName PSDefaults -ScriptBlock $PSDefaults
+$Location = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $confile = Get-Item $PSConfigFile
+    $XMLData = Import-Clixml -Path $confile.FullName
+    $XMLData.SetLocation | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { $_.name }
+}
+Register-ArgumentCompleter -CommandName Remove-ConfigFromPSConfigFile -ParameterName Location -ScriptBlock $Location
  
 Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 #endregion
@@ -1721,7 +1755,7 @@ Export-ModuleMember -Function Remove-ConfigFromPSConfigFile
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        11/26/2024 11:46:16 AM
-# ModifiedOn:       3/3/2026 10:00:52 AM
+# ModifiedOn:       3/3/2026 1:18:39 PM
 # Synopsis:         Configures your PowerShell profile or a module to automatically execute your PSConfigFile configuration at startup.
 #############################################
  
@@ -1763,11 +1797,16 @@ function Set-PSConfigFileExecution {
 
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+   } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
     if ($pscmdlet.ShouldProcess('Target', 'Operation')) {
 
@@ -1837,7 +1876,7 @@ Export-ModuleMember -Function Set-PSConfigFileExecution
 # Author:           Pierre Smit
 # Company:          Private
 # CreatedOn:        3/3/2026 9:15:04 AM
-# ModifiedOn:       3/3/2026 10:00:53 AM
+# ModifiedOn:       3/3/2026 1:03:37 PM
 # Synopsis:         Updates or renews credentials and encryption certificates stored in your PSConfigFile configuration.
 #############################################
  
@@ -1907,8 +1946,6 @@ function Update-PSConfigFileCredentials {
 		$Update = @()
 		[System.Collections.generic.List[PSObject]]$CredsObject = @()
 		[System.Collections.generic.List[PSObject]]$RenewCredsObject = @()
-		[System.Collections.generic.List[PSObject]]$ThisEdition = @()
-		[System.Collections.generic.List[PSObject]]$OtherEdition = @()
 		$AllCreds = $XMLData.PSCreds | Sort-Object -Property Name -Unique 
 
 		if ($RenewSavedPasswords -like 'All') {
@@ -1928,7 +1965,7 @@ function Update-PSConfigFileCredentials {
 			$EncodedPwd = [system.text.encoding]::UTF8.GetBytes($PlainText)
 			if ($PSVersionTable.PSEdition -like 'Desktop') {
 				Write-Error 'Credentials is only a feature of Powershell core.'
-				exit
+				return
 			} else {
 				$Edition = 'PSCore'
 				$EncryptedBytes = $selfcert.PublicKey.Key.Encrypt($EncodedPwd, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA512)
@@ -1969,13 +2006,16 @@ function Update-PSConfigFileCredentials {
 	if (-not([string]::IsNullOrEmpty($RenewSavedPasswords))) {RedoPass -RenewSavedPasswords $RenewSavedPasswords}
 
 } #end Function
-$scriptblock = {
+
+$PSCredential = {
 	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+	$confile = Get-Item $PSConfigFile
+	$XMLData = Import-Clixml -Path $confile.FullName
 	$var = @('All')
-	$var += Get-Variable | Where-Object {$_.Name -like "$wordToComplete*" -and $_.value -like 'System.Management.Automation.PSCredential'} | ForEach-Object {"$($_.name)"}
+	$var += $XMLData.PSCreds | Where-Object {$_.Name -like "$wordToComplete*"} | ForEach-Object { "$($_.name)" }
 	$var
 }
-Register-ArgumentCompleter -CommandName Update-PSConfigFileCredentials -ParameterName RenewSavedPasswords -ScriptBlock $scriptBlock
+Register-ArgumentCompleter -CommandName Update-PSConfigFileCredentials -ParameterName RenewSavedPasswords -ScriptBlock $PSCredential
  
 Export-ModuleMember -Function Update-PSConfigFileCredentials
 #endregion
