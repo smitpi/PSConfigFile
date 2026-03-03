@@ -12,28 +12,28 @@
         <meta name="author" content="Pierre Smit">
       
       
-        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/PSConfigFile/New-PSConfigCertificate/">
+        <link rel="canonical" href="https://smitpi.github.io/PSConfigFile/Invoke-PSConfigFile/">
       
       
-        <link rel="prev" href="../Invoke-PSConfigFile/">
+        <link rel="prev" href="../Import-PSConfigFilePFX/">
       
       
-        <link rel="next" href="../New-PSConfigFile/">
+        <link rel="next" href="../New-PSConfigCertificate/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>New-PSConfigCertificate - PSConfigFile</title>
+        <title>Invoke-PSConfigFile - PSConfigFile</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -52,7 +52,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#new-psconfigcertificate" class="md-skip">
+        <a href="#invoke-psconfigfile" class="md-skip">
           Skip to content
         </a>
       
@@ -86,7 +86,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="PSConfigFile" class="md-header__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
+    <a href=".." title="PSConfigFile" class="md-header__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              New-PSConfigCertificate
+              Invoke-PSConfigFile
             
           </span>
         </div>
@@ -196,7 +196,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="PSConfigFile" class="md-nav__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
+    <a href=".." title="PSConfigFile" class="md-nav__button md-logo" aria-label="PSConfigFile" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -226,7 +226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -248,55 +248,6 @@
     
       
       
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    PSConfigFile
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    PSConfigFile
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
   
   
   
@@ -321,10 +272,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -349,10 +299,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -377,10 +326,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -405,10 +353,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -433,10 +380,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -461,10 +407,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -489,10 +434,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -517,10 +461,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -545,38 +488,9 @@
     </li>
   
 
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Invoke-PSConfigFile/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
     
-  
-    Invoke-PSConfigFile
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
+      
+      
   
   
     
@@ -598,7 +512,7 @@
   <span class="md-ellipsis">
     
   
-    New-PSConfigCertificate
+    Invoke-PSConfigFile
   
 
     
@@ -616,7 +530,7 @@
   <span class="md-ellipsis">
     
   
-    New-PSConfigCertificate
+    Invoke-PSConfigFile
   
 
     
@@ -661,34 +575,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#set1-default" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Set1 (Default)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aliases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ALIASES
-      
-    </span>
-  </a>
-  
 </li>
       
         <li class="md-nav__item">
@@ -725,6 +611,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 2
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -741,6 +638,28 @@
   
     <nav class="md-nav" aria-label="PARAMETERS">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -ConfigFile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-displayoutput" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -DisplayOutput
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#commonparameters" class="md-nav__link">
@@ -778,23 +697,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="OUTPUTS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#systemobject" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        System.Object
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -826,10 +728,36 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../New-PSConfigCertificate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    New-PSConfigCertificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
   
   
   
@@ -854,10 +782,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -882,10 +809,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -910,10 +836,9 @@
     </li>
   
 
-              
-            
-              
-                
+    
+      
+      
   
   
   
@@ -935,14 +860,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -993,34 +910,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SYNTAX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#set1-default" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Set1 (Default)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aliases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ALIASES
-      
-    </span>
-  </a>
-  
 </li>
       
         <li class="md-nav__item">
@@ -1057,6 +946,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EXAMPLE 2
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1073,6 +973,28 @@
   
     <nav class="md-nav" aria-label="PARAMETERS">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -ConfigFile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-displayoutput" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -DisplayOutput
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#commonparameters" class="md-nav__link">
@@ -1109,23 +1031,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="OUTPUTS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#systemobject" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        System.Object
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1171,40 +1076,59 @@
   
 
 
-<h1 id="new-psconfigcertificate">New-PSConfigCertificate</h1>
+<h1 id="invoke-psconfigfile">Invoke-PSConfigFile</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Creates or renews a self-signed certificate for encrypting credentials in your PSConfigFile configuration.</p>
+<p>Reads and executes all configuration items from a PSConfigFile XML file, setting up your PowerShell session automatically.</p>
 <h2 id="syntax">SYNTAX</h2>
-<h3 id="set1-default">Set1 (Default)</h3>
-<div class="highlight"><pre><span></span><code>New-PSConfigCertificate [&lt;CommonParameters&gt;]
+<div class="highlight"><pre><span></span><code>Invoke-PSConfigFile [-ConfigFile] &lt;FileInfo&gt; [-DisplayOutput] [&lt;CommonParameters&gt;]
 </code></pre></div>
-<h2 id="aliases">ALIASES</h2>
-<p>This cmdlet has the following aliases,
-  {{Insert list of aliases}}</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>This function generates a new self-signed certificate (or renews an existing one) used to encrypt and decrypt credentials stored in your configuration file.
-This ensures your sensitive data remains secure and portable across trusted systems.
-After creating the certificate, all saved credentials are re-encrypted for continued security.</p>
+<p>Use this function to load a PSConfigFile XML configuration file and apply all stored settings to your current session.
+This includes setting variables, creating PSDrives, defining functions, importing credentials, applying default parameters, setting the working directory, and executing startup commands.
+Use this to quickly restore your preferred environment or automate session setup across systems.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">EXAMPLE 1</h3>
-<p>New-PSConfigCertificate
-Creates or renews the self-signed certificate for credential encryption and re-encrypts all saved credentials.</p>
+<div class="highlight"><pre><span></span><code>Invoke-PSConfigFile -ConfigFile C:\Temp\config\PSConfigFile.xml
+</code></pre></div>
+<p>Loads and applies all settings from the specified config file.</p>
+<h3 id="example-2">EXAMPLE 2</h3>
+<div class="highlight"><pre><span></span><code>Invoke-PSConfigFile -ConfigFile .\PSConfigFile.xml -DisplayOutput
+</code></pre></div>
+<p>Runs the config file and displays detailed output for each step.</p>
 <h2 id="parameters">PARAMETERS</h2>
+<h3 id="-configfile">-ConfigFile</h3>
+<p>The path to the configuration XML file created by New-PSConfigFile.
+Must have a .xml extension.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FileInfo</span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="nt">Aliases</span><span class="p">:</span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
+<h3 id="-displayoutput">-DisplayOutput</h3>
+<p>If specified, displays detailed output of each configuration step.
+Otherwise, only completion status is shown.
+Use Show-PSConfigFile to display the last execution output.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SwitchParameter</span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="nt">Aliases</span><span class="p">:</span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
 <h3 id="commonparameters">CommonParameters</h3>
-<p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
--InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
--ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
-<a href="https://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
+<p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
 <h2 id="outputs">OUTPUTS</h2>
-<h3 id="systemobject">System.Object</h3>
-<p>{{ Fill in the Description }}</p>
 <h2 id="notes">NOTES</h2>
-<p>Author: Pierre Smit
-Website: https://smitpi.github.io/PSConfigFile
-Run this if your certificate is expiring or you need to reset credential encryption.</p>
 <h2 id="related-links">RELATED LINKS</h2>
-<p>{{ Fill in the related links here }}</p>
 
 
 
@@ -1277,10 +1201,10 @@ Run this if your certificate is expiring or you need to reset credential encrypt
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
