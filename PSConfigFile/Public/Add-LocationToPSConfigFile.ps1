@@ -96,11 +96,16 @@ function Add-LocationToPSConfigFile {
     )
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
-    } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+   } catch {
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
     if ((-not($PSBoundParameters.ContainsKey('PSDriveName'))) -and (-not($PSBoundParameters.ContainsKey('FolderPath')))) {
         Write-Error 'Parameters are emty'

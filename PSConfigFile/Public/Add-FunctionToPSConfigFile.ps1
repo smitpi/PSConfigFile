@@ -91,10 +91,15 @@ function Add-FunctionToPSConfigFile {
     try {
         $confile = Get-Item $PSConfigFile -ErrorAction stop
     } catch {
-        Add-Type -AssemblyName System.Windows.Forms
-        $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
-        $null = $FileBrowser.ShowDialog()
-        $confile = Get-Item $FileBrowser.FileName
+        if ($IsWindows) {
+            Add-Type -AssemblyName System.Windows.Forms
+            $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ Filter = 'XML | *.xml' }
+            $null = $FileBrowser.ShowDialog()
+            $confile = Get-Item $FileBrowser.FileName
+        } else {
+            Write-Error 'No valid Config file found.'
+            return
+        }
     }
 
     $XMLData = Import-Clixml -Path $confile.FullName
